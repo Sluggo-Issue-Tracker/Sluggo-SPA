@@ -1,6 +1,6 @@
 <template>
-  <div id="home-page">
-    <h1>Home</h1>
+  <div id="auth-page">
+    <h1>Auth</h1>
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "Home"
+  name: "Auth"
   // components: {
   // }
 });

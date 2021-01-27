@@ -1,11 +1,53 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import Home from "../views/Home.vue";
+import Home from "@/views/Home.vue";
+import Tickets from "@/views/Tickets.vue";
+import Users from "@/views/Users.vue";
+import Admin from "@/views/Admin.vue";
+import Help from "@/views/Help.vue";
+import Auth from "@/views/Auth.vue";
+import Profile from "@/views/Profile.vue";
+import TicketDetails from "@/views/TicketDetails.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "Home",
     component: Home
+  },
+  {
+    path: "/tickets",
+    name: "Tickets",
+    component: Tickets
+  },
+  {
+    path: "/users",
+    name: "Users",
+    component: Users
+  },
+  {
+    path: "/users/:id",
+    name: "Profile",
+    component: Profile
+  },
+  {
+    path: "/admin",
+    name: "Admin",
+    component: Admin
+  },
+  {
+    path: "/help",
+    name: "Help",
+    component: Help
+  },
+  {
+    path: "/auth_control",
+    name: "Auth",
+    component: Auth
+  },
+  {
+    path: "/tickets/:id",
+    name: "TicketDetails",
+    component: TicketDetails
   }
   // {
   //   path: "/about",

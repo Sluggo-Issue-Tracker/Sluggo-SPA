@@ -5,7 +5,7 @@ import Users from "@/views/Users.vue";
 import Admin from "@/views/Admin.vue";
 import Help from "@/views/Help.vue";
 import Auth from "@/views/Auth.vue";
-
+import Profile from "@/views/Profile.vue";
 import TicketDetails from "@/views/TicketDetails.vue";
 
 const routes: Array<RouteRecordRaw> = [
@@ -23,6 +23,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/users",
     name: "Users",
     component: Users
+  },
+  {
+    path: "/users/:id",
+    name: "Profile",
+    component: Profile
   },
   {
     path: "/admin",

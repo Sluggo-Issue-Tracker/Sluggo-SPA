@@ -1,10 +1,6 @@
 <template>
   <sluggo-navbar></sluggo-navbar>
-  <section class="section">
-    <div class="container">
-      <router-view />
-    </div>
-  </section>
+  <router-view />
 </template>
 
 <script lang="ts">

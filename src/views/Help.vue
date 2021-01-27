@@ -1,6 +1,15 @@
 <template>
   <div id="help-page">
-    <h1>Help</h1>
+    <section class="section" id="help-section">
+      <div class="container">
+        <h1 class="title">Help</h1>
+        <p>
+          Help is not yet implemented in this version of Sluggo. This will be
+          implemented at a later date, once the overall functionality of the
+          tracker has evolved and matured.
+        </p>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -8,7 +17,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "Help"
+  name: "Help",
   // components: {
   // }
 });

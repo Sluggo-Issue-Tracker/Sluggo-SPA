@@ -344,7 +344,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "Admin",
+  name: "Admin"
   // components: {
   // }
 });

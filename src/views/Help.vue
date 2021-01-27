@@ -17,7 +17,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "Help",
+  name: "Help"
   // components: {
   // }
 });

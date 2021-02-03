@@ -40,7 +40,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Help
   },
   {
-    path: "/auth_control",
+    path: "/login",
     name: "Auth",
     component: Auth
   },

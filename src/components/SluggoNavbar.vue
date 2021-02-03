@@ -40,16 +40,16 @@
               <img src="" />
             </a>
             <div class="navbar-dropdown is-boxed is-size-4">
-              <router-link class="navbar-item" to="auth_control">
+              <router-link class="navbar-item" to="/login">
                 Logout
               </router-link>
             </div>
           </div>
           <div class="buttons">
-            <router-link class="button is-primary" to="auth_control">
+            <router-link class="button is-primary" to="/login">
               Sign up
             </router-link>
-            <router-link class="button is-light" to="auth_control">
+            <router-link class="button is-light" to="/login">
               Sign in
             </router-link>
           </div>

@@ -17,7 +17,7 @@
       <p>Current Key: {{ key }}</p>
       <br />
       <form @submit.prevent="login">
-        <label for="username">Username</label>
+        <label for="username">Username </label>
         <input
           type="text"
           name="username"
@@ -25,10 +25,10 @@
           placeholder="Username"
         />
         <br />
-        <label for="email">Email (used for login)</label>
+        <label for="email">Email (used for login) </label>
         <input type="text" name="email" v-model="email" placeholder="email" />
         <br />
-        <label for="password">Password (used for login)</label>
+        <label for="password">Password (used for login) </label>
         <input
           type="password"
           name="password"
@@ -36,7 +36,7 @@
           placeholder="password"
         />
         <br />
-        <label for="secondaryPassword">Username</label>
+        <label for="secondaryPassword">Secondary Password (for signup) </label>
         <input
           type="password"
           name="secondaryPassword"

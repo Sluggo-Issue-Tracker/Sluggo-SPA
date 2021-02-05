@@ -1,5 +1,6 @@
 import { createDirectStore } from "direct-vuex";
 import { SignupDetails, LoginDetails, signup, login } from "@/api/auth";
+import { TeamRecord, NewTeamRecord, postTeam } from "@/api/teams";
 
 interface RootStoreState {
   token?: string;
@@ -33,6 +34,12 @@ const {
     },
     doLogout(context) {
       rootActionContext(context).commit.setToken(undefined);
+    },
+    doCreateTeam(context, record: NewTeamRecord) {
+      postTeam(record).then(response => {
+        const record = response.data as TeamRecord;
+        console.log(record);
+      });
     }
   },
   modules: {},

@@ -7,6 +7,7 @@ import Help from "@/views/Help.vue";
 import Auth from "@/views/Auth.vue";
 import Profile from "@/views/Profile.vue";
 import TicketDetails from "@/views/TicketDetails.vue";
+import NewTeam from "@/views/NewTeam.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -48,6 +49,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/tickets/:id",
     name: "TicketDetails",
     component: TicketDetails
+  },
+  {
+    path: "/new_team/",
+    name: "NewTeam",
+    component: NewTeam
   }
   // {
   //   path: "/about",

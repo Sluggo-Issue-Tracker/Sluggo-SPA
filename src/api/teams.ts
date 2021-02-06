@@ -1,5 +1,4 @@
-import { AxiosPromise } from "axios";
-import { generateAxiosInstance } from "./base";
+import { AxiosInstance, AxiosPromise } from "axios";
 
 // Team API endpoints
 export interface NewTeamRecord {
@@ -18,9 +17,10 @@ export interface TeamRecord {
   deactivated: string;
 }
 
-export function postTeam(record: NewTeamRecord): AxiosPromise {
-  const axios = generateAxiosInstance();
-
+export function postTeam(
+  record: NewTeamRecord,
+  axios: AxiosInstance
+): AxiosPromise {
   return axios.post("/api/teams/", {
     name: record.name,
     description: "UNUSED"

@@ -40,6 +40,9 @@
               <img src="" />
             </a>
             <div class="navbar-dropdown is-boxed is-size-4">
+              <router-link class="navbar-item" to="/new_team">
+                Create Team
+              </router-link>
               <router-link class="navbar-item" to="/login">
                 Logout
               </router-link>

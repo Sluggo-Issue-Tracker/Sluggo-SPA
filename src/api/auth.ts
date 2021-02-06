@@ -1,4 +1,4 @@
-import { generateAxiosInstance } from "./base";
+import { AxiosInstance } from "axios";
 
 // MARK: Interfaces
 export interface LoginDetails {
@@ -14,8 +14,7 @@ export interface SignupDetails {
 }
 
 // MARK: Authentication Methods
-export async function signup(details: SignupDetails) {
-  const axios = generateAxiosInstance();
+export async function signup(details: SignupDetails, axios: AxiosInstance) {
   const p = new Promise<string>(function(success, fail) {
     axios
       .post("/auth/registration/", {
@@ -41,9 +40,10 @@ export async function signup(details: SignupDetails) {
   return p;
 }
 
-export async function login(details: LoginDetails): Promise<string> {
-  const axios = generateAxiosInstance();
-
+export async function login(
+  details: LoginDetails,
+  axios: AxiosInstance
+): Promise<string> {
   const p = new Promise<string>(function(success, fail) {
     axios
       .post("/auth/login/", details)

@@ -1,6 +1,7 @@
 import { createDirectStore } from "direct-vuex";
 import { SignupDetails, LoginDetails, signup, login } from "@/api/auth";
 import { TeamRecord, NewTeamRecord, postTeam } from "@/api/teams";
+import { generateAxiosInstance } from "@/api/base";
 
 interface RootStoreState {
   token?: string;
@@ -22,21 +23,30 @@ const {
     }
   },
   actions: {
-    doSignup(context, details: SignupDetails) {
-      signup(details).then(key => {
-        rootActionContext(context).commit.setToken(key);
+    doSignup(ctxRaw, details: SignupDetails) {
+      const context = rootActionContext(ctxRaw);
+      const axios = generateAxiosInstance(context.state.token);
+
+      signup(details, axios).then(key => {
+        context.commit.setToken(key);
       });
     },
-    doLogin(context, details: LoginDetails) {
-      login(details).then(key => {
-        rootActionContext(context).commit.setToken(key);
+    doLogin(ctxRaw, details: LoginDetails) {
+      const context = rootActionContext(ctxRaw);
+      const axios = generateAxiosInstance(context.state.token);
+      login(details, axios).then(key => {
+        context.commit.setToken(key);
       });
     },
-    doLogout(context) {
-      rootActionContext(context).commit.setToken(undefined);
+    doLogout(ctxRaw) {
+      const context = rootActionContext(ctxRaw);
+      context.commit.setToken(undefined);
     },
-    doCreateTeam(context, record: NewTeamRecord) {
-      postTeam(record).then(response => {
+    doCreateTeam(ctxRaw, record: NewTeamRecord) {
+      const context = rootActionContext(ctxRaw);
+      const axios = generateAxiosInstance(context.state.token);
+
+      postTeam(record, axios).then(response => {
         const record = response.data as TeamRecord;
         console.log(record);
       });

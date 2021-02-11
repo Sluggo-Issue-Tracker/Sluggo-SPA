@@ -2,6 +2,7 @@ import { createDirectStore } from "direct-vuex";
 import { SignupDetails, LoginDetails, signup, login } from "@/api/auth";
 import { TeamRecord, NewTeamRecord, postTeam } from "@/api/teams";
 import { generateAxiosInstance } from "@/api/base";
+import Statuses from "@/api/statuses";
 
 interface RootStoreState {
   token?: string;
@@ -47,8 +48,26 @@ const {
       const axios = generateAxiosInstance(context.state.token);
 
       postTeam(record, axios).then(response => {
-        const record = response.data as TeamRecord;
-        console.log(record);
+        const newTeamRecord = response.data;
+        console.log(newTeamRecord);
+
+        // Put team into a good state
+        // This would probably be a good idea to standardize on the
+        // backend, but I don't want to wait on backend
+        Promise.all([
+          Statuses.post(axios, newTeamRecord, "To Do"),
+          Statuses.post(axios, newTeamRecord, "In Progress"),
+          Statuses.post(axios, newTeamRecord, "Completed")
+        ])
+          .then(() => {
+            console.log("Statuses created!");
+          })
+          .catch(error => {
+            console.log(
+              "Error encountered setting up initial team state. Printing..."
+            );
+            console.log(error.response.data);
+          });
       });
     }
   },

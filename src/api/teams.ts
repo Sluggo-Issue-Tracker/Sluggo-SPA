@@ -20,7 +20,7 @@ export interface TeamRecord {
 export function postTeam(
   record: NewTeamRecord,
   axios: AxiosInstance
-): AxiosPromise {
+): AxiosPromise<TeamRecord> {
   return axios.post("/api/teams/", {
     name: record.name,
     description: "UNUSED"

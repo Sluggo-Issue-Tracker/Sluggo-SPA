@@ -1,11 +1,12 @@
 import { createDirectStore } from "direct-vuex";
 import { SignupDetails, LoginDetails, signup, login } from "@/api/auth";
-import { TeamRecord, NewTeamRecord, postTeam } from "@/api/teams";
+import { TeamRecord, NewTeamRecord, postTeam, getTeam } from "@/api/teams";
 import { generateAxiosInstance } from "@/api/base";
 import Statuses from "@/api/statuses";
 
 interface RootStoreState {
   token?: string;
+  team?: TeamRecord;
 }
 
 const {
@@ -21,6 +22,9 @@ const {
   mutations: {
     setToken(state, newToken: string | undefined) {
       state.token = newToken;
+    },
+    setTeam(state, newTeam: TeamRecord) {
+      state.team = newTeam;
     }
   },
   actions: {
@@ -69,6 +73,22 @@ const {
             console.log(error.response.data);
           });
       });
+    },
+    doSetTeam(ctxRaw, teamId: number) {
+      const context = rootActionContext(ctxRaw);
+      const axios = generateAxiosInstance(context.state.token);
+
+      getTeam(axios, teamId)
+        .then(response => {
+          const record = response.data;
+          context.commit.setTeam(record);
+
+          console.log(context.state.team);
+        })
+        .catch(error => {
+          console.log("Error setting team! Printing error details...");
+          console.log(error.response.data);
+        });
     }
   },
   modules: {},

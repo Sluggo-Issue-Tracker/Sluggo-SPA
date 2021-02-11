@@ -26,3 +26,10 @@ export function postTeam(
     description: "UNUSED"
   });
 }
+
+export function getTeam(
+  axios: AxiosInstance,
+  teamId: number
+): AxiosPromise<TeamRecord> {
+  return axios.get(`/api/teams/${teamId}/`);
+}

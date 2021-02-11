@@ -52,6 +52,18 @@
       </form>
     </div>
   </section>
+  <section class="section">
+    <h1 class="title">Team Control</h1>
+    <p>Note: Requires authentication</p>
+
+    <form @submit.prevent="setTeam">
+      <label for="teamId">Team ID </label>
+      <input type="number" name="teamId" v-model="teamId" placeholder="0" />
+      <br />
+
+      <button>Set Team</button>
+    </form>
+  </section>
 </template>
 
 <script lang="ts">
@@ -65,6 +77,7 @@ export default defineComponent({
     const email = ref("");
     const password = ref("");
     const secondaryPassword = ref("");
+    const teamId = ref(0);
 
     const key = computed(() => store.state.token);
 
@@ -88,6 +101,10 @@ export default defineComponent({
       store.dispatch.doLogout();
     };
 
+    const setTeam = () => {
+      store.dispatch.doSetTeam(teamId.value);
+    };
+
     return {
       username,
       email,
@@ -96,6 +113,8 @@ export default defineComponent({
       login,
       signup,
       signout,
+      teamId,
+      setTeam,
       key
     };
   }

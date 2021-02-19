@@ -1,9 +1,9 @@
 <template>
   <nav class="navbar is-link" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <router-link class="navbar-item" to="/">
+      <navbar-team-page-link class="navbar-item" destination="">
         <h1 class=" is-size-3 has-text-weight-bold">Sluggo</h1>
-      </router-link>
+      </navbar-team-page-link>
       <a
         role="button"
         class="navbar-burger burger"
@@ -19,15 +19,15 @@
     </div>
     <div id="left-navbar" class="navbar-menu">
       <div class="navbar-start">
-        <router-link class="navbar-item" to="/tickets">
+        <navbar-team-page-link class="navbar-item" destination="tickets">
           <span class="navbar-item-name is-size-4">Tickets</span>
-        </router-link>
-        <router-link class="navbar-item" to="/users">
+        </navbar-team-page-link>
+        <navbar-team-page-link class="navbar-item" destination="users">
           <span class="navbar-item-name is-size-4">Users</span>
-        </router-link>
-        <router-link class="navbar-item" to="/admin">
+        </navbar-team-page-link>
+        <navbar-team-page-link class="navbar-item" destination="admin">
           <span class="navbar-item-name is-size-4">Admin</span>
-        </router-link>
+        </navbar-team-page-link>
         <router-link class="navbar-item" to="/help">
           <span class="navbar-item-name is-size-4">Help</span>
         </router-link>
@@ -65,8 +65,13 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
+import NavbarTeamPageLink from "@/components/navbar/NavbarTeamPageLink.vue";
+
 const sluggoNavbarComponent = defineComponent({
-  name: "SluggoNavbar"
+  name: "SluggoNavbar",
+  components: {
+    NavbarTeamPageLink
+  }
 });
 
 export default sluggoNavbarComponent;

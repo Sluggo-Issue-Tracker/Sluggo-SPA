@@ -8,33 +8,71 @@ import Auth from "@/views/Auth.vue";
 import Profile from "@/views/Profile.vue";
 import TicketDetails from "@/views/TicketDetails.vue";
 import NewTeam from "@/views/NewTeam.vue";
+import TeamWrapper from "@/components/TeamWrapper.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: "/",
-    name: "Home",
-    component: Home
+    path: "/teams/:teamId",
+    name: "Team",
+    component: TeamWrapper,
+    children: [
+      {
+        path: "",
+        name: "Home",
+        component: Home
+      },
+      {
+        path: "tickets",
+        name: "Tickets",
+        component: Tickets
+      },
+      {
+        path: "users",
+        name: "Users",
+        component: Users
+      },
+      {
+        path: "users/:userId",
+        name: "Profile",
+        component: Profile
+      },
+      {
+        path: "admin",
+        name: "Admin",
+        component: Admin
+      },
+      {
+        path: "tickets/:userId",
+        name: "TicketDetails",
+        component: TicketDetails
+      }
+    ]
   },
-  {
-    path: "/tickets",
-    name: "Tickets",
-    component: Tickets
-  },
-  {
-    path: "/users",
-    name: "Users",
-    component: Users
-  },
-  {
-    path: "/users/:id",
-    name: "Profile",
-    component: Profile
-  },
-  {
-    path: "/admin",
-    name: "Admin",
-    component: Admin
-  },
+  // {
+  //   path: "/",
+  //   name: "Home",
+  //   component: Home
+  // },
+  // {
+  //   path: "/tickets",
+  //   name: "Tickets",
+  //   component: Tickets
+  // },
+  // {
+  //   path: "/users",
+  //   name: "Users",
+  //   component: Users
+  // },
+  // {
+  //   path: "/users/:id",
+  //   name: "Profile",
+  //   component: Profile
+  // },
+  // {
+  //   path: "/admin",
+  //   name: "Admin",
+  //   component: Admin
+  // },
   {
     path: "/help",
     name: "Help",
@@ -45,11 +83,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "Auth",
     component: Auth
   },
-  {
-    path: "/tickets/:id",
-    name: "TicketDetails",
-    component: TicketDetails
-  },
+  // {
+  //   path: "/tickets/:id",
+  //   name: "TicketDetails",
+  //   component: TicketDetails
+  // },
   {
     path: "/new_team/",
     name: "NewTeam",

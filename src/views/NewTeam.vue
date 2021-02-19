@@ -39,11 +39,17 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
+
 import store from "@/store";
+
+import { generateTeamPageLink } from "@/methods/teamPage";
 
 const newTeamComponent = defineComponent({
   name: "NewTeam",
   setup: function() {
+    const router = useRouter();
+
     const teamName = ref("");
 
     const validateTeamName = () => {
@@ -53,10 +59,16 @@ const newTeamComponent = defineComponent({
     const teamSubmissionTriggered = () => {
       if (!validateTeamName) return;
 
-      store.dispatch.doCreateTeam({
-        name: teamName.value.toLowerCase(),
-        description: "UNUSED"
-      });
+      store.dispatch
+        .doCreateTeam({
+          name: teamName.value.toLowerCase(),
+          description: "UNUSED"
+        })
+        .then(record =>
+          store.dispatch.doSetTeam(record.id).then(() => {
+            router.push(generateTeamPageLink(record));
+          })
+        );
     };
 
     return {

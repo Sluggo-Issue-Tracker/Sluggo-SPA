@@ -47,30 +47,40 @@ const {
       const context = rootActionContext(ctxRaw);
       context.commit.setToken(undefined);
     },
-    doCreateTeam(ctxRaw, record: NewTeamRecord) {
+    doCreateTeam(ctxRaw, record: NewTeamRecord): Promise<TeamRecord> {
       const context = rootActionContext(ctxRaw);
       const axios = generateAxiosInstance(context.state.token);
 
-      postTeam(record, axios).then(response => {
-        const newTeamRecord = response.data;
-        console.log(newTeamRecord);
+      return new Promise<TeamRecord>((resolve, reject) => {
+        postTeam(record, axios)
+          .then(response => {
+            const newTeamRecord = response.data;
+            console.log(newTeamRecord);
 
-        // Put team into a good state
-        // This would probably be a good idea to standardize on the
-        // backend, but I don't want to wait on backend
-        Promise.all([
-          Statuses.post(axios, newTeamRecord, "To Do"),
-          Statuses.post(axios, newTeamRecord, "In Progress"),
-          Statuses.post(axios, newTeamRecord, "Completed")
-        ])
-          .then(() => {
-            console.log("Statuses created!");
+            // Put team into a good state
+            // This would probably be a good idea to standardize on the
+            // backend, but I don't want to wait on backend
+            Promise.all([
+              Statuses.post(axios, newTeamRecord, "To Do"),
+              Statuses.post(axios, newTeamRecord, "In Progress"),
+              Statuses.post(axios, newTeamRecord, "Completed")
+            ])
+              .then(() => {
+                console.log("Statuses created!");
+                resolve(newTeamRecord);
+              })
+              .catch(error => {
+                console.log(
+                  "Error encountered setting up initial team state. Printing..."
+                );
+                console.log(error.response.data);
+                reject(error.response.data);
+              });
           })
           .catch(error => {
-            console.log(
-              "Error encountered setting up initial team state. Printing..."
-            );
+            console.log("Error creating the team, logging details...");
             console.log(error.response.data);
+            reject(error.response.data);
           });
       });
     },
@@ -78,17 +88,22 @@ const {
       const context = rootActionContext(ctxRaw);
       const axios = generateAxiosInstance(context.state.token);
 
-      getTeam(axios, teamId)
-        .then(response => {
-          const record = response.data;
-          context.commit.setTeam(record);
+      return new Promise<TeamRecord>((resolve, reject) => {
+        getTeam(axios, teamId)
+          .then(response => {
+            const record = response.data;
+            context.commit.setTeam(record);
 
-          console.log(context.state.team);
-        })
-        .catch(error => {
-          console.log("Error setting team! Printing error details...");
-          console.log(error.response.data);
-        });
+            console.log(context.state.team);
+
+            resolve(record);
+          })
+          .catch(error => {
+            console.log("Error setting team! Printing error details...");
+            console.log(error.response.data);
+            reject(error.response.data);
+          });
+      });
     }
   },
   modules: {},

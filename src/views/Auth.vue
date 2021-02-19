@@ -68,7 +68,9 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
+import { useRouter } from "vue-router";
 import store from "@/store";
+import { generateTeamPageLink } from "@/methods/teamPage";
 
 export default defineComponent({
   name: "Auth",
@@ -80,6 +82,8 @@ export default defineComponent({
     const teamId = ref(0);
 
     const key = computed(() => store.state.token);
+
+    const router = useRouter();
 
     const login = () => {
       store.dispatch.doLogin({
@@ -102,7 +106,9 @@ export default defineComponent({
     };
 
     const setTeam = () => {
-      store.dispatch.doSetTeam(teamId.value);
+      store.dispatch.doSetTeam(teamId.value).then(response => {
+        router.push(generateTeamPageLink(response));
+      });
     };
 
     return {

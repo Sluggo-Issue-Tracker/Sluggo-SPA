@@ -7,6 +7,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
+import { generateTeamPageLink } from "@/methods/teamPage";
 import store from "@/store";
 
 const navbarPageLinkComponent = defineComponent({
@@ -33,7 +34,12 @@ const navbarPageLinkComponent = defineComponent({
         return;
       }
 
-      router.push("/teams/" + record.id + "/" + props.destination);
+      router.push(
+        generateTeamPageLink(
+          record,
+          props.destination !== "" ? props.destination : undefined
+        )
+      );
     };
 
     return {

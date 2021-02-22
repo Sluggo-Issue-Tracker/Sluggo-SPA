@@ -10,11 +10,14 @@
         </em>
       </p>
       <p>
-        This page doesn't have responses for auth; please check the console to
-        see if anything went wrong
+        This page doesn't have error popups for authentication problems; please
+        check the console to see if anything went wrong
       </p>
       <br />
-      <p>Current Key: {{ key }}</p>
+      <p>
+        Current Key: {{ key }}
+        <strong>(will be deloaded if manually navigated or reloaded)</strong>
+      </p>
       <br />
       <form @submit.prevent="login">
         <label for="username">Username </label>
@@ -52,11 +55,27 @@
       </form>
     </div>
   </section>
+  <section class="section">
+    <div class="container">
+      <h1 class="title">Team Control</h1>
+      <p>Note: Requires authentication</p>
+
+      <form @submit.prevent="setTeam">
+        <label for="teamId">Team ID </label>
+        <input type="number" name="teamId" v-model="teamId" placeholder="0" />
+        <br />
+
+        <button>Set Team</button>
+      </form>
+    </div>
+  </section>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
+import { useRouter } from "vue-router";
 import store from "@/store";
+import { generateTeamPageLink } from "@/methods/teamPage";
 
 export default defineComponent({
   name: "Auth",
@@ -65,8 +84,11 @@ export default defineComponent({
     const email = ref("");
     const password = ref("");
     const secondaryPassword = ref("");
+    const teamId = ref(0);
 
     const key = computed(() => store.state.token);
+
+    const router = useRouter();
 
     const login = () => {
       store.dispatch.doLogin({
@@ -88,6 +110,11 @@ export default defineComponent({
       store.dispatch.doLogout();
     };
 
+    const setTeam = async () => {
+      const teamRecord = await store.dispatch.doFetchAndSetTeam(teamId.value);
+      router.push(generateTeamPageLink(teamRecord));
+    };
+
     return {
       username,
       email,
@@ -96,6 +123,8 @@ export default defineComponent({
       login,
       signup,
       signout,
+      teamId,
+      setTeam,
       key
     };
   }

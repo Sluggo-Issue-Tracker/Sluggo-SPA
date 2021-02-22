@@ -1,8 +1,12 @@
 import { createDirectStore } from "direct-vuex";
 import { SignupDetails, LoginDetails, signup, login } from "@/api/auth";
+import { TeamRecord, getTeam } from "@/api/teams";
+import { generateAxiosInstance } from "@/api/base";
+import { AxiosInstance } from "axios";
 
 interface RootStoreState {
   token?: string;
+  team?: TeamRecord;
 }
 
 const {
@@ -18,25 +22,50 @@ const {
   mutations: {
     setToken(state, newToken: string | undefined) {
       state.token = newToken;
+    },
+    setTeam(state, newTeam: TeamRecord) {
+      state.team = newTeam;
     }
   },
   actions: {
-    doSignup(context, details: SignupDetails) {
-      signup(details).then(key => {
-        rootActionContext(context).commit.setToken(key);
-      });
+    async doSignup(ctxRaw, details: SignupDetails) {
+      const context = rootActionContext(ctxRaw);
+      const axios = generateAxiosInstance(context.state.token);
+
+      const key = await signup(details, axios);
+      context.commit.setToken(key);
     },
-    doLogin(context, details: LoginDetails) {
-      login(details).then(key => {
-        rootActionContext(context).commit.setToken(key);
-      });
+    async doLogin(ctxRaw, details: LoginDetails) {
+      const context = rootActionContext(ctxRaw);
+      const axios = generateAxiosInstance(context.state.token);
+      const key = await login(details, axios);
+      context.commit.setToken(key);
     },
-    doLogout(context) {
-      rootActionContext(context).commit.setToken(undefined);
+    doLogout(ctxRaw) {
+      const context = rootActionContext(ctxRaw);
+      context.commit.setToken(undefined);
+    },
+    async doSetTeam(ctxRaw, teamRecord: TeamRecord) {
+      const context = rootActionContext(ctxRaw);
+
+      context.commit.setTeam(teamRecord);
+    },
+    async doFetchAndSetTeam(ctxRaw, teamId: number) {
+      const context = rootActionContext(ctxRaw);
+      const axios = generateAxiosInstance(context.state.token);
+
+      const teamRecord = await getTeam(axios, teamId);
+      await context.dispatch.doSetTeam(teamRecord);
+
+      return teamRecord;
     }
   },
   modules: {},
-  getters: {}
+  getters: {
+    generateAxiosInstance(): AxiosInstance {
+      return generateAxiosInstance(store.state.token);
+    }
+  }
 });
 
 export default store;

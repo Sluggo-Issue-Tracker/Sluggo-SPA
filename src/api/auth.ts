@@ -13,6 +13,14 @@ export interface SignupDetails {
   secondaryPassword: string;
 }
 
+export interface UserRecord {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  username: string;
+}
+
 // MARK: Authentication Methods
 export async function signup(
   details: SignupDetails,

@@ -110,10 +110,9 @@ export default defineComponent({
       store.dispatch.doLogout();
     };
 
-    const setTeam = () => {
-      store.dispatch.doSetTeam(teamId.value).then(response => {
-        router.push(generateTeamPageLink(response));
-      });
+    const setTeam = async () => {
+      const teamRecord = await store.dispatch.doFetchAndSetTeam(teamId.value);
+      router.push(generateTeamPageLink(teamRecord));
     };
 
     return {

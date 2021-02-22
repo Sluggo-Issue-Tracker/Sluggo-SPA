@@ -42,6 +42,7 @@ import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 
 import store from "@/store";
+import { createTeam } from "@/api/teams";
 
 import { generateTeamPageLink } from "@/methods/teamPage";
 
@@ -52,23 +53,15 @@ const newTeamComponent = defineComponent({
 
     const teamName = ref("");
 
-    const validateTeamName = () => {
-      return;
-    };
+    const teamSubmissionTriggered = async () => {
+      const record = await createTeam(store.getters.generateAxiosInstance, {
+        name: teamName.value.toLowerCase(),
+        description: "UNUSED"
+      });
 
-    const teamSubmissionTriggered = () => {
-      if (!validateTeamName) return;
+      await store.dispatch.doSetTeam(record);
 
-      store.dispatch
-        .doCreateTeam({
-          name: teamName.value.toLowerCase(),
-          description: "UNUSED"
-        })
-        .then(record =>
-          store.dispatch.doSetTeam(record.id).then(() => {
-            router.push(generateTeamPageLink(record));
-          })
-        );
+      router.push(generateTeamPageLink(record));
     };
 
     return {

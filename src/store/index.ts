@@ -1,8 +1,8 @@
 import { createDirectStore } from "direct-vuex";
 import { SignupDetails, LoginDetails, signup, login } from "@/api/auth";
-import { TeamRecord, NewTeamRecord, postTeam, getTeam } from "@/api/teams";
+import { TeamRecord, getTeam } from "@/api/teams";
 import { generateAxiosInstance } from "@/api/base";
-import Statuses from "@/api/statuses";
+import { AxiosInstance } from "axios";
 
 interface RootStoreState {
   token?: string;
@@ -28,86 +28,44 @@ const {
     }
   },
   actions: {
-    doSignup(ctxRaw, details: SignupDetails) {
+    async doSignup(ctxRaw, details: SignupDetails) {
       const context = rootActionContext(ctxRaw);
       const axios = generateAxiosInstance(context.state.token);
 
-      signup(details, axios).then(key => {
-        context.commit.setToken(key);
-      });
+      const key = await signup(details, axios);
+      context.commit.setToken(key);
     },
-    doLogin(ctxRaw, details: LoginDetails) {
+    async doLogin(ctxRaw, details: LoginDetails) {
       const context = rootActionContext(ctxRaw);
       const axios = generateAxiosInstance(context.state.token);
-      login(details, axios).then(key => {
-        context.commit.setToken(key);
-      });
+      const key = await login(details, axios);
+      context.commit.setToken(key);
     },
     doLogout(ctxRaw) {
       const context = rootActionContext(ctxRaw);
       context.commit.setToken(undefined);
     },
-    doCreateTeam(ctxRaw, record: NewTeamRecord): Promise<TeamRecord> {
+    async doSetTeam(ctxRaw, teamRecord: TeamRecord) {
       const context = rootActionContext(ctxRaw);
-      const axios = generateAxiosInstance(context.state.token);
 
-      return new Promise<TeamRecord>((resolve, reject) => {
-        postTeam(record, axios)
-          .then(response => {
-            const newTeamRecord = response.data;
-            console.log(newTeamRecord);
-
-            // Put team into a good state
-            // This would probably be a good idea to standardize on the
-            // backend, but I don't want to wait on backend
-            Promise.all([
-              Statuses.post(axios, newTeamRecord, "To Do"),
-              Statuses.post(axios, newTeamRecord, "In Progress"),
-              Statuses.post(axios, newTeamRecord, "Completed")
-            ])
-              .then(() => {
-                console.log("Statuses created!");
-                resolve(newTeamRecord);
-              })
-              .catch(error => {
-                console.log(
-                  "Error encountered setting up initial team state. Printing..."
-                );
-                console.log(error.response.data);
-                reject(error.response.data);
-              });
-          })
-          .catch(error => {
-            console.log("Error creating the team, logging details...");
-            console.log(error.response.data);
-            reject(error.response.data);
-          });
-      });
+      context.commit.setTeam(teamRecord);
     },
-    doSetTeam(ctxRaw, teamId: number) {
+    async doFetchAndSetTeam(ctxRaw, teamId: number) {
       const context = rootActionContext(ctxRaw);
       const axios = generateAxiosInstance(context.state.token);
 
-      return new Promise<TeamRecord>((resolve, reject) => {
-        getTeam(axios, teamId)
-          .then(response => {
-            const record = response.data;
-            context.commit.setTeam(record);
+      const teamRecord = await getTeam(axios, teamId);
+      await context.dispatch.doSetTeam(teamRecord);
 
-            console.log(context.state.team);
-
-            resolve(record);
-          })
-          .catch(error => {
-            console.log("Error setting team! Printing error details...");
-            console.log(error.response.data);
-            reject(error.response.data);
-          });
-      });
+      return teamRecord;
     }
   },
   modules: {},
-  getters: {}
+  getters: {
+    generateAxiosInstance(): AxiosInstance {
+      return generateAxiosInstance(store.state.token);
+    }
+  }
 });
 
 export default store;

@@ -1,4 +1,4 @@
-import { AxiosInstance, AxiosPromise } from "axios";
+import { AxiosInstance } from "axios";
 import { TeamRecord } from "@/api/teams";
 
 export interface NewStatusRecord {
@@ -14,26 +14,23 @@ export interface StatusRecord {
   deactivated: string;
 }
 
-function get(
+export async function getStatus(
   axios: AxiosInstance,
   team: TeamRecord
-): AxiosPromise<StatusRecord> {
-  return axios.get(`/api/teams/${team.id}/statuses/`);
+): Promise<StatusRecord> {
+  const response = await axios.get(`/api/teams/${team.id}/statuses/`);
+  return response.data as StatusRecord;
 }
 
-function post(
+export async function postStatus(
   axios: AxiosInstance,
   team: TeamRecord,
   title: string
-): AxiosPromise<StatusRecord> {
+): Promise<StatusRecord> {
   const record: NewStatusRecord = {
     title
   };
 
-  return axios.post(`/api/teams/${team.id}/statuses/`, record);
+  const response = await axios.post(`/api/teams/${team.id}/statuses/`, record);
+  return response.data as StatusRecord;
 }
-
-export default {
-  get,
-  post
-};

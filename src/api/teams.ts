@@ -1,4 +1,5 @@
-import { AxiosInstance, AxiosPromise } from "axios";
+import { AxiosInstance } from "axios";
+import { postStatus } from "@/api/statuses";
 
 // Team API endpoints
 export interface NewTeamRecord {
@@ -17,19 +18,39 @@ export interface TeamRecord {
   deactivated: string;
 }
 
-export function postTeam(
+export async function postTeam(
   record: NewTeamRecord,
   axios: AxiosInstance
-): AxiosPromise<TeamRecord> {
-  return axios.post("/api/teams/", {
+): Promise<TeamRecord> {
+  const response = await axios.post("/api/teams/", {
     name: record.name,
     description: "UNUSED"
   });
+
+  return response.data as TeamRecord;
 }
 
-export function getTeam(
+export async function createTeam(
+  axios: AxiosInstance,
+  record: NewTeamRecord
+): Promise<TeamRecord> {
+  const newTeamRecord = await postTeam(record, axios);
+
+  try {
+    await postStatus(axios, newTeamRecord, "To Do");
+    await postStatus(axios, newTeamRecord, "In Progress");
+    await postStatus(axios, newTeamRecord, "Completed");
+  } catch (e) {
+    console.log("There was an error setting initial team status.");
+  }
+
+  return newTeamRecord;
+}
+
+export async function getTeam(
   axios: AxiosInstance,
   teamId: number
-): AxiosPromise<TeamRecord> {
-  return axios.get(`/api/teams/${teamId}/`);
+): Promise<TeamRecord> {
+  const response = await axios.get(`/api/teams/${teamId}/`);
+  return response.data as TeamRecord;
 }

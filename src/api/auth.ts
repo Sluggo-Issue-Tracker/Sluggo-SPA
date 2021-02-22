@@ -14,52 +14,29 @@ export interface SignupDetails {
 }
 
 // MARK: Authentication Methods
-export async function signup(details: SignupDetails, axios: AxiosInstance) {
-  const p = new Promise<string>(function(success, fail) {
-    axios
-      .post("/auth/registration/", {
-        username: details.username,
-        email: details.email,
-        password1: details.password,
-        password2: details.secondaryPassword
-      })
-      .then(response => {
-        console.log("Successful signup! Printing response data...");
-        console.log(response.data);
-
-        success(response.data.key as string);
-      })
-      .catch(error => {
-        console.log("Error signing up. Printing response data:");
-        console.log(error.response.data);
-
-        fail(undefined);
-      });
+export async function signup(
+  details: SignupDetails,
+  axios: AxiosInstance
+): Promise<string> {
+  const response = await axios.post("/auth/registration/", {
+    username: details.username,
+    email: details.email,
+    password1: details.password,
+    password2: details.secondaryPassword
   });
 
-  return p;
+  const responseData = response.data;
+
+  return responseData.key;
 }
 
 export async function login(
   details: LoginDetails,
   axios: AxiosInstance
 ): Promise<string> {
-  const p = new Promise<string>(function(success, fail) {
-    axios
-      .post("/auth/login/", details)
-      .then(response => {
-        console.log("Successful login! Printing response key:");
-        console.log(response.data);
+  const response = await axios.post("/auth/login/", details);
+  console.log("Successful login! Printing response key:");
+  console.log(response.data);
 
-        success(response.data.key as string);
-      })
-      .catch(error => {
-        console.log("Login not successful. Printing response...");
-        console.log(error.response.data);
-
-        fail(undefined);
-      });
-  });
-
-  return p;
+  return response.data.key as string;
 }

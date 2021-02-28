@@ -36,6 +36,10 @@ Store wrappers in /api, and import methods as needed into other components.
 Also feel free to include methods/interfaces from one part of /api to another
 (but leave this section of the code relatively self contained)
 
+When interacting with the store, use the bindings provided by vuex-direct to
+avoid needing to fetch properties from the store via string. This will also
+add proper type checking to your interactions with the store.
+
 ## Making Requests
 All requests will expect to be passed an axios method, and most will also expect
 a team record. These should be obtained/generated from the store. This does 
@@ -103,3 +107,8 @@ Down the line, this will be extended to provide alerts to the user when things
 go wrong, and the centralization of error capture should avoid duplicated
 error handling code across the app. This is not being considered for MVP
 though, where we will only demo happy path cases.
+
+## Documentation Links
+Axios (repo): https://github.com/axios/axios
+Vuex (docs/site): https://vuex.vuejs.org 
+Vuex-direct (repo): https://github.com/paroi-tech/direct-vuex

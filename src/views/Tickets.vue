@@ -24,16 +24,12 @@
       </div>
     </section>
 
-    <ticket-modal></ticket-modal>
 
     <!-- TODO: Samuel Schmidt 5 / 21 / 2020 move this into a vue component -->
     <section class="section">
       <div class="container has-background-light">
         <div class="section">
-          <a> <i class="fa fa-plus fa-fw"></i> Add a ticket ... </a>
-          <p class="has-text-danger">
-            <i class="fa fa-ban fa-fw"></i> Must be approved to add tickets ...
-          </p>
+          <ticket-modal v-bind:team="teamRecord" v-on:create="getTeamTickets"></ticket-modal>
         </div>
         <div class="section">
           <div v-for="ticket in ticketList.results" v-bind:key="ticket.id" class="box">
@@ -132,6 +128,7 @@ export default defineComponent({
     });
 
     return {
+      teamRecord,
       ticketList,
       listPage,
       getTeamTickets,

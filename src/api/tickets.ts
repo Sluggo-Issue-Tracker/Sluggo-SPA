@@ -8,8 +8,8 @@ import { TagRecord } from "@/api/tags";
 
 export interface WriteTicketRecord {
     tag_list: Array<number>;
-    assigned_user: number;
-    status: number;
+    assigned_user: number | undefined;
+    status: number | undefined;
     title: string;
     description: string;
 }

@@ -36,7 +36,7 @@
           </p>
         </div>
         <div class="section">
-          <div class="box">
+          <div v-for="ticket in ticketList.results" v-bind:key="ticket.id" class="box">
             <div class="level">
               <div class="level-left">
                 <div
@@ -44,7 +44,7 @@
                   style="max-width: 500px; word-wrap: break-word"
                 >
                   <a class="title">
-                    <span>#ID | Ticket Title </span>
+                    <span>{{ ticket.ticket_number }} | {{ ticket.title }} </span>
                   </a>
                 </div>
                 <div class="level-item">
@@ -84,11 +84,33 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
+import { listTickets, TicketRecord } from "@/api/tickets";
+import { PaginatedList } from "@/api/base";
+import { TeamRecord } from "@/api/teams";
+import store from "@/store";
 
 export default defineComponent({
-  name: "Tickets"
-  // components: {
-  // }
+  name: "Tickets",
+  setup() {
+    const ticketList = ref({} as PaginatedList<TicketRecord>);
+    const listPage = ref(1);
+    const getTeamTickets = async () => {
+      const axiosInstance = store.getters.generateAxiosInstance;
+      const team = store.state.team;
+
+      if (team) {
+        console.log("no team!")
+        ticketList.value = await listTickets(team, listPage.value, axiosInstance);
+      }
+    }
+    onMounted(getTeamTickets);
+
+    return {
+      ticketList,
+      listPage,
+      getTeamTickets
+    };
+  }
 });
 </script>

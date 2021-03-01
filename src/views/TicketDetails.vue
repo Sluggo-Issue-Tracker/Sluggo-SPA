@@ -170,8 +170,12 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "Help"
-  // components: {
-  // }
+  name: "Help",
+  setup: function() {
+
+
+    return {
+    };
+  }
 });
 </script>

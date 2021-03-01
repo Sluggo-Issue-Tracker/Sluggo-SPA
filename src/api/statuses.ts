@@ -1,7 +1,8 @@
 import { AxiosInstance } from "axios";
-import { TeamRecord } from "@/api/teams";
+import { NewTeamRecord, TeamRecord } from "@/api/teams";
+import { PaginatedList } from "@/api/base";
 
-export interface NewStatusRecord {
+export interface WriteStatusRecord {
   title: string;
 }
 
@@ -25,12 +26,38 @@ export async function getStatus(
 export async function postStatus(
   axios: AxiosInstance,
   team: TeamRecord,
-  title: string
+  record: WriteStatusRecord
 ): Promise<StatusRecord> {
-  const record: NewStatusRecord = {
-    title
-  };
-
   const response = await axios.post(`/api/teams/${team.id}/statuses/`, record);
   return response.data as StatusRecord;
+}
+
+export async function listStatus(
+  axios: AxiosInstance,
+  team: TeamRecord,
+  page: number,
+): Promise<PaginatedList<StatusRecord>> {
+  const response = await axios.get(`/api/teams/${team.id}/statuses/?page=${page}`);
+  return response.data as PaginatedList<StatusRecord>;
+} 
+
+export async function updateStatus(
+  axios: AxiosInstance,
+  team: TeamRecord,
+  record: StatusRecord
+): Promise<StatusRecord> {
+  const updateRecord: WriteStatusRecord = {
+    title: record.title
+  };
+
+  const response = await axios.put(`/api/teams/${team.id}/statuses/${record.id}`, updateRecord);
+  return response.data as StatusRecord;
+}
+
+export async function deleteStatus(
+  axios: AxiosInstance,
+  team: TeamRecord,
+  record: StatusRecord
+): Promise<void> {
+  const reponse = await axios.delete(`/api/teams/${team.id}/statuses/${record.id}/`);
 }

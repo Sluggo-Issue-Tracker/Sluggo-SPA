@@ -1,5 +1,5 @@
 import { createDirectStore } from "direct-vuex";
-import { SignupDetails, LoginDetails, signup, login } from "@/api/auth";
+import { SignupDetails, LoginDetails, signup, login, UserRecord, getUser } from "@/api/auth";
 import { TeamRecord, getTeam } from "@/api/teams";
 import { generateAxiosInstance } from "@/api/base";
 import { AxiosInstance } from "axios";
@@ -7,6 +7,7 @@ import { AxiosInstance } from "axios";
 interface RootStoreState {
   token?: string;
   team?: TeamRecord;
+  user?: UserRecord;
 }
 
 const {
@@ -22,9 +23,17 @@ const {
   mutations: {
     setToken(state, newToken: string | undefined) {
       state.token = newToken;
+      if (newToken) {
+        localStorage.setItem('token', newToken);
+      } else {
+        localStorage.removeItem('token');
+      }
     },
     setTeam(state, newTeam: TeamRecord) {
       state.team = newTeam;
+    },
+    setUser(state, newUser: UserRecord) {
+      state.user = newUser;
     }
   },
   actions: {
@@ -39,7 +48,18 @@ const {
       const context = rootActionContext(ctxRaw);
       const axios = generateAxiosInstance(context.state.token);
       const key = await login(details, axios);
-      context.commit.setToken(key);
+
+      context.dispatch.attempt(key);
+    },
+    async attempt(ctxRaw, key: string | null) { // validate the token by fetching the user record
+      const context = rootActionContext(ctxRaw);
+
+      let newKey = key ? key : undefined;
+      context.commit.setToken(newKey);
+      const axios = generateAxiosInstance(newKey);
+
+      const user = await getUser(axios);
+      context.commit.setUser(user); 
     },
     doLogout(ctxRaw) {
       const context = rootActionContext(ctxRaw);

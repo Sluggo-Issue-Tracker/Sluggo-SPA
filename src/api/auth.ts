@@ -48,3 +48,10 @@ export async function login(
 
   return response.data.key as string;
 }
+
+export async function getUser(
+  axios: AxiosInstance
+): Promise<UserRecord> {
+  const response = await axios.get("/auth/user/");
+  return response.data as UserRecord;
+}

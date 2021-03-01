@@ -36,13 +36,13 @@ export async function createTeam(
 ): Promise<TeamRecord> {
   const newTeamRecord = await postTeam(record, axios);
 
-  try {
-    await postStatus(axios, newTeamRecord, "To Do");
-    await postStatus(axios, newTeamRecord, "In Progress");
-    await postStatus(axios, newTeamRecord, "Completed");
-  } catch (e) {
-    console.log("There was an error setting initial team status.");
-  }
+  // try {
+  //   await postStatus(axios, newTeamRecord, "To Do");
+  //   await postStatus(axios, newTeamRecord, "In Progress");
+  //   await postStatus(axios, newTeamRecord, "Completed");
+  // } catch (e) {
+  //   console.log("There was an error setting initial team status.");
+  // }
 
   return newTeamRecord;
 }

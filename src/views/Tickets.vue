@@ -48,14 +48,8 @@
                   </a>
                 </div>
                 <div class="level-item">
-                  <span class="tag is-link">
-                    Not started
-                  </span>
-                  <span class="tag is-warning">
-                    In progress
-                  </span>
-                  <span class="tag is-success">
-                    Completed
+                  <span v-if="ticket.status" class="tag is-link">
+                    {{ ticket.status.title }}
                   </span>
                 </div>
                 <div
@@ -87,24 +81,49 @@
 import { defineComponent, ref, onMounted } from "vue";
 import { listTickets, TicketRecord } from "@/api/tickets";
 import { PaginatedList } from "@/api/base";
-import { TeamRecord } from "@/api/teams";
+import { TeamRecord, getTeam } from "@/api/teams";
 import store from "@/store";
 
 export default defineComponent({
   name: "Tickets",
-  setup() {
+  props: { 
+    teamId: {
+      type: String,
+      required: true
+    }
+  },
+  setup(props) {
+    const teamRecord = ref({} as TeamRecord);
     const ticketList = ref({} as PaginatedList<TicketRecord>);
     const listPage = ref(1);
+
     const getTeamTickets = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
-      const team = store.state.team;
-
+      const team = teamRecord.value;
       if (team) {
-        console.log("no team!")
+        console.log("there is a team!");
         ticketList.value = await listTickets(team, listPage.value, axiosInstance);
+      } else {
+        console.log("no team!");
       }
     }
-    onMounted(getTeamTickets);
+
+    const getTeamRecord = async () => {
+      const axiosInstance = store.getters.generateAxiosInstance;
+      const teamId = parseInt(props.teamId); 
+      const team = await getTeam(axiosInstance, teamId); 
+      if (team) {
+        console.log("team loaded!");
+        teamRecord.value = team;
+      } else {
+        console.log("no such team!");
+      }
+    }
+
+    onMounted(async () => {
+      await getTeamRecord();
+      await getTeamTickets();
+    });
 
     return {
       ticketList,

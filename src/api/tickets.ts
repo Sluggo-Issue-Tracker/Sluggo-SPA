@@ -25,7 +25,7 @@ export interface TicketRecord {
     title: string;
     description: string;
     comments: Array<number>; // TODO: tdimhcsleumas 2/22/2021, this will eventually change to a comment record
-    created: Date; // TODO: conver these to datetime objects
+    created: Date; // TODO: convert these to datetime objects
     activated: Date;
     deactivated: Date;
 }
@@ -67,12 +67,26 @@ export async function updateTicket(
     return response.data as TicketRecord;
 }
 
+export interface FilterOptions {
+    search?: string;
+    owner?: UserRecord;
+    assigned?: UserRecord;
+} 
+
+
 export async function listTickets(
     team: TeamRecord,
     page: number,
-    axios: AxiosInstance
+    axios: AxiosInstance,
+    filter?: FilterOptions
 ): Promise<PaginatedList<TicketRecord>> {
-    const response = await axios.get(`/api/teams/${team.id}/tickets/?page=${page}`);
+
+    let queryParams = `?page=${page}`;
+    if (filter?.assigned) queryParams += `assigned__username=${filter.assigned.username}`;
+    if (filter?.owner) queryParams += `owner__username=${filter.owner.username}`; 
+    if (filter?.search) queryParams += `search=${filter.search}`;
+
+    const response = await axios.get(`/api/teams/${team.id}/tickets/${queryParams}`);
     return response.data as PaginatedList<TicketRecord>;
 }
 

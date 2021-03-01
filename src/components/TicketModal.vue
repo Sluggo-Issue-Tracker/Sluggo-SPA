@@ -94,6 +94,16 @@ export default defineComponent({
       description: ""
     } as WriteTicketRecord);
 
+    const resetData = () => {
+      ticketRecord.value = {
+        tag_list: [],
+        assigned_user: undefined,
+        status: undefined,
+        title: "",
+        description: ""
+      };
+    }
+
     const submit = async () => {
       show.value = !show.value
       const axiosInstance = store.getters.generateAxiosInstance; 
@@ -101,11 +111,13 @@ export default defineComponent({
       console.log(props.team);
       const ticket = await createTicket(ticketRecord.value, props.team as TeamRecord, axiosInstance);
 
+      resetData();
       context.emit("create");
     }
 
     const cancel = () => {
       show.value = !show.value;
+      resetData();
     }
 
     onMounted(() => {

@@ -53,11 +53,13 @@
                   </span>
                 </div>
                 <div
+                  v-for="tag in ticket.tag_list"
+                  v-bind:key="tag.id"
                   class="level-item"
                   style="max-width: 100px; word-wrap:break-word;"
                 >
                   <span class="tag has-background-grey-lighter">
-                    TAG NAME
+                    {{ tag.title }}
                   </span>
                 </div>
               </div>
@@ -83,6 +85,7 @@ import { listTickets, TicketRecord } from "@/api/tickets";
 import { PaginatedList } from "@/api/base";
 import { TeamRecord, getTeam } from "@/api/teams";
 import store from "@/store";
+import TicketModal from "@/components/TicketModal.vue";
 
 export default defineComponent({
   name: "Tickets",
@@ -91,6 +94,9 @@ export default defineComponent({
       type: String,
       required: true
     }
+  },
+  components: {
+    TicketModal
   },
   setup(props) {
     const teamRecord = ref({} as TeamRecord);
@@ -128,7 +134,8 @@ export default defineComponent({
     return {
       ticketList,
       listPage,
-      getTeamTickets
+      getTeamTickets,
+      getTeamRecord
     };
   }
 });

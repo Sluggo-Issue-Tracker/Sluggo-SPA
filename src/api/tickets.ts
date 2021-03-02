@@ -30,20 +30,12 @@ export interface TicketRecord {
   deactivated?: Date;
 }
 
-const generateDetailUrl = (record: TicketRecord, team: TeamRecord) => {
-  return `/api/teams/${team.id}/tickets/${record.id}/`;
-};
-
-const generateListUrl = (team: TeamRecord) => {
-  return `/api/teams/${team.id}/tickets/`;
-};
-
 export async function createTicket(
   record: WriteTicketRecord,
   team: TeamRecord,
   axios: AxiosInstance
 ): Promise<TicketRecord> {
-  const response = await axios.post(generateListUrl(team), record);
+  const response = await axios.post(`/api/teams/${team.id}/tickets/`, record);
   return response.data as TicketRecord;
 }
 
@@ -61,7 +53,7 @@ export async function updateTicket(
   } as WriteTicketRecord;
 
   const response = await axios.put(
-    generateDetailUrl(record, team),
+    `/api/teams/${team.id}/tickets/${record.id}/`,
     updateRecord
   );
   return response.data as TicketRecord;
@@ -118,5 +110,7 @@ export async function deleteTicket(
   team: TeamRecord,
   axios: AxiosInstance
 ): Promise<void> {
-  const response = await axios.delete(generateDetailUrl(record, team));
+  const response = await axios.delete(
+    `/api/teams/${team.id}/tickets/${record.id}/`
+  );
 }

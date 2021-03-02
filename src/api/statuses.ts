@@ -35,11 +35,13 @@ export async function postStatus(
 export async function listStatus(
   axios: AxiosInstance,
   team: TeamRecord,
-  page: number,
+  page: number
 ): Promise<PaginatedList<StatusRecord>> {
-  const response = await axios.get(`/api/teams/${team.id}/statuses/?page=${page}`);
+  const response = await axios.get(
+    `/api/teams/${team.id}/statuses/?page=${page}`
+  );
   return response.data as PaginatedList<StatusRecord>;
-} 
+}
 
 export async function updateStatus(
   axios: AxiosInstance,
@@ -50,7 +52,10 @@ export async function updateStatus(
     title: record.title
   };
 
-  const response = await axios.put(`/api/teams/${team.id}/statuses/${record.id}`, updateRecord);
+  const response = await axios.put(
+    `/api/teams/${team.id}/statuses/${record.id}`,
+    updateRecord
+  );
   return response.data as StatusRecord;
 }
 
@@ -59,5 +64,7 @@ export async function deleteStatus(
   team: TeamRecord,
   record: StatusRecord
 ): Promise<void> {
-  const reponse = await axios.delete(`/api/teams/${team.id}/statuses/${record.id}/`);
+  const reponse = await axios.delete(
+    `/api/teams/${team.id}/statuses/${record.id}/`
+  );
 }

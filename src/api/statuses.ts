@@ -1,9 +1,19 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { AxiosInstance } from "axios";
-import { NewTeamRecord, TeamRecord } from "@/api/teams";
+import { TeamRecord } from "@/api/teams";
 import { PaginatedList } from "@/api/base";
 
 export interface WriteStatusRecord {
   title: string;
+}
+
+export interface ReadStatusRecord {
+  id: number;
+  object_uuid: string;
+  title: string;
+  created: string;
+  activated?: string;
+  deactivated?: string;
 }
 
 export interface StatusRecord {
@@ -11,8 +21,21 @@ export interface StatusRecord {
   object_uuid: string;
   title: string;
   created: string;
-  activated: string;
-  deactivated: string;
+  activated?: string;
+  deactivated?: string;
+}
+
+function createStatusRecord(
+  response: ReadStatusRecord
+): StatusRecord {
+  return {
+    id: response.id,
+    object_uuid: response.object_uuid,
+    title: response.title,
+    created: response.created,
+    activated: response.activated,
+    deactivated: response.deactivated
+  }
 }
 
 export async function getStatus(
@@ -20,7 +43,7 @@ export async function getStatus(
   team: TeamRecord
 ): Promise<StatusRecord> {
   const response = await axios.get(`/api/teams/${team.id}/statuses/`);
-  return response.data as StatusRecord;
+  return createStatusRecord(response.data as ReadStatusRecord);
 }
 
 export async function postStatus(
@@ -29,7 +52,7 @@ export async function postStatus(
   record: WriteStatusRecord
 ): Promise<StatusRecord> {
   const response = await axios.post(`/api/teams/${team.id}/statuses/`, record);
-  return response.data as StatusRecord;
+  return createStatusRecord(response.data as ReadStatusRecord);
 }
 
 export async function listStatus(
@@ -40,14 +63,22 @@ export async function listStatus(
   const response = await axios.get(
     `/api/teams/${team.id}/statuses/?page=${page}`
   );
-  return response.data as PaginatedList<StatusRecord>;
+  const listing: PaginatedList<ReadStatusRecord> = response.data;
+  return {
+    id: listing.id,
+    next: listing.next,
+    previous: listing.previous,
+    results: listing.results.map(
+      (elem) => createStatusRecord(elem)
+    )
+  };
 }
 
 export async function updateStatus(
   axios: AxiosInstance,
   team: TeamRecord,
-  record: StatusRecord
-): Promise<StatusRecord> {
+  record: ReadStatusRecord
+): Promise<ReadStatusRecord> {
   const updateRecord: WriteStatusRecord = {
     title: record.title
   };
@@ -56,15 +87,15 @@ export async function updateStatus(
     `/api/teams/${team.id}/statuses/${record.id}`,
     updateRecord
   );
-  return response.data as StatusRecord;
+  return createStatusRecord(response.data as ReadStatusRecord);
 }
 
 export async function deleteStatus(
   axios: AxiosInstance,
   team: TeamRecord,
-  record: StatusRecord
+  record: ReadStatusRecord
 ): Promise<void> {
-  const reponse = await axios.delete(
+  await axios.delete(
     `/api/teams/${team.id}/statuses/${record.id}/`
   );
 }

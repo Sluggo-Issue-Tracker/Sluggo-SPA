@@ -102,24 +102,14 @@ export default defineComponent({
     const getTeamTickets = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
       const team = teamRecord.value;
-      if (team) {
-        console.log("there is a team!");
-        ticketList.value = await listTickets(team, listPage.value, axiosInstance);
-      } else {
-        console.log("no team!");
-      }
+      ticketList.value = await listTickets(team, listPage.value, axiosInstance);
     }
 
     const getTeamRecord = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
       const teamId = parseInt(props.teamId); 
       const team = await getTeam(axiosInstance, teamId); 
-      if (team) {
-        console.log("team loaded!");
-        teamRecord.value = team;
-      } else {
-        console.log("no such team!");
-      }
+      teamRecord.value = team;
     }
 
     onMounted(async () => {

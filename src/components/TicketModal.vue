@@ -109,10 +109,12 @@ export default defineComponent({
       const axiosInstance = store.getters.generateAxiosInstance; 
 
       console.log(props.team);
-      const ticket = await createTicket(ticketRecord.value, props.team as TeamRecord, axiosInstance);
-
-      resetData();
-      context.emit("create");
+      try {
+        await createTicket(ticketRecord.value, props.team as TeamRecord, axiosInstance);
+        context.emit("create");
+      } finally {
+        resetData();
+      }
     }
 
     const cancel = () => {
@@ -120,10 +122,6 @@ export default defineComponent({
       resetData();
     }
 
-    onMounted(() => {
-      console.log(props.team);
-    })
-    
     return {
       show,
       ticketRecord,

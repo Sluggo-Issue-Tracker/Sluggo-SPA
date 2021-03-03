@@ -2,8 +2,8 @@ import axios, { AxiosError } from "axios";
 
 export interface PaginatedList<T> {
   id: number;
-  next: string;
-  previous: string;
+  next: string | null;
+  previous: string | null;
   results: Array<T>;
 }
 

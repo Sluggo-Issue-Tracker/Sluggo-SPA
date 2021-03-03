@@ -2,6 +2,7 @@
 import axios, { AxiosInstance } from "axios";
 import { TeamRecord } from "@/api/teams";
 import { generateAxiosInstance, PaginatedList } from "./base";
+import { DateTime } from "luxon";
 
 export interface WriteTagRecord {
   title: string;
@@ -11,9 +12,31 @@ export interface TagRecord {
   id: number;
   object_uuid: number;
   title: string;
-  created: Date;
-  activated?: Date;
-  deactivated?: Date;
+  created: DateTime;
+  activated?: DateTime;
+  deactivated?: DateTime;
+}
+
+interface ReadTagRecord {
+  id: number;
+  object_uuid: number;
+  title: string;
+  created: string;
+  activated?: string;
+  deactivated?: string;
+}
+
+function createTagRecord(
+  response: ReadTagRecord
+): TagRecord {
+  return {
+    id: response.id,
+    object_uuid: response.object_uuid,
+    title: response.title,
+    created: DateTime.fromISO(response.created),
+    activated: response.activated? DateTime.fromISO(response.activated) : undefined,
+    deactivated: response.deactivated? DateTime.fromISO(response.deactivated) : undefined
+  }
 }
 
 export async function createTag(
@@ -22,7 +45,7 @@ export async function createTag(
   axios: AxiosInstance
 ): Promise<TagRecord> {
   const response = await axios.post(`/api/teams/${team.id}/tags/`, record);
-  return response.data as TagRecord;
+  return createTagRecord(response.data);
 }
 
 export async function updateTag(
@@ -37,7 +60,7 @@ export async function updateTag(
     `/api/teams/${team.id}/tags/${record.id}`,
     updateRecord
   );
-  return response.data as TagRecord;
+  return createTagRecord(response.data);
 }
 
 export async function getTag(
@@ -46,7 +69,7 @@ export async function getTag(
   axios: AxiosInstance
 ): Promise<TagRecord> {
   const response = await axios.get(`/api/teams/${team.id}/tags/${id}/`);
-  return response.data as TagRecord;
+  return createTagRecord(response.data);
 }
 
 export async function listTag(
@@ -55,7 +78,16 @@ export async function listTag(
   axios: AxiosInstance
 ): Promise<PaginatedList<TagRecord>> {
   const response = await axios.get(`/api/teams/${team.id}/tags/?page=${page}`);
-  return response.data as PaginatedList<TagRecord>;
+
+  const listing: PaginatedList<ReadTagRecord> = response.data;
+  return { 
+    id: listing.id,
+    next: listing.next,
+    previous: listing.previous,
+    results: listing.results.map(
+      (elem) => createTagRecord(elem)
+    )
+  };
 }
 
 export async function deleteTag(
@@ -63,5 +95,5 @@ export async function deleteTag(
   team: TeamRecord,
   axios: AxiosInstance
 ) {
-  const reponse = await axios.delete(`/api/teams/${team.id}/tags/${record.id}`);
+  await axios.delete(`/api/teams/${team.id}/tags/${record.id}`);
 }

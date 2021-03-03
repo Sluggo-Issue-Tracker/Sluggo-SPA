@@ -1,17 +1,34 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { AxiosInstance } from "axios";
-import { StatusRecord } from "@/api/statuses";
+import { ReadStatusRecord } from "@/api/statuses";
 import { TeamRecord } from "@/api/teams";
 import { UserRecord } from "@/api/auth";
 import { PaginatedList } from "@/api/base";
 import { TagRecord } from "@/api/tags";
+import { DateTime } from "luxon";
 
 export interface WriteTicketRecord {
-  tag_list: Array<number>;
-  assigned_user: number | undefined;
-  status: number | undefined;
+  tag_list?: Array<number>;
+  assigned_user?: number;
+  status?: number;
   title: string;
-  description: string;
+  description?: string;
+}
+
+interface ReadTicketRecord {
+  id: number;
+  ticket_number: number;
+  tag_list: Array<TagRecord>;
+  owner: UserRecord;
+  object_uuid: number;
+  assigned_user?: UserRecord;
+  status?: ReadStatusRecord;
+  title: string;
+  description?: string;
+  comments?: Array<number>; // TODO: tdimhcsleumas 2/22/2021, this will eventually change to a comment record
+  created: string; // TODO: convert these to datetime objects
+  activated?: string;
+  deactivated?: string;
 }
 
 export interface TicketRecord {
@@ -20,14 +37,34 @@ export interface TicketRecord {
   tag_list: Array<TagRecord>;
   owner: UserRecord;
   object_uuid: number;
-  assigned_user: UserRecord | null;
-  status: StatusRecord | null;
+  assigned_user?: UserRecord;
+  status?: ReadStatusRecord;
   title: string;
-  description: string;
+  description?: string;
   comments?: Array<number>; // TODO: tdimhcsleumas 2/22/2021, this will eventually change to a comment record
-  created: Date; // TODO: convert these to datetime objects
-  activated?: Date;
-  deactivated?: Date;
+  created: DateTime; // TODO: convert these to datetime objects
+  activated?: DateTime;
+  deactivated?: DateTime;
+}
+
+function createTicketRecord(
+  response: ReadTicketRecord
+): TicketRecord {
+  return {
+    id: response.id,
+    ticket_number: response.ticket_number,
+    tag_list: response.tag_list,
+    owner: response.owner,
+    object_uuid: response.object_uuid,
+    assigned_user: response.assigned_user,
+    status: response.status,
+    title: response.title,
+    description: response.description,
+    comments: response.comments,
+    created: DateTime.fromISO(response.created),
+    activated: response.activated? DateTime.fromISO(response.activated) : undefined,
+    deactivated: response.deactivated? DateTime.fromISO(response.deactivated) : undefined
+  } 
 }
 
 export async function createTicket(
@@ -36,7 +73,7 @@ export async function createTicket(
   axios: AxiosInstance
 ): Promise<TicketRecord> {
   const response = await axios.post(`/api/teams/${team.id}/tickets/`, record);
-  return response.data as TicketRecord;
+  return createTicketRecord(response.data as ReadTicketRecord);
 }
 
 export async function updateTicket(
@@ -56,7 +93,7 @@ export async function updateTicket(
     `/api/teams/${team.id}/tickets/${record.id}/`,
     updateRecord
   );
-  return response.data as TicketRecord;
+  return createTicketRecord(response.data as ReadTicketRecord);
 }
 
 export interface FilterOptions {
@@ -80,7 +117,16 @@ export async function listTickets(
   const response = await axios.get(
     `/api/teams/${team.id}/tickets/${queryParams}`
   );
-  return response.data as PaginatedList<TicketRecord>;
+  const listing: PaginatedList<ReadTicketRecord> = response.data;
+  
+  return {
+    id: listing.id,
+    next: listing.next,
+    previous: listing.previous,
+    results: listing.results.map(
+      (elem) => createTicketRecord(elem as ReadTicketRecord)
+    )
+  };
 }
 
 // export async function listOwnedTickets(
@@ -102,7 +148,7 @@ export async function getTicket(
   axios: AxiosInstance
 ): Promise<TicketRecord> {
   const response = await axios.get(`/api/teams/${team.id}/tickets/${id}/`);
-  return response.data as TicketRecord;
+  return createTicketRecord(response.data);
 }
 
 export async function deleteTicket(
@@ -110,7 +156,7 @@ export async function deleteTicket(
   team: TeamRecord,
   axios: AxiosInstance
 ): Promise<void> {
-  const response = await axios.delete(
+  await axios.delete(
     `/api/teams/${team.id}/tickets/${record.id}/`
   );
 }

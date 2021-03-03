@@ -54,7 +54,7 @@ const {
     async attempt(ctxRaw, key: string | null) { // validate the token by fetching the user record
       const context = rootActionContext(ctxRaw);
 
-      let newKey = key ? key : undefined;
+      const newKey = key ? key : undefined;
       context.commit.setToken(newKey);
       const axios = generateAxiosInstance(newKey);
 

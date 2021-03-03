@@ -2,6 +2,7 @@
 import { AxiosInstance } from "axios";
 import { TeamRecord } from "@/api/teams";
 import { PaginatedList } from "@/api/base";
+import { DateTime } from "luxon";
 
 export interface WriteStatusRecord {
   title: string;
@@ -20,22 +21,24 @@ export interface StatusRecord {
   id: number;
   object_uuid: string;
   title: string;
-  created: string;
-  activated?: string;
-  deactivated?: string;
+  created: DateTime;
+  activated?: DateTime;
+  deactivated?: DateTime;
 }
 
-function createStatusRecord(
-  response: ReadStatusRecord
-): StatusRecord {
+export function createStatusRecord(response: ReadStatusRecord): StatusRecord {
   return {
     id: response.id,
     object_uuid: response.object_uuid,
     title: response.title,
-    created: response.created,
-    activated: response.activated,
+    created: DateTime.fromISO(response.created),
+    activated: response.activated
+      ? DateTime.fromISO(response.activated)
+      : undefined,
     deactivated: response.deactivated
-  }
+      ? DateTime.fromISO(response.deactivated)
+      : undefined
+  };
 }
 
 export async function getStatus(
@@ -68,9 +71,7 @@ export async function listStatus(
     id: listing.id,
     next: listing.next,
     previous: listing.previous,
-    results: listing.results.map(
-      (elem) => createStatusRecord(elem)
-    )
+    results: listing.results.map(elem => createStatusRecord(elem))
   };
 }
 
@@ -78,7 +79,7 @@ export async function updateStatus(
   axios: AxiosInstance,
   team: TeamRecord,
   record: ReadStatusRecord
-): Promise<ReadStatusRecord> {
+): Promise<StatusRecord> {
   const updateRecord: WriteStatusRecord = {
     title: record.title
   };
@@ -87,7 +88,7 @@ export async function updateStatus(
     `/api/teams/${team.id}/statuses/${record.id}`,
     updateRecord
   );
-  return createStatusRecord(response.data as ReadStatusRecord);
+  return createStatusRecord(response.data);
 }
 
 export async function deleteStatus(
@@ -95,7 +96,5 @@ export async function deleteStatus(
   team: TeamRecord,
   record: ReadStatusRecord
 ): Promise<void> {
-  await axios.delete(
-    `/api/teams/${team.id}/statuses/${record.id}/`
-  );
+  await axios.delete(`/api/teams/${team.id}/statuses/${record.id}/`);
 }

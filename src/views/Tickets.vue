@@ -40,7 +40,7 @@
                   style="max-width: 500px; word-wrap: break-word"
                 >
                   <a class="title">
-                    <span>{{ ticket.ticket_number }} | {{ ticket.title }} </span>
+                    <span>{{ ticket.ticket_number }} | {{ ticket.title }} | {{ ticket.created.toLocaleString() }} </span>
                   </a>
                 </div>
                 <div class="level-item">
@@ -80,6 +80,7 @@ import { defineComponent, ref, onMounted } from "vue";
 import { listTickets, TicketRecord } from "@/api/tickets";
 import { PaginatedList } from "@/api/base";
 import { TeamRecord, getTeam } from "@/api/teams";
+import { DateTime } from "luxon";
 import store from "@/store";
 import TicketModal from "@/components/TicketModal.vue";
 

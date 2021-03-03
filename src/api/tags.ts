@@ -17,7 +17,7 @@ export interface TagRecord {
   deactivated?: DateTime;
 }
 
-interface ReadTagRecord {
+export interface ReadTagRecord {
   id: number;
   object_uuid: number;
   title: string;
@@ -26,17 +26,19 @@ interface ReadTagRecord {
   deactivated?: string;
 }
 
-function createTagRecord(
-  response: ReadTagRecord
-): TagRecord {
+export function createTagRecord(response: ReadTagRecord): TagRecord {
   return {
     id: response.id,
     object_uuid: response.object_uuid,
     title: response.title,
     created: DateTime.fromISO(response.created),
-    activated: response.activated? DateTime.fromISO(response.activated) : undefined,
-    deactivated: response.deactivated? DateTime.fromISO(response.deactivated) : undefined
-  }
+    activated: response.activated
+      ? DateTime.fromISO(response.activated)
+      : undefined,
+    deactivated: response.deactivated
+      ? DateTime.fromISO(response.deactivated)
+      : undefined
+  };
 }
 
 export async function createTag(
@@ -80,13 +82,11 @@ export async function listTag(
   const response = await axios.get(`/api/teams/${team.id}/tags/?page=${page}`);
 
   const listing: PaginatedList<ReadTagRecord> = response.data;
-  return { 
+  return {
     id: listing.id,
     next: listing.next,
     previous: listing.previous,
-    results: listing.results.map(
-      (elem) => createTagRecord(elem)
-    )
+    results: listing.results.map(elem => createTagRecord(elem))
   };
 }
 

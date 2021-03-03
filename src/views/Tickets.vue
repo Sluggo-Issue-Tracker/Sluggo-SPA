@@ -24,27 +24,51 @@
       </div>
     </section>
 
+
     <!-- TODO: Samuel Schmidt 5 / 21 / 2020 move this into a vue component -->
     <section class="section">
       <div class="container has-background-light">
         <div class="section">
-          <ticket-modal
-            v-bind:team="teamRecord"
-            v-on:create="getTeamTickets"
-          ></ticket-modal>
+          <ticket-modal v-bind:team="teamRecord" v-on:create="getTeamTickets"></ticket-modal>
         </div>
         <div class="section">
-          <paginated-list-view
-            :data="ticketList"
-            @next="changePage(1)"
-            @prev="changePage(-1)"
-          >
-            <ticket-list-entry
-              v-for="ticket in ticketList.results"
-              :key="ticket.id"
-              :data="ticket"
-            ></ticket-list-entry>
-          </paginated-list-view>
+          <div v-for="ticket in ticketList.results" v-bind:key="ticket.id" class="box">
+            <div class="level">
+              <div class="level-left">
+                <div
+                  class="level-item"
+                  style="max-width: 500px; word-wrap: break-word"
+                >
+                  <a class="title">
+                    <span>{{ ticket.ticket_number }} | {{ ticket.title }} | {{ ticket.created.toLocaleString() }} </span>
+                  </a>
+                </div>
+                <div class="level-item">
+                  <span v-if="ticket.status" class="tag is-link">
+                    {{ ticket.status.title }}
+                  </span>
+                </div>
+                <div
+                  v-for="tag in ticket.tag_list"
+                  v-bind:key="tag.id"
+                  class="level-item"
+                  style="max-width: 100px; word-wrap:break-word;"
+                >
+                  <span class="tag has-background-grey-lighter">
+                    {{ tag.title }}
+                  </span>
+                </div>
+              </div>
+              <div class="level-right">
+                <div class="level-item">
+                  <span>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -56,23 +80,20 @@ import { defineComponent, ref, onMounted } from "vue";
 import { listTickets, TicketRecord } from "@/api/tickets";
 import { PaginatedList } from "@/api/base";
 import { TeamRecord, getTeam } from "@/api/teams";
+import { DateTime } from "luxon";
 import store from "@/store";
 import TicketModal from "@/components/TicketModal.vue";
-import PaginatedListView from "@/components/PaginatedListView.vue";
-import TicketListEntry from "@/components/TicketListEntry.vue";
 
 export default defineComponent({
   name: "Tickets",
-  props: {
+  props: { 
     teamId: {
       type: String,
       required: true
     }
   },
   components: {
-    TicketModal,
-    TicketListEntry,
-    PaginatedListView
+    TicketModal
   },
   setup(props) {
     const teamRecord = ref({} as TeamRecord);
@@ -83,19 +104,14 @@ export default defineComponent({
       const axiosInstance = store.getters.generateAxiosInstance;
       const team = teamRecord.value;
       ticketList.value = await listTickets(team, listPage.value, axiosInstance);
-    };
+    }
 
     const getTeamRecord = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
-      const teamId = parseInt(props.teamId);
-      const team = await getTeam(axiosInstance, teamId);
+      const teamId = parseInt(props.teamId); 
+      const team = await getTeam(axiosInstance, teamId); 
       teamRecord.value = team;
-    };
-
-    const changePage = (increment: number) => {
-      listPage.value += increment;
-      getTeamTickets();
-    };
+    }
 
     onMounted(async () => {
       await getTeamRecord();
@@ -107,8 +123,7 @@ export default defineComponent({
       ticketList,
       listPage,
       getTeamTickets,
-      getTeamRecord,
-      changePage
+      getTeamRecord
     };
   }
 });

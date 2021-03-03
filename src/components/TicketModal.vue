@@ -1,7 +1,5 @@
 <template>
-  <a @click="show = true">
-    <i class="fa fa-plus fa-fw"></i> Add a ticket ...
-  </a>
+  <a @click="show = true"> <i class="fa fa-plus fa-fw"></i> Add a ticket ... </a>
   <div v-if="show" class="modal is-active">
     <div class="modal-background" @click="cancel"></div>
     <div class="modal-content new_ticket_modal">
@@ -69,7 +67,7 @@
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/camelcase */
-import { defineComponent, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { TeamRecord } from "@/api/teams";
 import { WriteTicketRecord, createTicket } from "@/api/tickets";
 import store from "@/store";
@@ -80,9 +78,11 @@ export default defineComponent({
     team: {
       type: Object,
       required: true
-    }
+    } 
   },
-  emits: ["create"],
+  emits: [
+    "create"
+  ],
   setup(props, context) {
     const show = ref(false);
 
@@ -102,29 +102,25 @@ export default defineComponent({
         title: "",
         description: ""
       };
-    };
+    }
 
     const submit = async () => {
-      show.value = !show.value;
-      const axiosInstance = store.getters.generateAxiosInstance;
+      show.value = !show.value
+      const axiosInstance = store.getters.generateAxiosInstance; 
 
       console.log(props.team);
       try {
-        await createTicket(
-          ticketRecord.value,
-          props.team as TeamRecord,
-          axiosInstance
-        );
+        await createTicket(ticketRecord.value, props.team as TeamRecord, axiosInstance);
         context.emit("create");
       } finally {
         resetData();
       }
-    };
+    }
 
     const cancel = () => {
       show.value = !show.value;
       resetData();
-    };
+    }
 
     return {
       show,

@@ -24,19 +24,15 @@
       </div>
     </section>
 
-    <ticket-modal></ticket-modal>
 
     <!-- TODO: Samuel Schmidt 5 / 21 / 2020 move this into a vue component -->
     <section class="section">
       <div class="container has-background-light">
         <div class="section">
-          <a> <i class="fa fa-plus fa-fw"></i> Add a ticket ... </a>
-          <p class="has-text-danger">
-            <i class="fa fa-ban fa-fw"></i> Must be approved to add tickets ...
-          </p>
+          <ticket-modal v-bind:team="teamRecord" v-on:create="getTeamTickets"></ticket-modal>
         </div>
         <div class="section">
-          <div class="box">
+          <div v-for="ticket in ticketList.results" v-bind:key="ticket.id" class="box">
             <div class="level">
               <div class="level-left">
                 <div
@@ -44,26 +40,22 @@
                   style="max-width: 500px; word-wrap: break-word"
                 >
                   <a class="title">
-                    <span>#ID | Ticket Title </span>
+                    <span>{{ ticket.ticket_number }} | {{ ticket.title }} | {{ ticket.created.toLocaleString() }} </span>
                   </a>
                 </div>
                 <div class="level-item">
-                  <span class="tag is-link">
-                    Not started
-                  </span>
-                  <span class="tag is-warning">
-                    In progress
-                  </span>
-                  <span class="tag is-success">
-                    Completed
+                  <span v-if="ticket.status" class="tag is-link">
+                    {{ ticket.status.title }}
                   </span>
                 </div>
                 <div
+                  v-for="tag in ticket.tag_list"
+                  v-bind:key="tag.id"
                   class="level-item"
                   style="max-width: 100px; word-wrap:break-word;"
                 >
                   <span class="tag has-background-grey-lighter">
-                    TAG NAME
+                    {{ tag.title }}
                   </span>
                 </div>
               </div>
@@ -84,11 +76,55 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
+import { listTickets, TicketRecord } from "@/api/tickets";
+import { PaginatedList } from "@/api/base";
+import { TeamRecord, getTeam } from "@/api/teams";
+import { DateTime } from "luxon";
+import store from "@/store";
+import TicketModal from "@/components/TicketModal.vue";
 
 export default defineComponent({
-  name: "Tickets"
-  // components: {
-  // }
+  name: "Tickets",
+  props: { 
+    teamId: {
+      type: String,
+      required: true
+    }
+  },
+  components: {
+    TicketModal
+  },
+  setup(props) {
+    const teamRecord = ref({} as TeamRecord);
+    const ticketList = ref({} as PaginatedList<TicketRecord>);
+    const listPage = ref(1);
+
+    const getTeamTickets = async () => {
+      const axiosInstance = store.getters.generateAxiosInstance;
+      const team = teamRecord.value;
+      ticketList.value = await listTickets(team, listPage.value, axiosInstance);
+    }
+
+    const getTeamRecord = async () => {
+      const axiosInstance = store.getters.generateAxiosInstance;
+      const teamId = parseInt(props.teamId); 
+      const team = await getTeam(axiosInstance, teamId); 
+      teamRecord.value = team;
+    }
+
+    onMounted(async () => {
+      await getTeamRecord();
+      await getTeamTickets();
+    });
+
+    return {
+      teamRecord,
+      ticketList,
+      listPage,
+      getTeamTickets,
+      getTeamRecord
+    };
+  }
 });
 </script>

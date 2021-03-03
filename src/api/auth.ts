@@ -13,6 +13,14 @@ export interface SignupDetails {
   secondaryPassword: string;
 }
 
+export interface UserRecord {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  username: string;
+}
+
 // MARK: Authentication Methods
 export async function signup(
   details: SignupDetails,
@@ -39,4 +47,9 @@ export async function login(
   console.log(response.data);
 
   return response.data.key as string;
+}
+
+export async function getUser(axios: AxiosInstance): Promise<UserRecord> {
+  const response = await axios.get("/auth/user/");
+  return response.data as UserRecord;
 }

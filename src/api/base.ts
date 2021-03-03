@@ -1,5 +1,12 @@
 import axios, { AxiosError } from "axios";
 
+export interface PaginatedList<T> {
+  id: number;
+  next: string | null;
+  previous: string | null;
+  results: Array<T>;
+}
+
 export function generateAxiosInstance(token?: string) {
   const instance = axios.create({
     baseURL: "http://127.0.0.1:8080/"

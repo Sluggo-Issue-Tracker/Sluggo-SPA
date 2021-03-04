@@ -100,8 +100,8 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      await getTeamRecord;
-      await getTeamUsers;
+      await getTeamRecord();
+      await getTeamUsers();
     });
 
     return {

@@ -1,6 +1,7 @@
 <template>
-  <div class="modal is-active">
-    <div class="modal-background" @click="close"></div>
+  <a @click="show = true"> <i class="fa fa-plus fa-fw"></i> Add a ticket ... </a>
+  <div v-if="show" class="modal is-active">
+    <div class="modal-background" @click="cancel"></div>
     <div class="modal-content new_ticket_modal">
       <section class="box ">
         <div class="columns">
@@ -10,6 +11,7 @@
               <input
                 type="text"
                 class="input"
+                v-model="ticketRecord.title"
                 placeholder="Enter new title here"
               />
               <span class="has-text-danger" v-if="text_error"
@@ -33,6 +35,7 @@
               <textarea
                 class="textarea is-fullwidth"
                 placeholder="Enter new ticket here"
+                v-model="ticketRecord.description"
               ></textarea>
               <span class="has-text-danger" v-if="text_type_error"
                 >Field must be Alphanumeric</span
@@ -55,7 +58,7 @@
             </div>
           </div>
         </div>
-        <button class="button is-success">Save changes</button>
+        <button class="button is-success" @click="submit">Save changes</button>
         <button class="button">Cancel</button>
       </section>
     </div>
@@ -63,12 +66,69 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+/* eslint-disable @typescript-eslint/camelcase */
+import { defineComponent, onMounted, ref } from "vue";
+import { TeamRecord } from "@/api/teams";
+import { WriteTicketRecord, createTicket } from "@/api/tickets";
+import store from "@/store";
 
 export default defineComponent({
-  name: "TicketModal"
-  // components: {
-  // }
+  name: "TicketModal",
+  props: {
+    team: {
+      type: Object,
+      required: true
+    } 
+  },
+  emits: [
+    "create"
+  ],
+  setup(props, context) {
+    const show = ref(false);
+
+    const ticketRecord = ref({
+      tag_list: [],
+      assigned_user: undefined,
+      status: undefined,
+      title: "",
+      description: ""
+    } as WriteTicketRecord);
+
+    const resetData = () => {
+      ticketRecord.value = {
+        tag_list: [],
+        assigned_user: undefined,
+        status: undefined,
+        title: "",
+        description: ""
+      };
+    }
+
+    const submit = async () => {
+      show.value = !show.value
+      const axiosInstance = store.getters.generateAxiosInstance; 
+
+      console.log(props.team);
+      try {
+        await createTicket(ticketRecord.value, props.team as TeamRecord, axiosInstance);
+        context.emit("create");
+      } finally {
+        resetData();
+      }
+    }
+
+    const cancel = () => {
+      show.value = !show.value;
+      resetData();
+    }
+
+    return {
+      show,
+      ticketRecord,
+      submit,
+      cancel
+    };
+  }
 });
 </script>
 

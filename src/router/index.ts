@@ -24,7 +24,8 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "tickets",
         name: "Tickets",
-        component: Tickets
+        component: Tickets,
+        props: true 
       },
       {
         path: "users",

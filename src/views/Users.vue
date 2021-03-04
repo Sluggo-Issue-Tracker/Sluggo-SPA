@@ -18,6 +18,14 @@
       </div>
       <br />
       <div class="columns is-multiline">
+        <div>
+          <ul id="users">
+            <li v-for="user in usersList" :key="user.message">
+              {{ user.message }}
+            </li>
+            <li>joe</li>
+          </ul>
+        </div>
         <!-- Member Selection Panel -->
         <div class="column is-one-third">
           <div class="box has-background-grey-lighter">
@@ -44,11 +52,65 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
+import { TeamRecord, getTeam } from "@/api/teams";
+import { PaginatedList } from "@/api/base";
+import { listUsers, UserRecord } from "@/api/users";
+import store from "@/store";
 
 export default defineComponent({
-  name: "Users"
-  // components: {
-  // }
+  name: "Users",
+  props: {
+    teamId: {
+      type: String,
+      required: true
+    }
+  },
+  setup(props) {
+    const teamRecord = ref({} as TeamRecord);
+    const usersList = ref({} as PaginatedList<UserRecord>);
+    const listPage = ref(1);
+    const teamId = parseInt(props.teamId);
+
+    const getTeamUsers = async () => {
+      const axiosInstance = store.getters.generateAxiosInstance;
+      const team = teamRecord.value;
+      if (team) {
+        console.log("found team :)");
+        usersList.value = await listUsers(
+          axiosInstance,
+          teamId,
+          listPage.value
+        );
+      } else {
+        console.log("no team :(");
+      }
+    };
+
+    const getTeamRecord = async () => {
+      const axiosInstance = store.getters.generateAxiosInstance;
+      const teamId = parseInt(props.teamId);
+      const team = await getTeam(axiosInstance, teamId);
+      if (team) {
+        console.log("team loaded :)");
+        teamRecord.value = team;
+      } else {
+        console.log("no such team :(");
+      }
+    };
+
+    onMounted(async () => {
+      await getTeamRecord;
+      await getTeamUsers;
+    });
+
+    return {
+      teamRecord,
+      usersList,
+      listPage,
+      getTeamUsers,
+      getTeamRecord
+    };
+  }
 });
 </script>

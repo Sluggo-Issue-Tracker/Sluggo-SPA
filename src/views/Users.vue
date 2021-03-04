@@ -20,10 +20,10 @@
       <div class="columns is-multiline">
         <div>
           <ul id="users">
-            <li v-for="user in usersList" :key="user.message">
+            <li v-for="user in usersList.results" :key="user.message">
               {{ user.message }}
             </li>
-            <li>joe</li>
+            <!-- <li>joe</li> -->
           </ul>
         </div>
         <!-- Member Selection Panel -->
@@ -78,10 +78,12 @@ export default defineComponent({
       if (team) {
         console.log("found team :)");
         usersList.value = await listUsers(
-          axiosInstance,
-          teamId,
-          listPage.value
+          team,
+          listPage.value,
+          axiosInstance
         );
+
+        // console.log(usersList.);
       } else {
         console.log("no team :(");
       }
@@ -100,8 +102,8 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      await getTeamRecord;
-      await getTeamUsers;
+      await getTeamRecord();
+      await getTeamUsers();
     });
 
     return {

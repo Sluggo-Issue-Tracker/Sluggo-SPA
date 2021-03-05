@@ -11,6 +11,8 @@ export interface OwnerRecord {
   username: string;
 }
 
+// possibly need to add pronouns? ask later
+
 export interface UserRecord {
   id: string;
   owner: OwnerRecord;
@@ -24,15 +26,14 @@ export interface UserRecord {
 }
 
 export async function listUsers(
+  axios: AxiosInstance,
   teamId: number,
   page: number,
-  axios: AxiosInstance,
 ): Promise<PaginatedList<UserRecord>> {
 
   const response = await axios.get(
     `/api/teams/${teamId}/members/?page=${page}`
   );
-  console.log("hello");
   console.log(response.data.results);
   return response.data as PaginatedList<UserRecord>;
 }

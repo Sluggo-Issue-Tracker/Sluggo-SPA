@@ -20,14 +20,15 @@
       <div class="columns is-multiline">
         <div>
           <ul id="users">
-            <li v-for="user in usersList.results" :key="user.message">
-              {{ user.message }}
+            <li v-for="member in usersList.results" v-bind:key="member.id" >
+              <div v-if="!member.owner.first_name || !member.owner.last_name">{{ member.owner.username }}</div>
+              <div v-else>{{ member.owner.first_name + " " + member.owner.last_name }}</div>
+              <!-- {{ member.owner.username }} -->
             </li>
-            <!-- <li>joe</li> -->
           </ul>
         </div>
         <!-- Member Selection Panel -->
-        <div class="column is-one-third">
+        <!-- <div class="column is-one-third">
           <div class="box has-background-grey-lighter">
             <article class="media">
               <div class="media-left">
@@ -45,7 +46,7 @@
               </div>
             </article>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -78,12 +79,12 @@ export default defineComponent({
       if (team) {
         console.log("found team :)");
         usersList.value = await listUsers(
-          team,
+          teamId,
           listPage.value,
           axiosInstance
         );
-
-        // console.log(usersList.);
+        console.log(usersList.value);
+        console.log(usersList.value.results[0].owner.username);
       } else {
         console.log("no team :(");
       }

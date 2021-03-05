@@ -1,7 +1,7 @@
 import { AxiosInstance } from "axios";
-import { TeamRecord } from "@/api/teams";
-import { PaginatedList } from "./base";
 import { DateTime } from "luxon";
+// import { TeamRecord } from "@/api/teams";
+import { PaginatedList } from "./base";
 
 export interface OwnerRecord {
   id: number;
@@ -18,19 +18,19 @@ export interface UserRecord {
   object_uuid: string;
   role: string;
   bio?: string;
-  created?: DateTime;
-  activated?: DateTime;
-  deactivated?: DateTime;
+  created: DateTime;
+  activated: DateTime;
+  deactivated: DateTime;
 }
 
 export async function listUsers(
-  team: TeamRecord,
+  teamId: number,
   page: number,
   axios: AxiosInstance,
 ): Promise<PaginatedList<UserRecord>> {
 
   const response = await axios.get(
-    `/api/teams/${team.id}/members/?page=${page}`
+    `/api/teams/${teamId}/members/?page=${page}`
   );
   console.log("hello");
   console.log(response.data.results);

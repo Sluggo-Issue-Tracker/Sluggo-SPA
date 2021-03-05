@@ -20,14 +20,14 @@
       <div class="columns is-multiline">
         <div>
           <ul id="users">
-            <li v-for="user in usersList" :key="user.message">
-              {{ user.message }}
+            <li v-for="member in usersList.results" v-bind:key="member.id" >
+              {{ member.owner.username }}
             </li>
-            <li>joe</li>
+            <li>evans</li>
           </ul>
         </div>
         <!-- Member Selection Panel -->
-        <div class="column is-one-third">
+        <!-- <div class="column is-one-third">
           <div class="box has-background-grey-lighter">
             <article class="media">
               <div class="media-left">
@@ -45,7 +45,7 @@
               </div>
             </article>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -82,6 +82,8 @@ export default defineComponent({
           teamId,
           listPage.value
         );
+        console.log(usersList.value);
+        console.log(usersList.value.results[0].owner.username);
       } else {
         console.log("no team :(");
       }

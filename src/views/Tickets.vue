@@ -29,8 +29,9 @@
       <div class="container has-background-light">
         <div class="section">
           <ticket-modal
-            v-bind:team="teamRecord"
-            v-on:create="getTeamTickets"
+            v-if="showModal"
+            v-bind:ticket="selectedTicket"
+            v-on:close="getTeamTickets"
           ></ticket-modal>
         </div>
         <div class="section">
@@ -43,6 +44,7 @@
               v-for="ticket in ticketList.results"
               :key="ticket.id"
               :data="ticket"
+              @click="selectTicket(ticket)"
             ></ticket-list-entry>
           </paginated-list-view>
         </div>
@@ -78,8 +80,11 @@ export default defineComponent({
     const teamRecord = ref({} as TeamRecord);
     const ticketList = ref({} as PaginatedList<TicketRecord>);
     const listPage = ref(1);
+    const selectedTicket = ref({});
+    const showModal = ref(false);
 
     const getTeamTickets = async () => {
+      showModal.value = false;
       const axiosInstance = store.getters.generateAxiosInstance;
       const team = teamRecord.value;
       ticketList.value = await listTickets(team, listPage.value, axiosInstance);
@@ -97,6 +102,11 @@ export default defineComponent({
       getTeamTickets();
     };
 
+    const selectTicket = (ticket: TicketRecord) => {
+      selectedTicket.value = ticket
+      showModal.value = true;
+    };
+
     onMounted(async () => {
       await getTeamRecord();
       await getTeamTickets();
@@ -108,6 +118,9 @@ export default defineComponent({
       listPage,
       getTeamTickets,
       getTeamRecord,
+      selectTicket,
+      showModal,
+      selectedTicket,
       changePage
     };
   }

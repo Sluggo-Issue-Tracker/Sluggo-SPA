@@ -1,8 +1,5 @@
 <template>
-  <a @click="show = true">
-    <i class="fa fa-plus fa-fw"></i> Add a ticket ...
-  </a>
-  <div v-if="show" class="modal is-active">
+  <div class="modal is-active">
     <div class="modal-background" @click="cancel"></div>
     <div class="modal-content new_ticket_modal">
       <section class="box ">
@@ -69,65 +66,40 @@
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/camelcase */
-import { defineComponent, ref } from "vue";
-import { TeamRecord } from "@/api/teams";
-import { WriteTicketRecord, createTicket } from "@/api/tickets";
+import { defineComponent, onMounted, ref } from "vue";
+import { WriteTicketRecord, createTicket, TicketRecord } from "@/api/tickets";
 import store from "@/store";
 
 export default defineComponent({
   name: "TicketModal",
   props: {
-    team: {
-      type: Object,
+    ticket: {
+      type: Object as () => TicketRecord,
       required: true
     }
   },
-  emits: ["create"],
+  emits: ["close"],
   setup(props, context) {
-    const show = ref(false);
-
-    const ticketRecord = ref({
-      tag_list: [],
-      assigned_user: undefined,
-      status: undefined,
-      title: "",
-      description: ""
-    } as WriteTicketRecord);
-
+    const ticketRecord = ref({});
     const resetData = () => {
-      ticketRecord.value = {
-        tag_list: [],
-        assigned_user: undefined,
-        status: undefined,
-        title: "",
-        description: ""
-      };
+      console.log("asdf");
     };
 
     const submit = async () => {
-      show.value = !show.value;
-      const axiosInstance = store.getters.generateAxiosInstance;
-
-      console.log(props.team);
-      try {
-        await createTicket(
-          ticketRecord.value,
-          props.team as TeamRecord,
-          axiosInstance
-        );
-        context.emit("create");
-      } finally {
-        resetData();
-      }
+        context.emit("close");
     };
 
     const cancel = () => {
-      show.value = !show.value;
       resetData();
+      context.emit("close");
     };
 
+    onMounted(() => {
+      console.log(props.ticket);
+      ticketRecord.value = props.ticket;
+    })
+
     return {
-      show,
       ticketRecord,
       submit,
       cancel

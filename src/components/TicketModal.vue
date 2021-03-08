@@ -2,7 +2,7 @@
   <div class="modal is-active">
     <div class="modal-background" @click="cancel"></div>
     <div class="modal-content new_ticket_modal">
-      <section class="box ">
+      <section class="box">
         <div class="columns">
           <div class="column is-three-quarters">
             <div class="field">
@@ -13,21 +13,15 @@
                 v-model="ticketRecord.title"
                 placeholder="Enter new title here"
               />
-              <span class="has-text-danger" v-if="text_error"
-                >Required Field</span
-              >
-              <span class="has-text-danger" v-if="title_type_error"
-                >Field must be Alphanumeric</span
-              >
             </div>
             <div class="field">
               <span class="subtitle">Tags</span>
-              <v-select
+              <!-- <v-select
                 class="tag-chooser"
                 maxHeight="100px"
                 multiple
                 placeholder="Choose Tags"
-              ></v-select>
+              ></v-select> -->
             </div>
             <div class="field">
               <span class="subtitle">Description</span>
@@ -36,9 +30,6 @@
                 placeholder="Enter new ticket here"
                 v-model="ticketRecord.description"
               ></textarea>
-              <span class="has-text-danger" v-if="text_type_error"
-                >Field must be Alphanumeric</span
-              >
             </div>
           </div>
           <div class="column">
@@ -49,16 +40,17 @@
             </div>
             <div class="field">
               <span class="subtitle">Assignee</span>
-              <v-select
+              <!-- <v-select
                 class="tag-chooser"
                 maxHeight="100px"
                 placeholder="No assignment"
-              ></v-select>
+              ></v-select> -->
             </div>
           </div>
         </div>
         <button class="button is-success" @click="submit">Save changes</button>
-        <button class="button">Cancel</button>
+        <button class="button" @click="cancel">Cancel</button>
+        <button class="button" @click="remove">Delete</button>
       </section>
     </div>
   </div>
@@ -67,12 +59,26 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/camelcase */
 import { defineComponent, onMounted, ref } from "vue";
-import { WriteTicketRecord, createTicket, TicketRecord } from "@/api/tickets";
+import {
+  WriteTicketRecord,
+  createTicket,
+  updateTicket,
+  TicketRecord,
+  deleteTicket
+} from "@/api/tickets";
+import { TeamRecord } from "@/api/teams";
 import store from "@/store";
+import axios from "axios";
+import TicketListEntryVue from "./TicketListEntry.vue";
+import { deepCopyObject } from "@/methods/util";
 
 export default defineComponent({
   name: "TicketModal",
   props: {
+    team: {
+      type: Object as () => TeamRecord,
+      required: true
+    },
     ticket: {
       type: Object as () => TicketRecord,
       required: true
@@ -82,11 +88,37 @@ export default defineComponent({
   setup(props, context) {
     const ticketRecord = ref({});
     const resetData = () => {
-      console.log("asdf");
+      ticketRecord.value = {};
     };
 
     const submit = async () => {
-        context.emit("close");
+      const axiosInstance = store.getters.generateAxiosInstance;
+      try {
+        await updateTicket(
+          ticketRecord.value as TicketRecord,
+          props.team,
+          axiosInstance
+        );
+      } catch (error) {
+        alert(error);
+        return;
+      }
+      context.emit("close");
+    };
+
+    const remove = async () => {
+      const axiosInstance = store.getters.generateAxiosInstance;
+      try {
+        await deleteTicket(
+          ticketRecord.value as TicketRecord,
+          props.team,
+          axiosInstance
+        );
+      } catch (error) {
+        alert(error);
+        return;
+      }
+      context.emit("close");
     };
 
     const cancel = () => {
@@ -95,13 +127,14 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      console.log(props.ticket);
-      ticketRecord.value = props.ticket;
-    })
+      ticketRecord.value = deepCopyObject(props.ticket) as TicketRecord;
+      console.log(ticketRecord.value);
+    });
 
     return {
       ticketRecord,
       submit,
+      remove,
       cancel
     };
   }

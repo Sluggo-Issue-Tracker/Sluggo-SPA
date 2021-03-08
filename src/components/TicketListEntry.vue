@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import { TicketRecord } from "@/api/tickets";
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   name: "TicketListEntry",

@@ -28,9 +28,16 @@
     <section class="section">
       <div class="container has-background-light">
         <div class="section">
+          <ticket-input
+            v-bind:team="teamRecord"
+            @create="getTeamTickets"
+          ></ticket-input>
+        </div>
+        <div class="section">
           <ticket-modal
             v-if="showModal"
             v-bind:ticket="selectedTicket"
+            v-bind:team="teamRecord"
             v-on:close="getTeamTickets"
           ></ticket-modal>
         </div>
@@ -62,6 +69,7 @@ import store from "@/store";
 import TicketModal from "@/components/TicketModal.vue";
 import PaginatedListView from "@/components/PaginatedListView.vue";
 import TicketListEntry from "@/components/TicketListEntry.vue";
+import TicketInput from "@/components/TicketInput.vue";
 
 export default defineComponent({
   name: "Tickets",
@@ -74,6 +82,7 @@ export default defineComponent({
   components: {
     TicketModal,
     TicketListEntry,
+    TicketInput,
     PaginatedListView
   },
   setup(props) {
@@ -87,6 +96,10 @@ export default defineComponent({
       showModal.value = false;
       const axiosInstance = store.getters.generateAxiosInstance;
       const team = teamRecord.value;
+
+      // hack. v-for does not detect change on results unless this is reset
+      // manually
+      ticketList.value.results = [];
       ticketList.value = await listTickets(team, listPage.value, axiosInstance);
     };
 
@@ -103,7 +116,7 @@ export default defineComponent({
     };
 
     const selectTicket = (ticket: TicketRecord) => {
-      selectedTicket.value = ticket
+      selectedTicket.value = ticket;
       showModal.value = true;
     };
 

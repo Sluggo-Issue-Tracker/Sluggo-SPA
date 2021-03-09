@@ -18,33 +18,26 @@
       </div>
       <br />
       <div class="columns is-multiline">
-        <div>
-          <!-- Member Selection Panel -->
-          <!-- background is supposed to be larger -- fix this! -->
-          <ul id="users">
-            <li v-for="member in usersList.results" v-bind:key="member.id" >
-              <div class="column is-one-third">
-                <div class="box has-background-grey-lighter">
-                  <article class="media">
-                    <div class="media-left">
-                      <figure class="image is-96x96">
-                        <img alt="Image" />
-                      </figure>
-                    </div>
-                    <div class="media-content">
-                      <div class="content">
-                        <p>
-                          <strong class="is-4" v-if="!member.owner.first_name || !member.owner.last_name">{{ member.owner.username }}</strong>
-                          <strong class="is-4" v-else>{{ member.owner.first_name + ' ' + member.owner.last_name }}</strong>
-                          <br />
-                        </p>
-                      </div>
-                    </div>
-                  </article>
+        <!-- Member Selection Panel -->
+        <div v-for="member in usersList.results" v-bind:key="member.id" class="column is-one-third">
+          <div class="box has-background-grey-lighter">
+            <article class="media">
+              <div class="media-left">
+                <figure class="image is-96x96">
+                  <img alt="Image" />
+                </figure>
+              </div>
+              <div class="media-content">
+                <div class="content">
+                  <p>
+                    <strong class="is-4" v-if="!member.owner.first_name || !member.owner.last_name">{{ member.owner.username }}</strong>
+                    <strong class="is-4" v-else>{{ member.owner.first_name + ' ' + member.owner.last_name }}</strong>
+                    <br />
+                  </p>
                 </div>
               </div>
-            </li>
-          </ul>
+            </article>
+          </div>
         </div>
       </div>
     </div>
@@ -82,8 +75,6 @@ export default defineComponent({
           teamId,
           listPage.value
         );
-        // console.log(usersList.value);
-        // console.log(usersList.value.results[0].owner.username);
       } else {
         console.log("no team :(");
       }

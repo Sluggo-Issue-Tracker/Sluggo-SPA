@@ -60,35 +60,43 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { defineComponent, onMounted, ref } from "vue";
 import {
-  WriteTicketRecord,
-  createTicket,
   updateTicket,
   TicketRecord,
-  deleteTicket
+  deleteTicket,
+  getTicket
 } from "@/api/tickets";
-import { TeamRecord } from "@/api/teams";
 import store from "@/store";
-import axios from "axios";
-import TicketListEntryVue from "./TicketListEntry.vue";
-import { deepCopyObject } from "@/methods/util";
 
 export default defineComponent({
   name: "TicketModal",
   props: {
-    team: {
-      type: Object as () => TeamRecord,
+    teamId: {
+      type: String,
       required: true
     },
-    ticket: {
-      type: Object as () => TicketRecord,
+    ticketId: {
+      type: String,
       required: true
     }
   },
   emits: ["close"],
   setup(props, context) {
+    const ticketId = parseInt(props.ticketId);
+    const teamId = parseInt(props.teamId);
+
     const ticketRecord = ref({});
     const resetData = () => {
       ticketRecord.value = {};
+    };
+
+    const getData = async () => {
+      const axiosInstance = store.getters.generateAxiosInstance;
+      try {
+        console.log(props.teamId);
+        ticketRecord.value = await getTicket(ticketId, teamId, axiosInstance);
+      } catch (error) {
+        alert(error);
+      }
     };
 
     const submit = async () => {
@@ -96,7 +104,7 @@ export default defineComponent({
       try {
         await updateTicket(
           ticketRecord.value as TicketRecord,
-          props.team,
+          teamId,
           axiosInstance
         );
       } catch (error) {
@@ -111,7 +119,7 @@ export default defineComponent({
       try {
         await deleteTicket(
           ticketRecord.value as TicketRecord,
-          props.team,
+          teamId,
           axiosInstance
         );
       } catch (error) {
@@ -126,9 +134,8 @@ export default defineComponent({
       context.emit("close");
     };
 
-    onMounted(() => {
-      ticketRecord.value = deepCopyObject(props.ticket) as TicketRecord;
-      console.log(ticketRecord.value);
+    onMounted(async () => {
+      await getData();
     });
 
     return {

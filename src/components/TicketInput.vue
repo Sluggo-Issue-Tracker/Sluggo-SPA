@@ -7,23 +7,23 @@
         class="input level-item"
         v-model="ticketRecord.title"
         placeholder="Enter new title here"
+        v-on:keyup.enter="submit"
+        v-on:keyup.esc="reset"
       />
-      <button class="level-item" @click="submit">Submit</button>
-      <button class="level-item" @click="reset">Cancel</button>
+      <button class="level-item button is-link" @click="submit">Submit</button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { TeamRecord } from "@/api/teams";
 import { createTicket, WriteTicketRecord } from "@/api/tickets";
 import store from "@/store";
 export default defineComponent({
   name: "TicketInput",
   props: {
-    team: {
-      type: Object as () => TeamRecord,
+    teamId: {
+      type: String,
       required: true
     }
   },
@@ -31,6 +31,8 @@ export default defineComponent({
   setup(props, context) {
     const ticketRecord = ref({} as WriteTicketRecord);
     const show = ref(false);
+
+    const teamId = parseInt(props.teamId);
 
     const reset = () => {
       show.value = false;
@@ -42,7 +44,7 @@ export default defineComponent({
     const submit = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
       try {
-        await createTicket(ticketRecord.value, props.team, axiosInstance);
+        await createTicket(ticketRecord.value, teamId, axiosInstance);
       } catch (error) {
         alert(error);
         return;

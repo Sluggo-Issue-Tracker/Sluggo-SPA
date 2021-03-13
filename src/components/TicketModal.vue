@@ -1,10 +1,5 @@
 <template>
-<<<<<<< HEAD
   <div class="modal is-active">
-=======
-  <a @click="show = true"> <i class="fa fa-plus fa-fw"></i> Add a ticket ... </a>
-  <div v-if="show" class="modal is-active">
->>>>>>> develop
     <div class="modal-background" @click="cancel"></div>
     <div class="modal-content new_ticket_modal">
       <section class="box">
@@ -64,17 +59,12 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/camelcase */
 import { defineComponent, onMounted, ref } from "vue";
-<<<<<<< HEAD
 import {
   updateTicket,
   TicketRecord,
   deleteTicket,
   getTicket
 } from "@/api/tickets";
-=======
-import { TeamRecord } from "@/api/teams";
-import { WriteTicketRecord, createTicket } from "@/api/tickets";
->>>>>>> develop
 import store from "@/store";
 
 export default defineComponent({
@@ -87,22 +77,15 @@ export default defineComponent({
     ticketId: {
       type: String,
       required: true
-    } 
+    }
   },
-<<<<<<< HEAD
   emits: ["close"],
-=======
-  emits: [
-    "create"
-  ],
->>>>>>> develop
   setup(props, context) {
     const ticketId = parseInt(props.ticketId);
     const teamId = parseInt(props.teamId);
 
     const ticketRecord = ref({});
     const resetData = () => {
-<<<<<<< HEAD
       ticketRecord.value = {};
     };
 
@@ -130,25 +113,10 @@ export default defineComponent({
       }
       context.emit("close");
     };
-=======
-      ticketRecord.value = {
-        tag_list: [],
-        assigned_user: undefined,
-        status: undefined,
-        title: "",
-        description: ""
-      };
-    }
-
-    const submit = async () => {
-      show.value = !show.value
-      const axiosInstance = store.getters.generateAxiosInstance; 
->>>>>>> develop
 
     const remove = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
       try {
-<<<<<<< HEAD
         await deleteTicket(
           ticketRecord.value as TicketRecord,
           teamId,
@@ -160,23 +128,11 @@ export default defineComponent({
       }
       context.emit("close");
     };
-=======
-        await createTicket(ticketRecord.value, props.team as TeamRecord, axiosInstance);
-        context.emit("create");
-      } finally {
-        resetData();
-      }
-    }
->>>>>>> develop
 
     const cancel = () => {
       resetData();
-<<<<<<< HEAD
       context.emit("close");
     };
-=======
-    }
->>>>>>> develop
 
     onMounted(async () => {
       await getData();

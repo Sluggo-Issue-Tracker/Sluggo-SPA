@@ -13,14 +13,18 @@
       <li>
         <a class="pagination-link is-current">{{ page }} </a>
       </li>
+      <li v-if="page !== maxPage">
+        <a class="pagination-link">{{ maxPage }} </a>
+        <!-- bad -->
+      </li>
     </ul>
   </nav>
 </template>
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PaginatedList } from "@/api/base";
-import { defineComponent } from "vue";
+import { PaginatedList, pageSize } from "@/api/base";
+import { defineComponent, computed } from "vue";
 // import TicketListEntry from "@/components/TicketListEntry.vue";
 
 export default defineComponent({
@@ -38,6 +42,14 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ["next", "prev"]
+  emits: ["next", "prev"],
+  setup(props) {
+    const maxPage = computed(() => {
+      return Math.ceil(props.data.count / pageSize);
+    });
+    return {
+      maxPage
+    };
+  }
 });
 </script>

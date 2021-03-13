@@ -1,7 +1,9 @@
 import axios, { AxiosError } from "axios";
 
+export const pageSize = 10;
+
 export interface PaginatedList<T> {
-  id: number;
+  count: number;
   next: string | null;
   previous: string | null;
   results: Array<T>;
@@ -22,10 +24,10 @@ export function generateAxiosInstance(token?: string) {
   // stops. Noting, this means that bad chains of actions may partially complete
   // this is probably fine but could be looked into later.
   instance.interceptors.response.use(
-    function(response) {
+    function (response) {
       return response;
     },
-    function(e) {
+    function (e) {
       if (e.isAxiosError) {
         const error = e as AxiosError;
         console.log(`Error occurred!`);

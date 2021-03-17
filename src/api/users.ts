@@ -3,7 +3,7 @@ import { DateTime } from "luxon";
 // import { TeamRecord } from "@/api/teams";
 import { PaginatedList } from "./base";
 
-export interface OwnerRecord {
+export interface UserRecord {
   id: number;
   email: string;
   first_name?: string;
@@ -13,9 +13,9 @@ export interface OwnerRecord {
 
 // possibly need to add pronouns? ask later
 
-export interface UserRecord {
+export interface MemberRecord {
   id: string;
-  owner: OwnerRecord;
+  owner: UserRecord;
   team_id: number;
   object_uuid: string;
   role: string;
@@ -25,15 +25,14 @@ export interface UserRecord {
   deactivated: DateTime;
 }
 
-export async function listUsers(
+export async function listMembers(
   axios: AxiosInstance,
   teamId: number,
-  page: number,
-): Promise<PaginatedList<UserRecord>> {
-
+  page: number
+): Promise<PaginatedList<MemberRecord>> {
   const response = await axios.get(
     `/api/teams/${teamId}/members/?page=${page}`
   );
   console.log(response.data.results);
-  return response.data as PaginatedList<UserRecord>;
+  return response.data as PaginatedList<MemberRecord>;
 }

@@ -19,7 +19,11 @@
       <br />
       <div class="columns is-multiline">
         <!-- Member Selection Panel -->
-        <div v-for="member in usersList.results" v-bind:key="member.id" class="column is-one-third">
+        <div
+          v-for="member in membersList.results"
+          v-bind:key="member.id"
+          class="column is-one-third"
+        >
           <div class="box has-background-grey-lighter">
             <article class="media">
               <div class="media-left">
@@ -30,8 +34,14 @@
               <div class="media-content">
                 <div class="content">
                   <p>
-                    <strong class="is-4" v-if="!member.owner.first_name || !member.owner.last_name">{{ member.owner.username }}</strong>
-                    <strong class="is-4" v-else>{{ member.owner.first_name + ' ' + member.owner.last_name }}</strong>
+                    <strong
+                      class="is-4"
+                      v-if="!member.owner.first_name || !member.owner.last_name"
+                      >{{ member.owner.username }}</strong
+                    >
+                    <strong class="is-4" v-else>{{
+                      member.owner.first_name + " " + member.owner.last_name
+                    }}</strong>
                     <br />
                   </p>
                 </div>
@@ -48,7 +58,7 @@
 import { defineComponent, ref, onMounted } from "vue";
 import { TeamRecord, getTeam } from "@/api/teams";
 import { PaginatedList } from "@/api/base";
-import { listUsers, UserRecord } from "@/api/users";
+import { listMembers, MemberRecord } from "@/api/users";
 import store from "@/store";
 
 export default defineComponent({
@@ -61,16 +71,16 @@ export default defineComponent({
   },
   setup(props) {
     const teamRecord = ref({} as TeamRecord);
-    const usersList = ref({} as PaginatedList<UserRecord>);
+    const membersList = ref({} as PaginatedList<MemberRecord>);
     const listPage = ref(1);
     const teamId = parseInt(props.teamId);
 
-    const getTeamUsers = async () => {
+    const getTeamMembers = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
       const team = teamRecord.value;
       if (team) {
         console.log("found team :)");
-        usersList.value = await listUsers(
+        membersList.value = await listMembers(
           axiosInstance,
           teamId,
           listPage.value
@@ -94,14 +104,14 @@ export default defineComponent({
 
     onMounted(async () => {
       await getTeamRecord();
-      await getTeamUsers();
+      await getTeamMembers();
     });
 
     return {
       teamRecord,
-      usersList,
+      membersList,
       listPage,
-      getTeamUsers,
+      getTeamMembers,
       getTeamRecord
     };
   }

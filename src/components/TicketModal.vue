@@ -1,9 +1,8 @@
 <template>
-  <a @click="show = true"> <i class="fa fa-plus fa-fw"></i> Add a ticket ... </a>
-  <div v-if="show" class="modal is-active">
+  <div class="modal is-active">
     <div class="modal-background" @click="cancel"></div>
     <div class="modal-content new_ticket_modal">
-      <section class="box ">
+      <section class="box">
         <div class="columns">
           <div class="column is-three-quarters">
             <div class="field">
@@ -14,21 +13,15 @@
                 v-model="ticketRecord.title"
                 placeholder="Enter new title here"
               />
-              <span class="has-text-danger" v-if="text_error"
-                >Required Field</span
-              >
-              <span class="has-text-danger" v-if="title_type_error"
-                >Field must be Alphanumeric</span
-              >
             </div>
             <div class="field">
               <span class="subtitle">Tags</span>
-              <v-select
+              <!-- <v-select
                 class="tag-chooser"
                 maxHeight="100px"
                 multiple
                 placeholder="Choose Tags"
-              ></v-select>
+              ></v-select> -->
             </div>
             <div class="field">
               <span class="subtitle">Description</span>
@@ -37,9 +30,6 @@
                 placeholder="Enter new ticket here"
                 v-model="ticketRecord.description"
               ></textarea>
-              <span class="has-text-danger" v-if="text_type_error"
-                >Field must be Alphanumeric</span
-              >
             </div>
           </div>
           <div class="column">
@@ -50,16 +40,17 @@
             </div>
             <div class="field">
               <span class="subtitle">Assignee</span>
-              <v-select
+              <!-- <v-select
                 class="tag-chooser"
                 maxHeight="100px"
                 placeholder="No assignment"
-              ></v-select>
+              ></v-select> -->
             </div>
           </div>
         </div>
         <button class="button is-success" @click="submit">Save changes</button>
-        <button class="button">Cancel</button>
+        <button class="button" @click="cancel">Cancel</button>
+        <button class="button" @click="remove">Delete</button>
       </section>
     </div>
   </div>
@@ -68,64 +59,89 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/camelcase */
 import { defineComponent, onMounted, ref } from "vue";
-import { TeamRecord } from "@/api/teams";
-import { WriteTicketRecord, createTicket } from "@/api/tickets";
+import {
+  updateTicket,
+  TicketRecord,
+  deleteTicket,
+  getTicket
+} from "@/api/tickets";
 import store from "@/store";
 
 export default defineComponent({
   name: "TicketModal",
   props: {
-    team: {
-      type: Object,
+    teamId: {
+      type: String,
       required: true
-    } 
-  },
-  emits: [
-    "create"
-  ],
-  setup(props, context) {
-    const show = ref(false);
-
-    const ticketRecord = ref({
-      tag_list: [],
-      assigned_user: undefined,
-      status: undefined,
-      title: "",
-      description: ""
-    } as WriteTicketRecord);
-
-    const resetData = () => {
-      ticketRecord.value = {
-        tag_list: [],
-        assigned_user: undefined,
-        status: undefined,
-        title: "",
-        description: ""
-      };
+    },
+    ticketId: {
+      type: String,
+      required: true
     }
+  },
+  emits: ["close"],
+  setup(props, context) {
+    const ticketId = parseInt(props.ticketId);
+    const teamId = parseInt(props.teamId);
+
+    const ticketRecord = ref({});
+    const resetData = () => {
+      ticketRecord.value = {};
+    };
+
+    const getData = async () => {
+      const axiosInstance = store.getters.generateAxiosInstance;
+      try {
+        console.log(props.teamId);
+        ticketRecord.value = await getTicket(ticketId, teamId, axiosInstance);
+      } catch (error) {
+        alert(error);
+      }
+    };
 
     const submit = async () => {
-      show.value = !show.value
-      const axiosInstance = store.getters.generateAxiosInstance; 
-
-      console.log(props.team);
+      const axiosInstance = store.getters.generateAxiosInstance;
       try {
-        await createTicket(ticketRecord.value, props.team as TeamRecord, axiosInstance);
-        context.emit("create");
-      } finally {
-        resetData();
+        await updateTicket(
+          ticketRecord.value as TicketRecord,
+          teamId,
+          axiosInstance
+        );
+      } catch (error) {
+        alert(error);
+        return;
       }
-    }
+      context.emit("close");
+    };
+
+    const remove = async () => {
+      const axiosInstance = store.getters.generateAxiosInstance;
+      try {
+        await deleteTicket(
+          ticketRecord.value as TicketRecord,
+          teamId,
+          axiosInstance
+        );
+      } catch (error) {
+        alert(error);
+        return;
+      }
+      context.emit("close");
+    };
 
     const cancel = () => {
-      show.value = !show.value;
       resetData();
-    }
+      context.emit("close");
+    };
+
+    onMounted(async () => {
+      await getData();
+    });
 
     return {
-      show,
       ticketRecord,
       submit,
+      remove,
       cancel
     };
   }

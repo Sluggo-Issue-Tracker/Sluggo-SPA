@@ -75,16 +75,16 @@ function createTicketRecord(response: ReadTicketRecord): TicketRecord {
 
 export async function createTicket(
   record: WriteTicketRecord,
-  team: TeamRecord,
+  teamId: number,
   axios: AxiosInstance
 ): Promise<TicketRecord> {
-  const response = await axios.post(`/api/teams/${team.id}/tickets/`, record);
+  const response = await axios.post(`/api/teams/${teamId}/tickets/`, record);
   return createTicketRecord(response.data as ReadTicketRecord);
 }
 
 export async function updateTicket(
   record: TicketRecord,
-  team: TeamRecord,
+  teamId: number,
   axios: AxiosInstance
 ): Promise<TicketRecord> {
   const updateRecord = {
@@ -96,7 +96,7 @@ export async function updateTicket(
   } as WriteTicketRecord;
 
   const response = await axios.put(
-    `/api/teams/${team.id}/tickets/${record.id}/`,
+    `/api/teams/${teamId}/tickets/${record.id}/`,
     updateRecord
   );
   return createTicketRecord(response.data as ReadTicketRecord);
@@ -109,7 +109,7 @@ export interface FilterOptions {
 }
 
 export async function listTickets(
-  team: TeamRecord,
+  teamId: number,
   page: number,
   axios: AxiosInstance,
   filter?: FilterOptions
@@ -126,12 +126,12 @@ export async function listTickets(
   }
 
   const response = await axios.get(
-    `/api/teams/${team.id}/tickets/${queryParams}`
+    `/api/teams/${teamId}/tickets/${queryParams}`
   );
   const listing: PaginatedList<ReadTicketRecord> = response.data;
 
   return {
-    id: listing.id,
+    count: listing.count,
     next: listing.next,
     previous: listing.previous,
     results: listing.results.map(elem =>
@@ -155,17 +155,17 @@ export async function listTickets(
 // this will attach the list of subtickets, eventually
 export async function getTicket(
   id: number,
-  team: TeamRecord,
+  teamId: number,
   axios: AxiosInstance
 ): Promise<TicketRecord> {
-  const response = await axios.get(`/api/teams/${team.id}/tickets/${id}/`);
+  const response = await axios.get(`/api/teams/${teamId}/tickets/${id}/`);
   return createTicketRecord(response.data);
 }
 
 export async function deleteTicket(
   record: TicketRecord,
-  team: TeamRecord,
+  teamId: number,
   axios: AxiosInstance
 ): Promise<void> {
-  await axios.delete(`/api/teams/${team.id}/tickets/${record.id}/`);
+  await axios.delete(`/api/teams/${teamId}/tickets/${record.id}/`);
 }

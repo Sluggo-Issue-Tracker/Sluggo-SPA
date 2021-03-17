@@ -22,10 +22,10 @@ const routes: Array<RouteRecordRaw> = [
         component: Home
       },
       {
-        path: "tickets",
+        path: "tickets/:selected?",
         name: "Tickets",
         component: Tickets,
-        props: true 
+        props: true
       },
       {
         path: "users",
@@ -42,11 +42,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "Admin",
         component: Admin
       },
-      {
-        path: "tickets/:userId",
-        name: "TicketDetails",
-        component: TicketDetails
-      }
+      // {
+      //   path: "tickets/:userId",
+      //   name: "TicketDetails",
+      //   component: TicketDetails
+      // }
     ]
   },
   // {

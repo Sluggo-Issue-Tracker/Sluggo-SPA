@@ -83,7 +83,7 @@ export async function listTag(
 
   const listing: PaginatedList<ReadTagRecord> = response.data;
   return {
-    id: listing.id,
+    count: listing.count,
     next: listing.next,
     previous: listing.previous,
     results: listing.results.map(elem => createTagRecord(elem))

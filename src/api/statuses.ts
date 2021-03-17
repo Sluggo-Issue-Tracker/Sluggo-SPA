@@ -68,7 +68,7 @@ export async function listStatus(
   );
   const listing: PaginatedList<ReadStatusRecord> = response.data;
   return {
-    id: listing.id,
+    count: listing.count,
     next: listing.next,
     previous: listing.previous,
     results: listing.results.map(elem => createStatusRecord(elem))

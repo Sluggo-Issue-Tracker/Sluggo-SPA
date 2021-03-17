@@ -26,11 +26,11 @@
         >
           <div class="box has-background-grey-lighter">
             <article class="media">
-              <div class="media-left">
+              <!-- <div class="media-left">
                 <figure class="image is-96x96">
                   <img alt="Image" />
                 </figure>
-              </div>
+              </div> -->
               <div class="media-content">
                 <div class="content">
                   <p>

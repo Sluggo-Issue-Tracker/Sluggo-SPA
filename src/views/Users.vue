@@ -19,18 +19,29 @@
       <br />
       <div class="columns is-multiline">
         <!-- Member Selection Panel -->
-        <div class="column is-one-third">
+        <div
+          v-for="member in membersList.results"
+          v-bind:key="member.id"
+          class="column is-one-third"
+        >
           <div class="box has-background-grey-lighter">
             <article class="media">
-              <div class="media-left">
+              <!-- <div class="media-left">
                 <figure class="image is-96x96">
                   <img alt="Image" />
                 </figure>
-              </div>
+              </div> -->
               <div class="media-content">
                 <div class="content">
                   <p>
-                    <strong class="is-4">USER NAME</strong>
+                    <strong
+                      class="is-4"
+                      v-if="!member.owner.first_name || !member.owner.last_name"
+                      >{{ member.owner.username }}</strong
+                    >
+                    <strong class="is-4" v-else>{{
+                      member.owner.first_name + " " + member.owner.last_name
+                    }}</strong>
                     <br />
                   </p>
                 </div>
@@ -44,11 +55,65 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
+import { TeamRecord, getTeam } from "@/api/teams";
+import { PaginatedList } from "@/api/base";
+import { listMembers, MemberRecord } from "@/api/users";
+import store from "@/store";
 
 export default defineComponent({
-  name: "Users"
-  // components: {
-  // }
+  name: "Users",
+  props: {
+    teamId: {
+      type: String,
+      required: true
+    }
+  },
+  setup(props) {
+    const teamRecord = ref({} as TeamRecord);
+    const membersList = ref({} as PaginatedList<MemberRecord>);
+    const listPage = ref(1);
+    const teamId = parseInt(props.teamId);
+
+    const getTeamMembers = async () => {
+      const axiosInstance = store.getters.generateAxiosInstance;
+      const team = teamRecord.value;
+      if (team) {
+        console.log("found team :)");
+        membersList.value = await listMembers(
+          axiosInstance,
+          teamId,
+          listPage.value
+        );
+      } else {
+        console.log("no team :(");
+      }
+    };
+
+    const getTeamRecord = async () => {
+      const axiosInstance = store.getters.generateAxiosInstance;
+      const teamId = parseInt(props.teamId);
+      const team = await getTeam(axiosInstance, teamId);
+      if (team) {
+        console.log("team loaded :)");
+        teamRecord.value = team;
+      } else {
+        console.log("no such team :(");
+      }
+    };
+
+    onMounted(async () => {
+      await getTeamRecord();
+      await getTeamMembers();
+    });
+
+    return {
+      teamRecord,
+      membersList,
+      listPage,
+      getTeamMembers,
+      getTeamRecord
+    };
+  }
 });
 </script>

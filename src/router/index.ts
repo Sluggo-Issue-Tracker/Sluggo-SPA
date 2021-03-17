@@ -30,7 +30,8 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "users",
         name: "Users",
-        component: Users
+        component: Users,
+        props: true
       },
       {
         path: "users/:userId",
@@ -62,7 +63,8 @@ const routes: Array<RouteRecordRaw> = [
   // {
   //   path: "/users",
   //   name: "Users",
-  //   component: Users
+  //   component: Users,
+  //   props: true
   // },
   // {
   //   path: "/users/:id",

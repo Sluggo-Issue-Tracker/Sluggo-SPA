@@ -19,8 +19,8 @@
         <div class="level-right">
           <div class="level-item">
             <span>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star-o"></i>
+              <i class="bx bxs-pin"></i>
+              <i class="bx bx-pin"></i>
             </span>
           </div>
           <div class="level-item">
@@ -172,10 +172,7 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "Help",
   setup: function() {
-
-
-    return {
-    };
+    return {};
   }
 });
 </script>

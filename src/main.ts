@@ -3,10 +3,11 @@ import store from "@/store";
 import App from "./App.vue";
 import router from "./router";
 // import { store, key } from "./store";
+import "boxicons/css/boxicons.min.css";
 
 require("@/assets/common.scss");
 
-store.dispatch.attempt(localStorage.getItem('token'));
+store.dispatch.attempt(localStorage.getItem("token"));
 
 createApp(App)
   .use(store.original)

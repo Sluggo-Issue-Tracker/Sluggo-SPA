@@ -1,5 +1,11 @@
 <template>
   <tr>
+    <td class="is-narrow">
+      <button class="button">
+        <i class="bx bx-pin bx-sm"></i>
+        <i class="bx bxs-pin bx-sm"></i>
+      </button>
+    </td>
     <td class="is-narrow">{{ ticket.ticket_number }}</td>
     <td class="is-narrow">
       <a @click="click">{{ ticket.title }}</a>

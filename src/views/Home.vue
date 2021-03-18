@@ -119,7 +119,7 @@
                     <!-- <p>Due May 25, 2020.</p> -->
                   </div>
                   <div class="column is-2">
-                    <span><i class="fa fa-star"></i></span>
+                    <span><i class="bx bxs-pin bx-sm"></i></span>
                   </div>
                   <!-- TODO: Determine how to expose ticket completion
                      endpoints on the homepage -->

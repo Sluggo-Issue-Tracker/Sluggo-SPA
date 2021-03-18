@@ -9,7 +9,7 @@
           <div class="field is-pulled-right">
             <div class="control has-icons-left">
               <span class="icon is-medium">
-                <i class="fa fa-search"></i>
+                <i class="bx bx-search"></i>
               </span>
               <input class="input" type="text" placeholder="Search Users" />
             </div>

@@ -203,7 +203,7 @@
                         <td>
                           <div class="buttons">
                             <button class="button is-warning">
-                              <i class="fa fa-edit fa-fw"></i>
+                              <i class="bx bx-edit"></i>
                             </button>
                             <button class="button is-success">
                               Save
@@ -223,7 +223,7 @@
                             </button>
 
                             <button class="button is-danger">
-                              <i class="fa fa-trash fa-fw"></i>
+                              <i class="bx bx-trash"></i>
                             </button>
                           </div>
                         </td>

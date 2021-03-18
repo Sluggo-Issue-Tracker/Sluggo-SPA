@@ -92,7 +92,7 @@
             <div class="buttons is-pulled-left">
               <button class="button is-info">
                 <span class="icon">
-                  <i class="fa fa-chevron-left"></i>
+                  <i class="bx bxs-chevron-left"></i>
                 </span>
                 <span>Back</span>
               </button>
@@ -101,13 +101,13 @@
             <div class="buttons is-right">
               <button class="button">
                 <span class="icon is-small">
-                  <i class="fa fa-check"></i>
+                  <i class="bx bx-check"></i>
                 </span>
                 <span>ButtonText</span>
               </button>
               <button class="button is-warning" @click="resetCurrent">
                 <span class="icon is-small">
-                  <i class="fa fa-times"></i>
+                  <i class="bx bx-x"></i>
                 </span>
                 <span>ResetText</span>
               </button>

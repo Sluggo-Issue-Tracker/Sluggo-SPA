@@ -6,7 +6,7 @@ import Admin from "@/views/Admin.vue";
 import Help from "@/views/Help.vue";
 import Auth from "@/views/Auth.vue";
 import Profile from "@/views/Profile.vue";
-import TicketDetails from "@/views/TicketDetails.vue";
+// import TicketDetails from "@/views/TicketDetails.vue";
 import NewTeam from "@/views/NewTeam.vue";
 import TeamWrapper from "@/components/TeamWrapper.vue";
 
@@ -42,7 +42,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "admin",
         name: "Admin",
         component: Admin
-      },
+      }
       // {
       //   path: "tickets/:userId",
       //   name: "TicketDetails",

@@ -2,6 +2,7 @@
 
 import { AxiosInstance } from "axios";
 import { TicketRecord } from "@/api/tickets";
+import { generateAxiosInstance } from "./base";
 
 export interface PinnedTicketRecord {
   ticket: TicketRecord;
@@ -52,4 +53,27 @@ export async function postPinnedTicket(
   );
 
   return response.data as PinnedTicketRecord;
+}
+
+export async function getPinnedTicketForTicket(
+  axios: AxiosInstance,
+  teamId: number,
+  memberPk: string,
+  ticketId: number
+): Promise<PinnedTicketRecord> {
+  const pinnedTickets = await getPinnedTicketsForMember(
+    axios,
+    teamId,
+    memberPk
+  );
+
+  const desiredTickets = pinnedTickets.filter(pt => pt.ticket.id === ticketId);
+
+  if (desiredTickets.length < 1) {
+    throw Error("Pinned ticket record not found.");
+  }
+
+  const pinRecord = desiredTickets[0];
+
+  return pinRecord;
 }

@@ -2,7 +2,6 @@
 
 import { AxiosInstance } from "axios";
 import { TicketRecord } from "@/api/tickets";
-import { generateAxiosInstance } from "./base";
 
 export interface PinnedTicketRecord {
   ticket: TicketRecord;

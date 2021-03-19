@@ -46,10 +46,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 import router from "@/router/index";
 import { listTickets, TicketRecord } from "@/api/tickets";
-import { MemberRecord } from "@/api/users";
 import { getPinnedTicketsForMember, PinnedTicketRecord } from "@/api/pinned";
 import { PaginatedList } from "@/api/base";
 import { generateTicketPageLink } from "@/methods/teamPage";

@@ -55,7 +55,6 @@ export default defineComponent({
     const click = () => {
       context.emit("click");
     };
-    console.log(props.initialPinRecord);
     const pinRecord = ref<PinnedTicketRecord | undefined>(
       props.initialPinRecord
     );

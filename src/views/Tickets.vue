@@ -85,13 +85,6 @@ export default defineComponent({
     const showModal = ref(false);
     const teamId = parseInt(props.teamId);
     const pinnedTickets = ref<PinnedTicketRecord[]>([]);
-    const member = computed<MemberRecord>(() => {
-      const retrievedMember = store.state.member;
-      if (typeof retrievedMember === "undefined") {
-        throw Error("Member was undefined unexpectedly on Tickets page.");
-      }
-      return retrievedMember;
-    });
 
     const getTeamTickets = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
@@ -100,11 +93,16 @@ export default defineComponent({
       // This needs to happen before the normal tickets are fetched,
       // otherwise it might try to pull a pin record before fetching the pin
       // records.
-      console.log("Updating pinned tickets...");
+
+      const member = store.state.member;
+      if (typeof member === "undefined") {
+        throw Error("Member was undefined unexpectedly on Tickets page.");
+      }
+
       pinnedTickets.value = await getPinnedTicketsForMember(
         axiosInstance,
         teamId,
-        member.value.id
+        member.id
       );
 
       // hack. v-for does not detect change on results unless this is reset

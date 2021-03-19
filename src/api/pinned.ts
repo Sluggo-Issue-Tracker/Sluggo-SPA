@@ -17,8 +17,37 @@ export async function getPinnedTicketsForMember(
   memberPk: string
 ) {
   const response = await axios.get(
-    `/api/teams/${teamId}/members/${memberPk}/pinned_tickets`
+    `/api/teams/${teamId}/members/${memberPk}/pinned_tickets/`
   );
 
   return response.data as PinnedTicketRecord[];
+}
+
+export async function deletePinnedTicket(
+  axios: AxiosInstance,
+  teamId: number,
+  memberPk: string,
+  pinnedTicketPk: string
+) {
+  await axios.delete(
+    `/api/teams/${teamId}/members/${memberPk}/pinned_tickets/${pinnedTicketPk}/`
+  );
+
+  return;
+}
+
+export async function postPinnedTicket(
+  axios: AxiosInstance,
+  teamId: number,
+  memberPk: string,
+  ticketId: number
+): Promise<PinnedTicketRecord> {
+  const response = await axios.post(
+    `/api/teams/${teamId}/members/${memberPk}/pinned_tickets/`,
+    {
+      ticket: ticketId
+    }
+  );
+
+  return response.data as PinnedTicketRecord;
 }

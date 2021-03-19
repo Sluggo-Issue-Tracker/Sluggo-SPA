@@ -7,12 +7,12 @@
         </div>
         <div class="column">
           <div class="field is-pulled-right">
-            <div class="control has-icons-left">
+            <!-- <div class="control has-icons-left">
               <span class="icon is-medium">
                 <i class="fa fa-search"></i>
               </span>
               <input class="input" type="text" placeholder="Search Users" />
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -23,15 +23,15 @@
           <div class="box has-background-grey-lighter">
             <article class="media">
               <div class="media-left">
-                <figure class="image is-96x96">
+                <!-- <figure class="image is-96x96">
                   <img alt="Image" />
-                </figure>
+                </figure> -->
               </div>
               <div class="media-content">
                 <div class="content">
                   <p>
-                    <strong class="is-4" v-if="!member.owner.first_name || !member.owner.last_name">{{ member.owner.username }}</strong>
-                    <strong class="is-4" v-else>{{ member.owner.first_name + ' ' + member.owner.last_name }}</strong>
+                    <strong class="is-3" v-if="!member.owner.first_name || !member.owner.last_name">{{ member.owner.username }}</strong>
+                    <strong class="is-3" v-else>{{ member.owner.first_name + ' ' + member.owner.last_name }}</strong>
                     <br />
                   </p>
                 </div>

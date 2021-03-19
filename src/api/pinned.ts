@@ -20,6 +20,8 @@ export async function getPinnedTicketsForMember(
     `/api/teams/${teamId}/members/${memberPk}/pinned_tickets/`
   );
 
+  console.log(response);
+
   return response.data as PinnedTicketRecord[];
 }
 

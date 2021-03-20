@@ -23,7 +23,7 @@
                     </li>
                     <li>
                       <a>
-                        Approve Tags
+                        Add Tags
                       </a>
                     </li>
                   </ul>
@@ -157,10 +157,11 @@
                             class="input"
                             type="text"
                             placeholder="Add a Tag"
+                            v-model="value"
                           />
                         </p>
                         <p class="control">
-                          <button class="button is-info">
+                          <button class="button is-info" @click="addTag(value)">
                             Add
                           </button>
                         </p>
@@ -341,11 +342,36 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
+import { createTag,
+         deleteTag, 
+        } from "@/api/tags"
+import store from "@/store"
 
 export default defineComponent({
-  name: "Admin"
-  // components: {
-  // }
+  name: "Admin",
+  props: {
+    teamID: {
+      type: String,
+      required: true
+    },
+  },
+  setup(props) {
+    let newTag = "";
+
+    const addTag = async(value: string) => {
+      newTag = value;
+      console.log(newTag);
+    }
+
+    // onMounted(async () => {
+    //   await addTag();
+    // });
+
+    return {
+      addTag,
+      newTag,
+    };
+  }
 });
 </script>

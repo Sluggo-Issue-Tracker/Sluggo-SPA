@@ -2,7 +2,21 @@
   <div class="notification is-info">
     <div class="columns is-mobile">
       <div class="column is-10">
-        <p class="is-size-5">Ticket {{ number }} | {{ tags }} | {{ title }}</p>
+        <p class="is-size-5">
+          Ticket {{ number }}
+          <span
+            v-if="
+              typeof pinRecord.ticket.tag_list !== 'undefined' &&
+                pinRecord.ticket.tag_list.length > 0
+            "
+            >|
+            <span v-for="tag in pinRecord.ticket.tag_list" :key="tag"
+              >{{ tag.title }}
+            </span></span
+          >
+          |
+          {{ title }}
+        </p>
         <!-- TODO: Add due dates to tickets on backend -->
         <!-- <p>
           DUE DATE
@@ -49,22 +63,6 @@ const pinnedTicketComponent = defineComponent({
   emits: ["pinnedDidUpdate"],
   setup(props, context) {
     const number = computed(() => props.pinRecord.ticket.ticket_number);
-    const tags = computed(() => {
-      const tagList = props.pinRecord.ticket.tag_list;
-      if (typeof tagList === "undefined") {
-        return "No Tags";
-      } else {
-        // Create a string from all tags
-        // This could be factored out
-        let tagString = "";
-        tagList.forEach(
-          element => (tagString = tagString.concat(`${element.title} `))
-        );
-        tagString = tagString.trim();
-
-        return tagString;
-      }
-    });
     const title = computed(() => props.pinRecord.ticket.title);
 
     const deletePin = async () => {
@@ -94,7 +92,6 @@ const pinnedTicketComponent = defineComponent({
 
     return {
       number: number,
-      tags: tags,
       title: title,
       deletePin: deletePin
     };

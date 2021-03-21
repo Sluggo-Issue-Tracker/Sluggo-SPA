@@ -218,7 +218,7 @@
                             <button class="button is-link">
                               Unapprove
                             </button>
-                            <button class="button is-success">
+                            <button class="button is-success" @click="addTag">
                               Approve
                             </button>
 
@@ -228,6 +228,12 @@
                           </div>
                         </td>
                       </tr>
+                      <thead>
+                        <tr>
+                          <th>Approved Tags</th>
+                        </tr>
+                      </thead>
+                      <tag-comp></tag-comp>
                     </tbody>
                   </table>
                 </div>
@@ -302,7 +308,7 @@
                           <button class="button is-danger">
                             Unapprove
                           </button>
-                          <button class="button is-info">
+                          <button class="button is-info" @click="addTag">
                             Approve
                           </button>
                         </div>
@@ -342,10 +348,38 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import TagComp from "./TagComp.vue";
 
 export default defineComponent({
-  name: "Admin"
-  // components: {
-  // }
+  components: { TagComp },
+  data() {
+    return {
+      name: "temp tag",
+      tags: [{
+        id: new Date().toString(),
+        name: "temp tag"
+      }],
+    };
+  },
+  methods: {
+    addTag() {
+      this.tags.push({
+        id: new Date().toString(),
+        name: this.name
+      });
+      console.log(this.tags);
+      this.name += "g";
+    },
+    removeTag(tagId: string) {
+      const tagIndex = this.tags.findIndex(tag => tag.id === tagId);
+      this.tags.splice(tagIndex, 1);
+    },
+  },
+  provide() {
+    return {
+      tags: this.tags,
+      deleteTag: this.removeTag
+    };
+  }
 });
 </script>

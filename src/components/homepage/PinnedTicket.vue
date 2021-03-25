@@ -6,7 +6,7 @@
     <div class="columns is-mobile">
       <div class="column is-10">
         <p class="is-size-5">
-          Ticket {{ number }}
+          Ticket {{ pinRecord.ticket.ticket_number }}
           <span
             v-if="
               typeof pinRecord.ticket.tag_list !== 'undefined' &&
@@ -18,7 +18,7 @@
             </span></span
           >
           |
-          {{ title }}
+          {{ pinRecord.ticket.title }}
         </p>
         <!-- TODO: Add due dates to tickets on backend -->
         <!-- <p>
@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "vue";
+import { defineComponent, PropType } from "vue";
 import { useRouter } from "vue-router";
 
 import store from "@/store";
@@ -68,9 +68,6 @@ const pinnedTicketComponent = defineComponent({
   emits: ["pinnedDidUpdate"],
   setup(props, context) {
     const router = useRouter();
-
-    const number = computed(() => props.pinRecord.ticket.ticket_number);
-    const title = computed(() => props.pinRecord.ticket.title);
 
     const deletePin = async () => {
       const team = store.state.team;
@@ -99,13 +96,9 @@ const pinnedTicketComponent = defineComponent({
 
     const goToTicket = (id: number) => {
       router.push(generateTicketPageLink(store.getters.team, id));
-
-      return;
     };
 
     return {
-      number: number,
-      title: title,
       deletePin: deletePin,
       goToTicket: goToTicket
     };

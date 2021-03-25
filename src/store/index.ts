@@ -122,6 +122,22 @@ const {
   getters: {
     generateAxiosInstance(): AxiosInstance {
       return generateAxiosInstance(store.state.token);
+    },
+    team(): TeamRecord {
+      const team = store.state.team;
+      if (typeof team === "undefined") {
+        throw Error("Attempted to get undefined team from store");
+      }
+
+      return team;
+    },
+    member(): MemberRecord {
+      const member = store.state.member;
+      if (typeof member === "undefined") {
+        throw Error("Attempted to get undefined member from store");
+      }
+
+      return member;
     }
   }
 });

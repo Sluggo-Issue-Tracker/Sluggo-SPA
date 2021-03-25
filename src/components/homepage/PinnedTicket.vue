@@ -1,5 +1,8 @@
 <template>
-  <div class="notification is-info">
+  <div
+    class="notification is-info hp_pinned_ticket"
+    @click="goToTicket(pinRecord.ticket.id)"
+  >
     <div class="columns is-mobile">
       <div class="column is-10">
         <p class="is-size-5">
@@ -24,7 +27,7 @@
         <!-- <p>Due May 25, 2020.</p> -->
       </div>
       <div class="column is-2">
-        <span @click="deletePin"><i class="bx bxs-pin bx-sm"></i></span>
+        <span @click.prevent="deletePin"><i class="bx bxs-pin bx-sm"></i></span>
       </div>
       <!-- TODO: Determine how to expose ticket completion
                      endpoints on the homepage -->
@@ -48,9 +51,11 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from "vue";
+import { useRouter } from "vue-router";
 
 import store from "@/store";
 import { deletePinnedTicket, PinnedTicketRecord } from "@/api/pinned";
+import { generateTicketPageLink } from "@/methods/tickets";
 
 const pinnedTicketComponent = defineComponent({
   name: "PinnedTicket",
@@ -62,6 +67,8 @@ const pinnedTicketComponent = defineComponent({
   },
   emits: ["pinnedDidUpdate"],
   setup(props, context) {
+    const router = useRouter();
+
     const number = computed(() => props.pinRecord.ticket.ticket_number);
     const title = computed(() => props.pinRecord.ticket.title);
 
@@ -90,13 +97,26 @@ const pinnedTicketComponent = defineComponent({
       context.emit("pinnedDidUpdate");
     };
 
+    const goToTicket = (id: number) => {
+      router.push(generateTicketPageLink(store.getters.team, id));
+
+      return;
+    };
+
     return {
       number: number,
       title: title,
-      deletePin: deletePin
+      deletePin: deletePin,
+      goToTicket: goToTicket
     };
   }
 });
 
 export default pinnedTicketComponent;
 </script>
+
+<style scoped>
+.hp_pinned_ticket {
+  cursor: pointer;
+}
+</style>

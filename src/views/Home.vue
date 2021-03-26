@@ -12,6 +12,11 @@
                   Assigned to You
                 </p>
               </div>
+              <div class="level-item level-right">
+                <button class="button is-primary" @click="fetchAssignedTickets">
+                  <i class="bx bx-refresh"></i>
+                </button>
+              </div>
             </div>
             <div v-if="assignedTickets.length === 0">
               <div class="columns">
@@ -136,7 +141,7 @@ import AssignedTicket from "@/components/homepage/AssignedTicket.vue";
 
 import { getPinnedTicketsForMember, PinnedTicketRecord } from "@/api/pinned";
 import { userNameForUser, dateStringForDate } from "@/methods/common";
-import { listTickets } from "@/api/tickets";
+import { listTickets, TicketRecord } from "@/api/tickets";
 
 export default defineComponent({
   name: "Home",
@@ -154,6 +159,8 @@ export default defineComponent({
 
     const date = ref(dateStringForDate(DateTime.now()));
 
+    // MARK: Assigned Tickets
+    const assignedTickets = ref([] as TicketRecord[]);
     const fetchAssignedTickets = async () => {
       const team = store.getters.team; // will error if nonexistent
 
@@ -168,10 +175,10 @@ export default defineComponent({
         }
       );
 
-      return assignedTicketResults.results.slice(0, 3);
+      assignedTickets.value = assignedTicketResults.results.slice(0, 3);
     };
 
-    const assignedTickets = ref(await fetchAssignedTickets());
+    await fetchAssignedTickets();
 
     // MARK: Pinned Tickets
     const pinnedTickets = ref<PinnedTicketRecord[]>([]);
@@ -210,7 +217,8 @@ export default defineComponent({
       fetchPinnedTickets,
       userName,
       date,
-      assignedTickets
+      assignedTickets,
+      fetchAssignedTickets
     };
   }
 });

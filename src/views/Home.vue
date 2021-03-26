@@ -4,7 +4,7 @@
       <div class="container">
         <div class="columns">
           <div class="column is-two-thirds">
-            <p class="title">Hey, User</p>
+            <p class="title">Hey, {{ userName }}</p>
             <p>It's DATE. Here's your overview:</p>
             <p>
               Thank you for registering for Sluggo! Currently your account is
@@ -146,11 +146,12 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from "vue";
+import { ref, computed, defineComponent } from "vue";
 import store from "@/store";
 import PinnedTicket from "@/components/homepage/PinnedTicket.vue";
 
 import { getPinnedTicketsForMember, PinnedTicketRecord } from "@/api/pinned";
+import { userNameForUser } from "@/methods/common";
 
 export default defineComponent({
   name: "Home",
@@ -158,7 +159,12 @@ export default defineComponent({
     PinnedTicket
   },
   async setup() {
-    console.log("Running home setup!");
+    const userName = computed(() => {
+      const user = store.state.user;
+      if (typeof user === "undefined") return undefined;
+
+      return userNameForUser(user);
+    });
 
     const pinnedTickets = ref<PinnedTicketRecord[]>([]);
 
@@ -192,8 +198,9 @@ export default defineComponent({
     await fetchPinnedTickets();
 
     return {
-      pinnedTickets: pinnedTickets,
-      fetchPinnedTickets: fetchPinnedTickets
+      pinnedTickets,
+      fetchPinnedTickets,
+      userName
     };
   }
 });

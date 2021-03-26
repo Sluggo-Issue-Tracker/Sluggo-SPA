@@ -1,5 +1,6 @@
 import { UserRecord } from "@/api/users";
-import { userNameForUser } from "@/methods/common";
+import { dateStringForDate, userNameForUser } from "@/methods/common";
+import { DateTime } from "luxon";
 
 describe("Testing userNameForUser method", () => {
   it("Will give first name and last name combined if defined", () => {
@@ -72,3 +73,12 @@ describe("Testing userNameForUser method", () => {
     expect(userNameForUser(user)).toBe(expectedName);
   });
 });
+
+describe("Testing the date method", () => {
+  it("Correctly formats the date of UNIX epoch into human readable form", () => {
+    const date = DateTime.local(2020, 3, 13);
+    const expectedDate = "March 13, 2020";
+
+    expect(dateStringForDate(date)).toBe(expectedDate);
+  })
+})

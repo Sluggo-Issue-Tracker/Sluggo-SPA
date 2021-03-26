@@ -1,4 +1,5 @@
 import { UserRecord } from "@/api/users";
+import { DateTime } from "luxon";
 
 export function userNameForUser(user: UserRecord) {
   // In the event someone doesn't have at least a first name,
@@ -14,4 +15,8 @@ export function userNameForUser(user: UserRecord) {
   }
 
   return user.first_name + " " + user.last_name;
+}
+
+export function dateStringForDate(date: DateTime) {
+  return date.monthLong + " " + date.day + ", " + date.year;
 }

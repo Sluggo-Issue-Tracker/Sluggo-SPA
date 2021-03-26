@@ -5,7 +5,6 @@ import {
   createStatusRecord,
   ReadStatusRecord
 } from "@/api/statuses";
-import { TeamRecord } from "@/api/teams";
 import { UserRecord } from "@/api/auth";
 import { PaginatedList } from "@/api/base";
 import { TagRecord, ReadTagRecord, createTagRecord } from "@/api/tags";
@@ -116,7 +115,7 @@ export async function listTickets(
 ): Promise<PaginatedList<TicketRecord>> {
   let queryParams = `?page=${page}`;
   if (filter?.assigned) {
-    queryParams += `&assigned__username=${filter.assigned.username}`;
+    queryParams += `&assigned_user__username=${filter.assigned.username}`;
   }
   if (filter?.owner) {
     queryParams += `&owner__username=${filter.owner.username}`;
@@ -124,6 +123,7 @@ export async function listTickets(
   if (filter?.search) {
     queryParams += `&search=${filter.search}`;
   }
+  console.log(queryParams);
 
   const response = await axios.get(
     `/api/teams/${teamId}/tickets/${queryParams}`

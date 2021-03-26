@@ -123,6 +123,13 @@ const {
     generateAxiosInstance(): AxiosInstance {
       return generateAxiosInstance(store.state.token);
     },
+    user(): UserRecord {
+      const user = store.state.user;
+      if (typeof user === "undefined")
+        throw Error("Attempted to get undefined user from store");
+
+      return user;
+    },
     team(): TeamRecord {
       const team = store.state.team;
       if (typeof team === "undefined") {

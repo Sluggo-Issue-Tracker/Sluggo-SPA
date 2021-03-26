@@ -13,33 +13,18 @@
                 </p>
               </div>
             </div>
-            <div>
+            <div v-if="assignedTickets.length === 0">
               <div class="columns">
                 <div class="column">
                   <p>You don't have any incomplete tickets assigned to you.</p>
                 </div>
               </div>
             </div>
-            <div class="notification is-info">
-              <div class="columns">
-                <div class="column">
-                  <p class="is-size-5">
-                    Ticket ID | tags | title
-                  </p>
-                  <p>
-                    Due DUEDATE
-                  </p>
-                </div>
-                <!-- <div class="column"></div>
-                   <div class="column">
-                      <div class="buttons">
-                         <div class="button is-inverted is-danger is-outlined">
-                            <p>Complete</p>
-                         </div>
-                      </div>
-                   </div> -->
-              </div>
-            </div>
+            <assigned-ticket
+              v-for="ticket in assignedTickets"
+              :key="ticket.id"
+              :ticketRecord="ticket"
+            ></assigned-ticket>
             <!-- TODO: Implement filtering on the Tickets page -->
             <!-- <div class="columns">
               <div class="column">
@@ -147,14 +132,17 @@ import { ref, computed, defineComponent } from "vue";
 import { DateTime } from "luxon";
 import store from "@/store";
 import PinnedTicket from "@/components/homepage/PinnedTicket.vue";
+import AssignedTicket from "@/components/homepage/AssignedTicket.vue";
 
 import { getPinnedTicketsForMember, PinnedTicketRecord } from "@/api/pinned";
 import { userNameForUser, dateStringForDate } from "@/methods/common";
+import { listTickets } from "@/api/tickets";
 
 export default defineComponent({
   name: "Home",
   components: {
-    PinnedTicket
+    PinnedTicket,
+    AssignedTicket
   },
   async setup() {
     const userName = computed(() => {
@@ -166,6 +154,26 @@ export default defineComponent({
 
     const date = ref(dateStringForDate(DateTime.now()));
 
+    const fetchAssignedTickets = async () => {
+      const team = store.getters.team; // will error if nonexistent
+
+      const user = store.getters.user; // will error if nonexistent
+
+      const assignedTicketResults = await listTickets(
+        team.id,
+        1, // Assuming one page holds at least three results
+        store.getters.generateAxiosInstance,
+        {
+          assigned: user
+        }
+      );
+
+      return assignedTicketResults.results.slice(0, 3);
+    };
+
+    const assignedTickets = ref(await fetchAssignedTickets());
+
+    // MARK: Pinned Tickets
     const pinnedTickets = ref<PinnedTicketRecord[]>([]);
 
     const fetchPinnedTickets = async () => {
@@ -201,7 +209,8 @@ export default defineComponent({
       pinnedTickets,
       fetchPinnedTickets,
       userName,
-      date
+      date,
+      assignedTickets
     };
   }
 });

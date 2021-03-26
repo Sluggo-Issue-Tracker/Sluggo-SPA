@@ -114,7 +114,8 @@
                   <p class="is-size-4 has-text-weight-semibold">Your Tags</p>
                 </div>
               </div>
-              <div class="">
+              <p>Personal tags are currently not implemented.</p>
+              <!-- <div class="">
                 You don't have any tags
               </div>
               <div class="tile is-ancestor">
@@ -124,13 +125,14 @@
                   >
                     <p>
                       TAG NAME
+                      // TODO: Reimplement once backend has due dates
                       <span class="has-text-danger"
                         >(overdue count) tickets</span
                       >
                     </p>
                   </article>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>

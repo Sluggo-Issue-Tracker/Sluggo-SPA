@@ -35,26 +35,27 @@
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="navbar-item has-dropdown is-hoverable is-size-4">
-            <a class="navbar-link">
-              Welcome, User
-              <img src="" />
+            <a class="navbar-link" v-if="userName !== undefined">
+              Welcome, {{ userName }}
+              <!-- TODO: Re-add profile picture -->
+              <!-- <img src="" />  -->
             </a>
             <div class="navbar-dropdown is-boxed is-size-4">
               <router-link class="navbar-item" to="/new_team">
                 Create Team
               </router-link>
-              <router-link class="navbar-item" to="/login">
+              <!-- <router-link class="navbar-item" to="/login">
                 Logout
-              </router-link>
+              </router-link> -->
             </div>
           </div>
           <div class="buttons">
             <router-link class="button is-primary" to="/login">
-              Sign up
+              Auth
             </router-link>
-            <router-link class="button is-light" to="/login">
+            <!-- <router-link class="button is-light" to="/login">
               Sign in
-            </router-link>
+            </router-link> -->
           </div>
         </div>
       </div>
@@ -63,7 +64,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
+import { userNameForUser } from "@/methods/common";
+import store from "@/store";
 
 import NavbarTeamPageLink from "@/components/navbar/NavbarTeamPageLink.vue";
 
@@ -71,6 +74,18 @@ const sluggoNavbarComponent = defineComponent({
   name: "SluggoNavbar",
   components: {
     NavbarTeamPageLink
+  },
+  setup() {
+    const userName = computed(() => {
+      const user = store.state.user;
+      if (typeof user === "undefined") return undefined;
+
+      return userNameForUser(user);
+    });
+
+    return {
+      userName
+    };
   }
 });
 

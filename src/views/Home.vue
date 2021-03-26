@@ -86,7 +86,7 @@
               <div class="level">
                 <div class="level-item level-left">
                   <p class="is-size-4 has-text-weight-semibold">
-                    Starred Tickets
+                    Pinned Tickets
                   </p>
                 </div>
                 <!-- TODO: Implement easy pinned ticket modification -->
@@ -98,7 +98,7 @@
               </div>
               <div class="columns" v-if="pinnedTickets.length === 0">
                 <div class="column">
-                  <p>You don't have any starred tickets.</p>
+                  <p>You don't have any pinned tickets.</p>
                 </div>
               </div>
               <pinned-ticket

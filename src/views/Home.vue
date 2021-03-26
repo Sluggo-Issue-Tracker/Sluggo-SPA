@@ -80,12 +80,11 @@
                     Pinned Tickets
                   </p>
                 </div>
-                <!-- TODO: Implement easy pinned ticket modification -->
-                <!-- <div class="level-item level-right buttons">
-                      <div class="button">
-                         Edit
-                      </div>
-                   </div> -->
+                <div class="level-item level-right">
+                  <button class="button is-primary" @click="fetchPinnedTickets">
+                    <i class="bx bx-refresh"></i>
+                  </button>
+                </div>
               </div>
               <div class="columns" v-if="pinnedTickets.length === 0">
                 <div class="column">

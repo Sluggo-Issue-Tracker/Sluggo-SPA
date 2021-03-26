@@ -4,12 +4,8 @@
       <div class="column">
         <p class="is-size-5">
           {{ ticketRecord.ticket_number }}
-          <span v-if="ticketRecord.tag_list.length > 0"
-            >|
-            <template v-for="tag in ticketRecord.tag_list" :key="tag.id">
-              <span>{{ tag.title }}&nbsp;</span>
-            </template></span
-          >| {{ ticketRecord.title }}
+          <tag-list :tagList="ticketRecord.tag_list"></tag-list>|
+          {{ ticketRecord.title }}
         </p>
         <!-- <p>
           Due DUEDATE
@@ -22,6 +18,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 
+import TagList from "@/components/ticket/TagList.vue";
 import { TicketRecord } from "@/api/tickets";
 
 const assignedTicketComponent = defineComponent({
@@ -31,6 +28,9 @@ const assignedTicketComponent = defineComponent({
       type: Object as PropType<TicketRecord>,
       required: true
     }
+  },
+  components: {
+    TagList
   }
 });
 

@@ -40,13 +40,14 @@
                    </div> -->
               </div>
             </div>
-            <div class="columns">
+            <!-- TODO: Implement filtering on the Tickets page -->
+            <!-- <div class="columns">
               <div class="column">
                 <a class="sluggo_clickable"
                   >See all tickets assigned to you &rarr;</a
                 >
               </div>
-            </div>
+            </div> -->
             <br />
             <div class="columns is-multiline">
               <p class="column is-12 is-size-4 has-text-weight-semibold">

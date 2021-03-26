@@ -132,7 +132,7 @@
 </template>
 
 <script lang="ts">
-import { ref, computed, defineComponent } from "vue";
+import { ref, computed, defineComponent, onBeforeMount } from "vue";
 import { DateTime } from "luxon";
 import store from "@/store";
 import PinnedTicket from "@/components/homepage/PinnedTicket.vue";
@@ -148,7 +148,7 @@ export default defineComponent({
     PinnedTicket,
     AssignedTicket
   },
-  async setup() {
+  setup() {
     const userName = computed(() => {
       const user = store.state.user;
       if (typeof user === "undefined") return undefined;
@@ -176,8 +176,6 @@ export default defineComponent({
 
       assignedTickets.value = assignedTicketResults.results.slice(0, 3);
     };
-
-    await fetchAssignedTickets();
 
     // MARK: Pinned Tickets
     const pinnedTickets = ref<PinnedTicketRecord[]>([]);
@@ -209,7 +207,10 @@ export default defineComponent({
       pinnedTickets.value = fetchedPinnedTickets;
     };
 
-    await fetchPinnedTickets();
+    onBeforeMount(async () => {
+      await fetchAssignedTickets();
+      await fetchPinnedTickets();
+    });
 
     return {
       pinnedTickets,

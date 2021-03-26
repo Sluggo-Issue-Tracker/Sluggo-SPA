@@ -7,17 +7,7 @@
       <div class="column is-10">
         <p class="is-size-5">
           Ticket {{ pinRecord.ticket.ticket_number }}
-          <span
-            v-if="
-              typeof pinRecord.ticket.tag_list !== 'undefined' &&
-                pinRecord.ticket.tag_list.length > 0
-            "
-            >|
-            <span v-for="tag in pinRecord.ticket.tag_list" :key="tag"
-              >{{ tag.title }}
-            </span></span
-          >
-          |
+          <tag-list :tagList="pinRecord.ticket.tag_list"></tag-list>|
           {{ pinRecord.ticket.title }}
         </p>
         <!-- TODO: Add due dates to tickets on backend -->
@@ -57,6 +47,8 @@ import store from "@/store";
 import { deletePinnedTicket, PinnedTicketRecord } from "@/api/pinned";
 import { generateTicketPageLink } from "@/methods/tickets";
 
+import TagList from "@/components/ticket/TagList.vue";
+
 const pinnedTicketComponent = defineComponent({
   name: "PinnedTicket",
   props: {
@@ -66,6 +58,9 @@ const pinnedTicketComponent = defineComponent({
     }
   },
   emits: ["pinnedDidUpdate"],
+  components: {
+    TagList
+  },
   setup(props, context) {
     const router = useRouter();
 

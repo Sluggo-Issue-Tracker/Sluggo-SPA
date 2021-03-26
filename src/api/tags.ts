@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import axios, { AxiosInstance } from "axios";
+import { AxiosInstance } from "axios";
 import { TeamRecord } from "@/api/teams";
-import { generateAxiosInstance, PaginatedList } from "./base";
+import { PaginatedList } from "./base";
 import { DateTime } from "luxon";
 
 export interface WriteTagRecord {

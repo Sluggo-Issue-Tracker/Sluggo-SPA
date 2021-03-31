@@ -41,8 +41,14 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "admin",
         name: "Admin",
-        component: Admin
-      }
+        component: Admin,
+        props: true
+      },
+      {
+        path: "",
+        name: "Home",
+        component: Home
+      },
       // {
       //   path: "tickets/:userId",
       //   name: "TicketDetails",

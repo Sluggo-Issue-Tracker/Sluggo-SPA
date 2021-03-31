@@ -78,7 +78,7 @@ const {
       await context.dispatch.doSetTeam(teamRecord);
 
       return teamRecord;
-    }
+    },
   },
   modules: {},
   getters: {

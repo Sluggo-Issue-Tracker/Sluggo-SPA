@@ -20,7 +20,7 @@
     "luxon": "^1.26.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
-    "vuex": "^4.0.0"
+    "vuex": "^4.0.0-0"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.0.1",

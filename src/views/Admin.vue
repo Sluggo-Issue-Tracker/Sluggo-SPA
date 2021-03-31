@@ -135,7 +135,109 @@
                 </div>
               </div>
 
-              <stored-tags v-bind:teamId="teamId"></stored-tags>
+              <!-- Manage Tags -->
+              <div>
+                <!-- Top header as a level -->
+                <nav class="level">
+                  <!-- Left side -->
+                  <div class="level-left">
+                    <div class="level-item">
+                      <p class="title">
+                        Manage Tags
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Right side -->
+                  <div class="level-right">
+                    <div class="level-item">
+                      <div class="field has-addons">
+                        <p class="control">
+                          <input
+                            class="input"
+                            type="text"
+                            placeholder="Add a Tag"
+                          />
+                        </p>
+                        <p class="control">
+                          <button class="button is-info">
+                            Add
+                          </button>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="level-item">
+                      <p class="has-text-danger">
+                        Tag cannot be blank
+                      </p>
+                      <p class="has-text-danger">
+                        Tags must be one word and alphanumeric.
+                      </p>
+                    </div>
+                  </div>
+                </nav>
+
+                <!-- Table to show tags -->
+                <div
+                  class="section"
+                  style="height:60vh;overflow-x:auto;overflow:auto;"
+                >
+                  <table class="table is-striped is-fullwidth">
+                    <thead>
+                      <tr>
+                        <th>Tag</th>
+                        <th></th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <input class="input" type="text" />
+                          <input
+                            readonly
+                            class="input is-static is-bold"
+                            type="text"
+                          />
+                        </td>
+                        <td>
+                          <div class="buttons">
+                            <button class="button is-warning">
+                              <i class="bx bx-edit"></i>
+                            </button>
+                            <button class="button is-success">
+                              Save
+                            </button>
+                            <button class="button is-warning">
+                              Cancel
+                            </button>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="buttons">
+                            <button class="button is-link">
+                              Unapprove
+                            </button>
+                            <button class="button is-success" @click="addTag">
+                              Approve
+                            </button>
+
+                            <button class="button is-danger">
+                              <i class="bx bx-trash"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                      <thead>
+                        <tr>
+                          <th>Approved Tags</th>
+                        </tr>
+                      </thead>
+                      <tag-comp></tag-comp>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
 
               <!-- Approving Users -->
               <div style="height:60vh;overflow-x:auto;overflow:auto;">
@@ -246,15 +348,38 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import StoredTags from "./StoredTags.vue";
+import TagComp from "./TagComp.vue";
 
 export default defineComponent({
-  components: { StoredTags },
-  props: {
-    teamId: {
-      type: String,
-      required: true,
+  components: { TagComp },
+  data() {
+    return {
+      name: "temp tag",
+      tags: [{
+        id: new Date().toString(),
+        name: "temp tag"
+      }],
+    };
+  },
+  methods: {
+    addTag() {
+      this.tags.push({
+        id: new Date().toString(),
+        name: this.name
+      });
+      console.log(this.tags);
+      this.name += "g";
+    },
+    removeTag(tagId: string) {
+      const tagIndex = this.tags.findIndex(tag => tag.id === tagId);
+      this.tags.splice(tagIndex, 1);
     },
   },
+  provide() {
+    return {
+      tags: this.tags,
+      deleteTag: this.removeTag
+    };
+  }
 });
 </script>

@@ -1,9 +1,9 @@
 <template>
   <tr>
     <td class="is-narrow">
-      <button class="button" @click="doPinAction">
-        <i class="bx bx-pin bx-sm" v-if="pinRecord === undefined"></i>
-        <i class="bx bxs-pin bx-sm" v-else></i>
+      <button class="button">
+        <i class="bx bx-pin bx-sm"></i>
+        <i class="bx bxs-pin bx-sm"></i>
       </button>
     </td>
     <td class="is-narrow">{{ ticket.ticket_number }}</td>
@@ -29,13 +29,7 @@
 
 <script lang="ts">
 import { TicketRecord } from "@/api/tickets";
-import { defineComponent, ref, PropType } from "vue";
-import {
-  postPinnedTicket,
-  deletePinnedTicket,
-  PinnedTicketRecord
-} from "@/api/pinned";
-import store from "@/store";
+import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   name: "TicketListEntry",
@@ -43,10 +37,6 @@ export default defineComponent({
     data: {
       type: Object as () => TicketRecord,
       required: true
-    },
-    initialPinRecord: {
-      type: Object as PropType<PinnedTicketRecord>,
-      required: false
     }
   },
   emits: ["click"],
@@ -55,44 +45,9 @@ export default defineComponent({
     const click = () => {
       context.emit("click");
     };
-    const pinRecord = ref<PinnedTicketRecord | undefined>(
-      props.initialPinRecord
-    );
-    const doPinAction = async () => {
-      const team = store.state.team;
-      if (typeof team === "undefined")
-        throw Error("Team not provided on pin attempt");
-
-      const member = store.state.member;
-      if (typeof member === "undefined")
-        throw Error("Member not provided on pin attempt");
-
-      if (typeof pinRecord.value === "undefined") {
-        // Ticket not pinned
-        const pinTicketResponse = await postPinnedTicket(
-          store.getters.generateAxiosInstance,
-          team.id,
-          member.id,
-          props.data.id
-        );
-
-        pinRecord.value = pinTicketResponse;
-      } else {
-        deletePinnedTicket(
-          store.getters.generateAxiosInstance,
-          team.id,
-          member.id,
-          pinRecord.value.id
-        );
-
-        pinRecord.value = undefined;
-      }
-    };
     return {
       ticket,
-      click,
-      pinRecord,
-      doPinAction
+      click
     };
   }
 });

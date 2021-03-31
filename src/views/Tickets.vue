@@ -34,7 +34,6 @@
                 v-for="ticket in ticketList.results"
                 :key="ticket.id"
                 :data="ticket"
-                :initialPinRecord="pinRecordForTicket(ticket)"
                 @click="selectTicket(ticket)"
               ></ticket-list-entry>
             </tbody>
@@ -49,7 +48,6 @@
 import { defineComponent, ref, onMounted } from "vue";
 import router from "@/router/index";
 import { listTickets, TicketRecord } from "@/api/tickets";
-import { getPinnedTicketsForMember, PinnedTicketRecord } from "@/api/pinned";
 import { PaginatedList } from "@/api/base";
 import { generateTicketPageLink } from "@/methods/teamPage";
 import store from "@/store";
@@ -83,26 +81,9 @@ export default defineComponent({
     const selectedTicket = ref({});
     const showModal = ref(false);
     const teamId = parseInt(props.teamId);
-    const pinnedTickets = ref<PinnedTicketRecord[]>([]);
 
     const getTeamTickets = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
-
-      // Update pinned tickets
-      // This needs to happen before the normal tickets are fetched,
-      // otherwise it might try to pull a pin record before fetching the pin
-      // records.
-
-      const member = store.state.member;
-      if (typeof member === "undefined") {
-        throw Error("Member was undefined unexpectedly on Tickets page.");
-      }
-
-      pinnedTickets.value = await getPinnedTicketsForMember(
-        axiosInstance,
-        teamId,
-        member.id
-      );
 
       // hack. v-for does not detect change on results unless this is reset
       // manually
@@ -112,20 +93,6 @@ export default defineComponent({
         listPage.value,
         axiosInstance
       );
-    };
-
-    const pinRecordForTicket = (
-      ticket: TicketRecord
-    ): PinnedTicketRecord | undefined => {
-      const filteredPins = pinnedTickets.value.filter(
-        pinRecord => pinRecord.ticket.id === ticket.id
-      );
-
-      if (filteredPins.length > 0) {
-        return filteredPins[0];
-      } else {
-        return undefined;
-      }
     };
 
     const selectTicket = async (ticket?: TicketRecord) => {
@@ -149,8 +116,7 @@ export default defineComponent({
       selectTicket,
       showModal,
       selectedTicket,
-      changePage,
-      pinRecordForTicket: pinRecordForTicket
+      changePage
     };
   }
 });

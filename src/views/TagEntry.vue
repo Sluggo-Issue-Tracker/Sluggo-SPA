@@ -35,7 +35,7 @@ export default defineComponent({
       required: true,
     },
     tagId: {
-      type: Number,
+      type: String,
       required: true,
     },
     tagTitle: {
@@ -52,6 +52,7 @@ export default defineComponent({
     const listPage = ref(1);
     const tagRecord = ref({} as TagRecord);
     const tagId = parseInt(props.tagId);
+    console.log(tagId);
 
     const getTeamRecord = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;

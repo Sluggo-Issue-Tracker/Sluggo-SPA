@@ -17,10 +17,10 @@
         <div class="level-item">
           <div class="field has-addons">
             <p class="control">
-              <input class="input" type="text" placeholder="Add a Tag" />
+              <input class="input" type="text" placeholder="Add a Tag" v-model="newTag.title" />
             </p>
             <p class="control">
-              <button class="button is-info">
+              <button class="button is-info" @click="createTags">
                 Add
               </button>
             </p>
@@ -48,45 +48,19 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              <input class="input" type="text" />
-              <input readonly class="input is-static is-bold" type="text" />
-            </td>
-            <td>
-              <div class="buttons">
-                <button class="button is-warning">
-                  <i class="bx bx-edit"></i>
-                </button>
-                <button class="button is-success">
-                  Save
-                </button>
-                <button class="button is-warning">
-                  Cancel
-                </button>
-              </div>
-            </td>
-            <td>
-              <div class="buttons">
-                <button class="button is-link">
-                  Unapprove
-                </button>
-                <button class="button is-success">
-                  Approve
-                </button>
-
-                <button class="button is-danger">
-                  <i class="bx bx-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
           <thead>
             <tr>
-              <th>Approved Tags</th>
+              <th>Active Tags</th>
             </tr>
           </thead>
-          <tag-entry v-for="tag in tagsList.results" v-bind:key="tag.id" v-bind:tagId="tag.id" v-bind:teamId="teamId" v-bind:tagTitle="tag.title" v-on:update="getTags">
+          <tag-entry
+            v-for="tag in tagsList.results"
+            v-bind:key="tag.id"
+            v-bind:tagId="tag.id"
+            v-bind:teamId="teamId"
+            v-bind:tagTitle="tag.title"
+            v-on:update="getTags"
+          >
           </tag-entry>
         </tbody>
       </table>
@@ -100,13 +74,10 @@ import { TeamRecord, getTeam } from "@/api/teams";
 import { PaginatedList } from "@/api/base";
 import TagEntry from "./TagEntry.vue";
 import {
-  createTagRecord,
   createTag,
-  updateTag,
-  getTag,
   listTag,
-  deleteTag,
   TagRecord,
+  WriteTagRecord,
 } from "@/api/tags";
 import store from "@/store";
 export default defineComponent({
@@ -122,7 +93,7 @@ export default defineComponent({
     const teamRecord = ref({} as TeamRecord);
     const tagsList = ref({} as PaginatedList<TagRecord>);
     const listPage = ref(1);
-    const tagRecord = ref({} as TagRecord);
+    const newTag = ref({} as WriteTagRecord);
 
     const getTeamRecord = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
@@ -146,6 +117,20 @@ export default defineComponent({
       }
     };
 
+    const createTags = async () => {
+      const axiosInstance = store.getters.generateAxiosInstance;
+      const team = teamRecord.value;
+      if (team) {
+        try {
+          await createTag(newTag.value, teamRecord.value, axiosInstance);
+          await getTags();
+        } catch (error) {
+          alert(error);
+          return;
+        }
+      }
+    };
+
     onMounted(async () => {
       await getTeamRecord();
       await getTags();
@@ -157,7 +142,9 @@ export default defineComponent({
       listPage,
       getTags,
       getTeamRecord,
+      newTag,
+      createTags
     };
-  },
+  }
 });
 </script>

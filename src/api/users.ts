@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { AxiosInstance } from "axios";
 import { DateTime } from "luxon";
 // import { TeamRecord } from "@/api/teams";
@@ -35,4 +36,14 @@ export async function listMembers(
   );
   console.log(response.data.results);
   return response.data as PaginatedList<MemberRecord>;
+}
+
+export async function approveMember(
+  axios: AxiosInstance,
+  teamId: number,
+  record: MemberRecord
+): Promise<void> {
+  await axios.patch(`/api/teams/${teamId}/members/${record.id}/`, {
+    role: "AP"
+  });
 }

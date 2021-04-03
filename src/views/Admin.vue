@@ -252,13 +252,17 @@
                     <tr>
                       <th>No users to approve</th>
                     </tr>
-                    <tr>
-                      <th>FULL NAME</th>
-                      <td>USER EMAIL</td>
+                    <tr 
+                      v-for="member in unapprovedList"
+                      v-bind:key="member.id"
+                    >
+                      <th v-if="!member.owner.first_name || !member.owner.last_name">{{ member.owner.username }}</th>
+                      <th v-else>{{ member.owner.first_name + ' ' + member.owner.last_name }}</th>
+                      <td>{{ member.owner.email }}</td>
                       <td>USER TAGS</td>
-                      <td>USER BIO</td>
+                      <td>{{ member.bio }}</td>
                       <td>
-                        <button class="button is-success">
+                        <button class="button is-success" @click="approveUser(member)">
                           Approve
                         </button>
                       </td>
@@ -341,11 +345,92 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
+import { TeamRecord, getTeam } from "@/api/teams";
+import { PaginatedList } from "@/api/base";
+import { listMembers, approveMember, MemberRecord } from "@/api/users";
+import store from "@/store";
 
 export default defineComponent({
-  name: "Admin"
+  name: "Admin",
   // components: {
   // }
+  props: {
+    teamId: {
+      type: String,
+      required: true
+    }
+  },
+  setup(props) {
+    const teamRecord = ref({} as TeamRecord);
+    const membersList = ref({} as PaginatedList<MemberRecord>);
+    const listPage = ref(1);
+    const teamId = parseInt(props.teamId);
+    const unapprovedList = ref({} as Array<MemberRecord>);
+
+    const getTeamMembers = async () => {
+      const axiosInstance = store.getters.generateAxiosInstance;
+      const team = teamRecord.value;
+      if (team) {
+        console.log("found team :)");
+        membersList.value = await listMembers(
+          axiosInstance,
+          teamId,
+          listPage.value
+        );
+
+        // create a array of unapproved users by filtering memberList
+        unapprovedList.value = membersList.value.results.filter(member => member.role === 'UA');
+        // console.log(unapprovedList.value);
+
+      } else {
+        console.log("no team :(");
+      }
+    };
+
+    const getTeamRecord = async () => {
+      const axiosInstance = store.getters.generateAxiosInstance;
+      const teamId = parseInt(props.teamId);
+      const team = await getTeam(axiosInstance, teamId);
+      if (team) {
+        console.log("team loaded :)");
+        teamRecord.value = team;
+      } else {
+        console.log("no such team :(");
+      }
+    };
+
+    const approveUser = async (member: MemberRecord) => {
+      // send API request (patch) to update user role from "UA" to "AP"
+      console.log("approving: " + member.owner.username);
+
+      const axiosInstance = store.getters.generateAxiosInstance;
+      const teamId = parseInt(props.teamId);
+
+      await approveMember(
+        axiosInstance,
+        teamId,
+        member
+      );
+
+      // await getTeamRecord();
+      await getTeamMembers();
+    }
+
+    onMounted(async () => {
+      await getTeamRecord();
+      await getTeamMembers();
+    });
+
+    return {
+      teamRecord,
+      membersList,
+      listPage,
+      getTeamMembers,
+      getTeamRecord,
+      approveUser,
+      unapprovedList
+    };
+  }
 });
 </script>

@@ -76,12 +76,14 @@ export async function getTag(
 
 export async function listTag(
   team: TeamRecord,
+  // team: number,
   page: number,
   axios: AxiosInstance
 ): Promise<PaginatedList<TagRecord>> {
   const response = await axios.get(`/api/teams/${team.id}/tags/?page=${page}`);
 
   const listing: PaginatedList<ReadTagRecord> = response.data;
+  console.log(response.data);
   return {
     count: listing.count,
     next: listing.next,

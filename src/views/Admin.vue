@@ -345,8 +345,12 @@
 import { defineComponent, ref, onMounted } from "vue";
 import { createTag,
          deleteTag, 
+         listTag,
+         TagRecord,
         } from "@/api/tags"
 import store from "@/store"
+import { TeamRecord, getTeam } from "@/api/teams"
+import { PaginatedList } from "@/api/base";
 
 export default defineComponent({
   name: "Admin",
@@ -358,19 +362,62 @@ export default defineComponent({
   },
   setup(props) {
     let newTag = "";
+    const teamRecord = ref({} as TeamRecord);
+    const tagsList = ref({} as PaginatedList<TagRecord>);
+    const listPage = ref(1);
+    const teamID = parseInt(props.teamID);
+    console.log(teamID);
+
+    const getTeamRecord = async () => {
+      const axiosInstance = store.getters.generateAxiosInstance;
+      const teamID = parseInt(props.teamID);
+      // const teamID = 1;
+      const team = await getTeam(axiosInstance, teamID);
+      if (team) {
+        console.log("team loaded :)");
+        teamRecord.value = team;
+      } else {
+        console.log("no such team :(");
+      }
+    };
 
     const addTag = async(value: string) => {
       newTag = value;
       console.log(newTag);
-    }
+    };
 
-    // onMounted(async () => {
-    //   await addTag();
-    // });
+    const getTags = async () => {
+      const axiosInstance = store.getters.generateAxiosInstance;
+      const team = teamRecord.value;
+      console.log(teamRecord.value);
+      // console.log(team);
+      if (team) {
+        console.log("found team :)");
+        console.log(team.id);
+        tagsList.value = await listTag(
+          teamRecord.value,
+          listPage.value,
+          axiosInstance
+        );
+        console.log(tagsList.value);
+      }
+      else {
+        console.log("no team :(")
+      }
+    }
+    onMounted(async () => {
+      await getTeamRecord();
+      await getTags();
+    });
 
     return {
       addTag,
       newTag,
+      teamRecord,
+      tagsList,
+      listPage,
+      getTags,
+      getTeamRecord,
     };
   }
 });

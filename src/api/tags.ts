@@ -59,7 +59,7 @@ export async function updateTag(
     title: record.title
   };
   const response = await axios.put(
-    `/api/teams/${team.id}/tags/${record.id}`,
+    `/api/teams/${team.id}/tags/${record.id}/`,
     updateRecord
   );
   return createTagRecord(response.data);

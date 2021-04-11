@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { AxiosInstance } from "axios";
 import { DateTime } from "luxon";
 // import { TeamRecord } from "@/api/teams";

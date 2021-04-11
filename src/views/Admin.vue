@@ -249,7 +249,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
+                    <tr v-if="unapprovedList.length === 0">
                       <th>No users to approve</th>
                     </tr>
                     <tr 
@@ -259,6 +259,7 @@
                       <th v-if="!member.owner.first_name || !member.owner.last_name">{{ member.owner.username }}</th>
                       <th v-else>{{ member.owner.first_name + ' ' + member.owner.last_name }}</th>
                       <td>{{ member.owner.email }}</td>
+                      <!-- Add later -->
                       <td>USER TAGS</td>
                       <td>{{ member.bio }}</td>
                       <td>
@@ -370,50 +371,50 @@ export default defineComponent({
 
     const getTeamMembers = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
-      const team = teamRecord.value;
-      if (team) {
-        console.log("found team :)");
+      try {
         membersList.value = await listMembers(
           axiosInstance,
           teamId,
           listPage.value
         );
 
-        // create a array of unapproved users by filtering memberList
+        // create an array of unapproved users by filtering memberList
         unapprovedList.value = membersList.value.results.filter(member => member.role === 'UA');
         // console.log(unapprovedList.value);
-
-      } else {
-        console.log("no team :(");
+      } catch (error) {
+        console.log(error);
       }
     };
 
     const getTeamRecord = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
       const teamId = parseInt(props.teamId);
-      const team = await getTeam(axiosInstance, teamId);
-      if (team) {
-        console.log("team loaded :)");
+      try {
+        const team = await getTeam(axiosInstance, teamId);
         teamRecord.value = team;
-      } else {
-        console.log("no such team :(");
+        console.log("team loaded :)");
+      } catch (error) {
+        console.log(error);
       }
     };
 
     const approveUser = async (member: MemberRecord) => {
-      // send API request (patch) to update user role from "UA" to "AP"
-      console.log("approving: " + member.owner.username);
-
       const axiosInstance = store.getters.generateAxiosInstance;
       const teamId = parseInt(props.teamId);
 
-      await approveMember(
-        axiosInstance,
-        teamId,
-        member
-      );
+      // send API request (patch) to update user role from "UA" to "AP"
+      try {
+        await approveMember(
+          axiosInstance,
+          teamId,
+          member
+        );
+        console.log("approving: " + member.owner.username);
+      } catch (error) {
+        console.log(error);
+      }
 
-      // await getTeamRecord();
+      // update team members since a member's role has changed
       await getTeamMembers();
     }
 

@@ -46,6 +46,8 @@ export async function approveMember(
   await axios.patch(`/api/teams/${teamId}/members/${record.id}/`, {
     role: "AP"
   });
+}
+
 export async function getMemberForUser(
   axios: AxiosInstance,
   teamId: number,

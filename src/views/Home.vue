@@ -102,43 +102,17 @@
                       </div>
                    </div> -->
               </div>
-              <div class="columns">
+              <div class="columns" v-if="pinnedTickets.length === 0">
                 <div class="column">
                   <p>You don't have any starred tickets.</p>
                 </div>
               </div>
-              <div class="notification is-info">
-                <div class="columns is-mobile">
-                  <div class="column is-10">
-                    <p class="is-size-5">
-                      Ticket PINNED ID | TAGS | TITLE
-                    </p>
-                    <p>
-                      DUE DATE
-                    </p>
-                    <!-- <p>Due May 25, 2020.</p> -->
-                  </div>
-                  <div class="column is-2">
-                    <span><i class="bx bxs-pin bx-sm"></i></span>
-                  </div>
-                  <!-- TODO: Determine how to expose ticket completion
-                     endpoints on the homepage -->
-                  <!-- <div class="column">
-                        <div class="buttons">
-                           <div class="button is-static">
-                              <p>Complete</p>
-                           </div>
-                        </div>
-                     </div> -->
-                  <!-- TODO: Progress indicator -->
-                  <!-- <div class="columns">
-                     <div class="column">
-                        <p class="is-size-6 has-text-weight-semibold">50% Complete (2/4)</p>
-                        <progress class="progress" value="50" max="100">50%</progress>
-                     </div>
-                  </div> -->
-                </div>
-              </div>
+              <pinned-ticket
+                v-for="pt in pinnedTickets"
+                :key="pt.id"
+                :pinRecord="pt"
+                @pinnedDidUpdate="fetchPinnedTickets"
+              ></pinned-ticket>
             </div>
             <div class="box">
               <div class="level">
@@ -172,11 +146,55 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { ref, defineComponent } from "vue";
+import store from "@/store";
+import PinnedTicket from "@/components/homepage/PinnedTicket.vue";
+
+import { getPinnedTicketsForMember, PinnedTicketRecord } from "@/api/pinned";
 
 export default defineComponent({
-  name: "Home"
-  // components: {
-  // }
+  name: "Home",
+  components: {
+    PinnedTicket
+  },
+  async setup() {
+    console.log("Running home setup!");
+
+    const pinnedTickets = ref<PinnedTicketRecord[]>([]);
+
+    const fetchPinnedTickets = async () => {
+      const team = store.state.team;
+      if (typeof team === "undefined") {
+        console.log("Attempted to fetch pinned tickets without team in store");
+        return [];
+      }
+
+      const member = store.state.member;
+      if (typeof member === "undefined") {
+        console.log(
+          "Attempted to fetch pinned tickets without member in store"
+        );
+        return [];
+      }
+
+      const fetchedPinnedTickets = await getPinnedTicketsForMember(
+        store.getters.generateAxiosInstance,
+        team.id,
+        member.id
+      );
+
+      console.log(team.id + " " + member.id);
+      console.log(pinnedTickets);
+
+      pinnedTickets.value = fetchedPinnedTickets;
+    };
+
+    await fetchPinnedTickets();
+
+    return {
+      pinnedTickets: pinnedTickets,
+      fetchPinnedTickets: fetchPinnedTickets
+    };
+  }
 });
 </script>

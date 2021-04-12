@@ -28,10 +28,7 @@
         </div>
         <div class="level-item">
           <p class="has-text-danger">
-            Tag cannot be blank
-          </p>
-          <p class="has-text-danger">
-            Tags must be one word and alphanumeric.
+            Tag cannot be blank and must be one word and alphanumeric.
           </p>
         </div>
       </div>

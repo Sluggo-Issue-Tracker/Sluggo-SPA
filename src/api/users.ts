@@ -2,6 +2,7 @@ import { AxiosInstance } from "axios";
 import { DateTime } from "luxon";
 // import { TeamRecord } from "@/api/teams";
 import { PaginatedList } from "./base";
+import { MD5 } from "crypto-js";
 
 export interface UserRecord {
   id: number;

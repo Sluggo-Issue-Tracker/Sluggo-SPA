@@ -23,7 +23,7 @@
                     </li>
                     <li>
                       <a>
-                        Approve Tags
+                        Add Tags
                       </a>
                     </li>
                   </ul>
@@ -104,134 +104,8 @@
             </div>
           </div> -->
               </div>
-
-              <!-- Approving Tags -->
-              <div style="height:60vh;overflow-x:auto;overflow:auto;">
-                <p class="title">
-                  Approve Tags
-                </p>
-                <div class="section">
-                  <table class="table is-striped is-fullwidth">
-                    <thead>
-                      <tr>
-                        <th>Tag</th>
-                        <th>Approve?</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th>No tags to approve</th>
-                      </tr>
-                      <tr>
-                        <th>TAG NAME</th>
-                        <td>
-                          <button class="button is-success">
-                            Approve
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <!-- Manage Tags -->
-              <div>
-                <!-- Top header as a level -->
-                <nav class="level">
-                  <!-- Left side -->
-                  <div class="level-left">
-                    <div class="level-item">
-                      <p class="title">
-                        Manage Tags
-                      </p>
-                    </div>
-                  </div>
-
-                  <!-- Right side -->
-                  <div class="level-right">
-                    <div class="level-item">
-                      <div class="field has-addons">
-                        <p class="control">
-                          <input
-                            class="input"
-                            type="text"
-                            placeholder="Add a Tag"
-                          />
-                        </p>
-                        <p class="control">
-                          <button class="button is-info">
-                            Add
-                          </button>
-                        </p>
-                      </div>
-                    </div>
-                    <div class="level-item">
-                      <p class="has-text-danger">
-                        Tag cannot be blank
-                      </p>
-                      <p class="has-text-danger">
-                        Tags must be one word and alphanumeric.
-                      </p>
-                    </div>
-                  </div>
-                </nav>
-
-                <!-- Table to show tags -->
-                <div
-                  class="section"
-                  style="height:60vh;overflow-x:auto;overflow:auto;"
-                >
-                  <table class="table is-striped is-fullwidth">
-                    <thead>
-                      <tr>
-                        <th>Tag</th>
-                        <th></th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <input class="input" type="text" />
-                          <input
-                            readonly
-                            class="input is-static is-bold"
-                            type="text"
-                          />
-                        </td>
-                        <td>
-                          <div class="buttons">
-                            <button class="button is-warning">
-                              <i class="bx bx-edit"></i>
-                            </button>
-                            <button class="button is-success">
-                              Save
-                            </button>
-                            <button class="button is-warning">
-                              Cancel
-                            </button>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="buttons">
-                            <button class="button is-link">
-                              Unapprove
-                            </button>
-                            <button class="button is-success">
-                              Approve
-                            </button>
-
-                            <button class="button is-danger">
-                              <i class="bx bx-trash"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              <hr>
+              <stored-tags v-bind:teamId="teamId"></stored-tags>
 
               <!-- Approving Users -->
               <div style="height:60vh;overflow-x:auto;overflow:auto;">
@@ -307,7 +181,7 @@
                           <button class="button is-danger">
                             Unapprove
                           </button>
-                          <button class="button is-info">
+                          <button class="button is-info" @click="addTag">
                             Approve
                           </button>
                         </div>
@@ -346,6 +220,7 @@
 </template>
 
 <script lang="ts">
+import StoredTags from "@/components/StoredTags.vue";
 import { defineComponent, ref, onMounted } from "vue";
 import { TeamRecord, getTeam } from "@/api/teams";
 import { PaginatedList } from "@/api/base";
@@ -354,8 +229,7 @@ import store from "@/store";
 
 export default defineComponent({
   name: "Admin",
-  // components: {
-  // }
+  components: { StoredTags },
   props: {
     teamId: {
       type: String,

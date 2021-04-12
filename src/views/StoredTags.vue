@@ -14,10 +14,21 @@
 
       <!-- Right side -->
       <div class="level-right">
+        <div class="level-item" v-if="!isValidTag">
+          <p class="has-text-danger">
+            Tag must be non-empty, one word, and alphanumeric.
+          </p>
+        </div>
         <div class="level-item">
           <div class="field has-addons">
             <p class="control">
-              <input class="input" type="text" placeholder="Add a Tag" v-model="newTag.title" />
+              <input
+                class="input"
+                type="text"
+                placeholder="Add a Tag"
+                v-model="newTag.title"
+                v-on:input="validateTag"
+              />
             </p>
             <p class="control">
               <button class="button is-info" @click="createTags">
@@ -65,12 +76,7 @@ import { defineComponent, ref, onMounted } from "vue";
 import { TeamRecord, getTeam } from "@/api/teams";
 import { PaginatedList } from "@/api/base";
 import TagEntry from "./TagEntry.vue";
-import {
-  createTag,
-  listTag,
-  TagRecord,
-  WriteTagRecord,
-} from "@/api/tags";
+import { createTag, listTag, TagRecord, WriteTagRecord } from "@/api/tags";
 import store from "@/store";
 export default defineComponent({
   components: { TagEntry },
@@ -86,6 +92,7 @@ export default defineComponent({
     const tagsList = ref({} as PaginatedList<TagRecord>);
     const listPage = ref(1);
     const newTag = ref({} as WriteTagRecord);
+    const isValidTag = ref(true);
 
     const getTeamRecord = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
@@ -123,6 +130,14 @@ export default defineComponent({
       }
     };
 
+    const validateTag = async () => {
+      if (newTag.value.title.match("^[A-Za-z0-9]+$")) {
+        isValidTag.value = true;
+      } else {
+        isValidTag.value = false;
+      }
+    };
+
     onMounted(async () => {
       await getTeamRecord();
       await getTags();
@@ -135,8 +150,10 @@ export default defineComponent({
       getTags,
       getTeamRecord,
       newTag,
-      createTags
+      createTags,
+      isValidTag,
+      validateTag,
     };
-  }
+  },
 });
 </script>

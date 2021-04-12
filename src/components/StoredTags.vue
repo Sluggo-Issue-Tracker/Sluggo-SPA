@@ -75,7 +75,7 @@
 import { defineComponent, ref, onMounted } from "vue";
 import { TeamRecord, getTeam } from "@/api/teams";
 import { PaginatedList } from "@/api/base";
-import TagEntry from "./TagEntry.vue";
+import TagEntry from "@/components/TagEntry.vue";
 import { createTag, listTag, TagRecord, WriteTagRecord } from "@/api/tags";
 import store from "@/store";
 export default defineComponent({

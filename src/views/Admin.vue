@@ -216,7 +216,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import StoredTags from "./StoredTags.vue";
+import StoredTags from "@/components/StoredTags.vue";
 export default defineComponent({
   components: { StoredTags },
   props: {

@@ -17,7 +17,12 @@
         <div class="level-item">
           <div class="field has-addons">
             <p class="control">
-              <input class="input" type="text" placeholder="Add a Tag" v-model="newTag.title" />
+              <input
+                class="input"
+                type="text"
+                placeholder="Add a Tag"
+                v-model="newTag.title"
+              />
             </p>
             <p class="control">
               <button class="button is-info" @click="createTags">
@@ -70,12 +75,7 @@ import { defineComponent, ref, onMounted } from "vue";
 import { TeamRecord, getTeam } from "@/api/teams";
 import { PaginatedList } from "@/api/base";
 import TagEntry from "./TagEntry.vue";
-import {
-  createTag,
-  listTag,
-  TagRecord,
-  WriteTagRecord,
-} from "@/api/tags";
+import { createTag, listTag, TagRecord, WriteTagRecord } from "@/api/tags";
 import store from "@/store";
 export default defineComponent({
   components: { TagEntry },
@@ -95,36 +95,38 @@ export default defineComponent({
     const getTeamRecord = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
       const teamId = parseInt(props.teamId);
-      const team = await getTeam(axiosInstance, teamId);
-      if (team) {
+      try {
+        const team = await getTeam(axiosInstance, teamId);
         teamRecord.value = team;
+      } catch (error) {
+        alert(error);
+        return;
       }
     };
 
     const getTags = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
-      const team = teamRecord.value;
-      if (team) {
+      try {
         tagsList.value = await listTag(
           teamRecord.value,
           listPage.value,
           axiosInstance
         );
-        console.log(tagsList.value);
+      } catch (error) {
+        alert(error);
+        return;
       }
     };
 
     const createTags = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
       const team = teamRecord.value;
-      if (team) {
-        try {
-          await createTag(newTag.value, teamRecord.value, axiosInstance);
-          await getTags();
-        } catch (error) {
-          alert(error);
-          return;
-        }
+      try {
+        await createTag(newTag.value, teamRecord.value, axiosInstance);
+        await getTags();
+      } catch (error) {
+        alert(error);
+        return;
       }
     };
 
@@ -140,8 +142,8 @@ export default defineComponent({
       getTags,
       getTeamRecord,
       newTag,
-      createTags
+      createTags,
     };
-  }
+  },
 });
 </script>

@@ -77,11 +77,13 @@ export default defineComponent({
     const getTeamRecord = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
       const teamId = parseInt(props.teamId);
-      const team = await getTeam(axiosInstance, teamId);
-      if (team) {
+      try {
+        const team = await getTeam(axiosInstance, teamId);
         teamRecord.value = team;
+      } catch (error) {
+        alert(error);
+        return;
       }
-      console.log("hello");
     };
 
     const reset = () => {

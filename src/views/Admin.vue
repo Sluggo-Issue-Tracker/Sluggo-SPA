@@ -104,7 +104,7 @@
             </div>
           </div> -->
               </div>
-
+              <hr>
               <stored-tags v-bind:teamId="teamId"></stored-tags>
 
               <!-- Approving Users -->

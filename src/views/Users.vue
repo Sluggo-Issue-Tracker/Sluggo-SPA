@@ -77,28 +77,27 @@ export default defineComponent({
 
     const getTeamMembers = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
-      const team = teamRecord.value;
-      if (team) {
-        console.log("found team :)");
+      try {
         membersList.value = await listMembers(
           axiosInstance,
           teamId,
           listPage.value
         );
-      } else {
-        console.log("no team :(");
+        console.log("found team :)");
+      } catch (error) {
+        console.log(error);
       }
     };
 
     const getTeamRecord = async () => {
       const axiosInstance = store.getters.generateAxiosInstance;
       const teamId = parseInt(props.teamId);
-      const team = await getTeam(axiosInstance, teamId);
-      if (team) {
-        console.log("team loaded :)");
+      try {
+        const team = await getTeam(axiosInstance, teamId);
         teamRecord.value = team;
-      } else {
-        console.log("no such team :(");
+        console.log("team loaded :)");
+      } catch (error) {
+        console.log(error);
       }
     };
 

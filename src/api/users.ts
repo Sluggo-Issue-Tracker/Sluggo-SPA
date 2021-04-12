@@ -38,6 +38,16 @@ export async function listMembers(
   return response.data as PaginatedList<MemberRecord>;
 }
 
+export async function approveMember(
+  axios: AxiosInstance,
+  teamId: number,
+  record: MemberRecord
+): Promise<void> {
+  await axios.patch(`/api/teams/${teamId}/members/${record.id}/`, {
+    role: "AP"
+  });
+}
+
 export async function getMemberForUser(
   axios: AxiosInstance,
   teamId: number,

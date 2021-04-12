@@ -105,36 +105,6 @@
           </div> -->
               </div>
 
-              <!-- Approving Tags -->
-              <div style="height:60vh;overflow-x:auto;overflow:auto;">
-                <p class="title">
-                  Approve Tags
-                </p>
-                <div class="section">
-                  <table class="table is-striped is-fullwidth">
-                    <thead>
-                      <tr>
-                        <th>Tag</th>
-                        <th>Approve?</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th>No tags to approve</th>
-                      </tr>
-                      <tr>
-                        <th>TAG NAME</th>
-                        <td>
-                          <button class="button is-success">
-                            Approve
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
               <stored-tags v-bind:teamId="teamId"></stored-tags>
 
               <!-- Approving Users -->

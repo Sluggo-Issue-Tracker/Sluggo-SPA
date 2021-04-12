@@ -4,11 +4,13 @@
       {{ tagTitle }}
     </td>
     <td>
-      <div class="buttons">
+      <div class="level-right">
         <button class="button is-link" @click="remove">
           Remove
         </button>
       </div>
+    </td>
+    <td>
       <div>
         <button v-if="!show" class="button is-link" @click="show = true">Edit</button>
         <div v-if="show" class="level">

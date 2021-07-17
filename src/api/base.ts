@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios";
+import router from "../router";
 
 export const pageSize = 10;
 
@@ -11,7 +12,7 @@ export interface PaginatedList<T> {
 
 export function generateAxiosInstance(token?: string) {
   const instance = axios.create({
-    baseURL: "http://127.0.0.1:8080/"
+    baseURL: "http://127.0.0.1:8000/"
   }); // TODO: This is hardwired and bad
 
   instance.interceptors.request.use(config => {
@@ -23,13 +24,15 @@ export function generateAxiosInstance(token?: string) {
   // This can probably be done centrally if most code that chains simply
   // stops. Noting, this means that bad chains of actions may partially complete
   // this is probably fine but could be looked into later.
+  // Sam: imo the only thing we should care about here is if the request returns
+  // an authentication error. Beyond that, uses of axios instances should be
+  // be able to decide what to do.
   instance.interceptors.response.use(
-    function (response) {
+    function(response) {
       return response;
     },
-    function (e) {
-      if (e.isAxiosError) {
-        const error = e as AxiosError;
+    async (error: AxiosError) => {
+      if (error.isAxiosError) {
         console.log(`Error occurred!`);
         console.log(`Printing error details: `);
         if (error.response) {
@@ -44,7 +47,11 @@ export function generateAxiosInstance(token?: string) {
         }
       }
 
-      return e;
+      if (error.response && error.response.status === 401) {
+        router.push("/login");
+      }
+
+      return error;
     }
   );
 

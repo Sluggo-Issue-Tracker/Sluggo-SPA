@@ -47,14 +47,14 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
 import router from "@/router/index";
-import { listTickets, TicketRecord } from "@/api/tickets";
-import { PaginatedList } from "@/api/base";
+import { listTickets, ReadTicketRecord } from "@/api/tickets";
 import { generateTicketPageLink } from "@/methods/teamPage";
 import store from "@/store";
 import TicketModal from "@/components/TicketModal.vue";
 import PaginatedListView from "@/components/PaginatedListView.vue";
 import TicketListEntry from "@/components/TicketListEntry.vue";
 import TicketInput from "@/components/TicketInput.vue";
+import { PaginatedList } from "@/api/types";
 
 export default defineComponent({
   name: "Tickets",
@@ -76,7 +76,7 @@ export default defineComponent({
   },
   setup(props) {
     // reactive data
-    const ticketList = ref({} as PaginatedList<TicketRecord>);
+    const ticketList = ref({} as PaginatedList<ReadTicketRecord>);
     const listPage = ref(1);
     const selectedTicket = ref({});
     const showModal = ref(false);
@@ -95,7 +95,7 @@ export default defineComponent({
       );
     };
 
-    const selectTicket = async (ticket?: TicketRecord) => {
+    const selectTicket = async (ticket?: ReadTicketRecord) => {
       await router.replace(generateTicketPageLink(props.teamId, ticket?.id));
       await getTeamTickets();
     };

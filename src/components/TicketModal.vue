@@ -61,7 +61,7 @@
 import { defineComponent, onMounted, ref } from "vue";
 import {
   updateTicket,
-  TicketRecord,
+  ReadTicketRecord,
   deleteTicket,
   getTicket
 } from "@/api/tickets";
@@ -103,7 +103,7 @@ export default defineComponent({
       const axiosInstance = store.getters.generateAxiosInstance;
       try {
         await updateTicket(
-          ticketRecord.value as TicketRecord,
+          ticketRecord.value as ReadTicketRecord,
           teamId,
           axiosInstance
         );
@@ -118,7 +118,7 @@ export default defineComponent({
       const axiosInstance = store.getters.generateAxiosInstance;
       try {
         await deleteTicket(
-          ticketRecord.value as TicketRecord,
+          ticketRecord.value as ReadTicketRecord,
           teamId,
           axiosInstance
         );

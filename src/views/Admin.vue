@@ -222,10 +222,10 @@
 <script lang="ts">
 import StoredTags from "@/components/StoredTags.vue";
 import { defineComponent, ref, onMounted } from "vue";
-import { TeamRecord, getTeam } from "@/api/teams";
-import { PaginatedList } from "@/api/base";
-import { listMembers, approveMember, MemberRecord } from "@/api/users";
+import { getTeam } from "@/api/teams";
+import { listMembers, approveMember} from "@/api/members";
 import store from "@/store";
+import { MemberRecord, PaginatedList, ReadTeamRecord } from "@/api/types";
 
 export default defineComponent({
   name: "Admin",
@@ -237,7 +237,7 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const teamRecord = ref({} as TeamRecord);
+    const teamRecord = ref({} as ReadTeamRecord);
     const membersList = ref({} as PaginatedList<MemberRecord>);
     const listPage = ref(1);
     const teamId = parseInt(props.teamId);

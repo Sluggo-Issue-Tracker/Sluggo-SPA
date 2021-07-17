@@ -44,27 +44,27 @@
     <div class="section" style="height:60vh;overflow-x:auto;overflow:auto;">
       <table class="table is-striped is-fullwidth">
         <thead>
-          <tr>
-            <th>Tag</th>
+        <tr>
+          <th>Tag</th>
             <th></th>
-            <th>Actions</th>
-          </tr>
+          <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
-          <thead>
-            <tr>
-              <th>Active Tags</th>
-            </tr>
-          </thead>
-          <tag-entry
-            v-for="tag in tagsList.results"
-            v-bind:key="tag.id"
-            v-bind:tagId="tag.id"
-            v-bind:teamId="teamId"
-            v-bind:tagTitle="tag.title"
-            v-on:update="getTags"
-          >
-          </tag-entry>
+        <thead>
+        <tr>
+          <th>Active Tags</th>
+        </tr>
+        </thead>
+        <tag-entry
+          v-for="tag in tagsList.results"
+          v-bind:key="tag.id"
+          v-bind:tagId="tag.id"
+          v-bind:teamId="teamId"
+          v-bind:tagTitle="tag.title"
+          v-on:update="getTags"
+        >
+        </tag-entry>
         </tbody>
       </table>
     </div>
@@ -73,22 +73,23 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
-import { TeamRecord, getTeam } from "@/api/teams";
-import { PaginatedList } from "@/api/base";
+import { getTeam } from "@/api/teams";
 import TagEntry from "@/components/TagEntry.vue";
-import { createTag, listTag, TagRecord, WriteTagRecord } from "@/api/tags";
+import { createTag, listTag } from "@/api/tags";
 import store from "@/store";
+import { PaginatedList, ReadTeamRecord, TagRecord, WriteTagRecord } from "@/api/types";
+
 export default defineComponent({
   components: { TagEntry },
   name: "Tags",
   props: {
     teamId: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   setup(props) {
-    const teamRecord = ref({} as TeamRecord);
+    const teamRecord = ref({} as ReadTeamRecord);
     const tagsList = ref({} as PaginatedList<TagRecord>);
     const listPage = ref(1);
     const newTag = ref({} as WriteTagRecord);
@@ -104,24 +105,21 @@ export default defineComponent({
     };
 
     const getTags = async () => {
-      const axiosInstance = store.getters.generateAxiosInstance;
       const team = teamRecord.value;
       if (team) {
         tagsList.value = await listTag(
           teamRecord.value,
-          listPage.value,
-          axiosInstance
+          listPage.value
         );
         console.log(tagsList.value);
       }
     };
 
     const createTags = async () => {
-      const axiosInstance = store.getters.generateAxiosInstance;
       const team = teamRecord.value;
       if (team) {
         try {
-          await createTag(newTag.value, teamRecord.value, axiosInstance);
+          await createTag(newTag.value, teamRecord.value);
           await getTags();
         } catch (error) {
           alert(error);
@@ -152,8 +150,8 @@ export default defineComponent({
       newTag,
       createTags,
       isValidTag,
-      validateTag,
+      validateTag
     };
-  },
+  }
 });
 </script>

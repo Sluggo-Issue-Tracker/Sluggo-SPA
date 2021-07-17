@@ -33,8 +33,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
-import { TeamRecord, getTeam } from "@/api/teams";
-import { PaginatedList } from "@/api/base";
+import { getTeam } from "@/api/teams";
 import {
   createTagRecord,
   createTag,
@@ -42,9 +41,10 @@ import {
   getTag,
   listTag,
   deleteTag,
-  TagRecord,
+
 } from "@/api/tags";
 import store from "@/store";
+import { PaginatedList, ReadTeamRecord, TagRecord } from "@/api/types";
 export default defineComponent({
   name: "DeleteTag",
   props: {
@@ -65,7 +65,7 @@ export default defineComponent({
   emits: ["update"],
 
   setup(props, context) {
-    const teamRecord = ref({} as TeamRecord);
+    const teamRecord = ref({} as ReadTeamRecord);
     const tagsList = ref({} as PaginatedList<TagRecord>);
     const listPage = ref(1);
     const tagRecord = ref({} as TagRecord);

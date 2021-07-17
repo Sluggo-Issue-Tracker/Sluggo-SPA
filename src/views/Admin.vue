@@ -104,11 +104,11 @@
             </div>
           </div> -->
               </div>
-              <hr>
+              <hr />
               <stored-tags v-bind:teamId="teamId"></stored-tags>
 
               <!-- Approving Users -->
-              <div style="height:60vh;overflow-x:auto;overflow:auto;">
+              <div style="height:60vh;overflow:auto;">
                 <p class="title">
                   Approve a Member
                 </p>
@@ -126,18 +126,28 @@
                     <tr v-if="unapprovedList.length === 0">
                       <th>No users to approve</th>
                     </tr>
-                    <tr 
-                      v-for="member in unapprovedList"
-                      v-bind:key="member.id"
-                    >
-                      <th v-if="!member.owner.first_name || !member.owner.last_name">{{ member.owner.username }}</th>
-                      <th v-else>{{ member.owner.first_name + ' ' + member.owner.last_name }}</th>
+                    <tr v-for="member in unapprovedList" v-bind:key="member.id">
+                      <th
+                        v-if="
+                          !member.owner.first_name || !member.owner.last_name
+                        "
+                      >
+                        {{ member.owner.username }}
+                      </th>
+                      <th v-else>
+                        {{
+                          member.owner.first_name + " " + member.owner.last_name
+                        }}
+                      </th>
                       <td>{{ member.owner.email }}</td>
                       <!-- Add later -->
                       <td>USER TAGS</td>
                       <td>{{ member.bio }}</td>
                       <td>
-                        <button class="button is-success" @click="approveUser(member)">
+                        <button
+                          class="button is-success"
+                          @click="approveUser(member)"
+                        >
                           Approve
                         </button>
                       </td>
@@ -147,7 +157,7 @@
               </div>
 
               <!-- See all users -->
-              <div style="height:60vh;overflow-x:auto;overflow:auto;">
+              <div style="height:60vh;overflow:auto;">
                 <p class="title">
                   Members
                 </p>
@@ -222,88 +232,47 @@
 <script lang="ts">
 import StoredTags from "@/components/StoredTags.vue";
 import { defineComponent, ref, onMounted } from "vue";
-import { getTeam } from "@/api/teams";
-import { listMembers, approveMember} from "@/api/members";
-import store from "@/store";
-import { MemberRecord, PaginatedList, ReadTeamRecord } from "@/api/types";
+import { listMembers } from "@/api";
+import { MemberRecord, PaginatedList } from "@/api/types";
 
 export default defineComponent({
   name: "Admin",
   components: { StoredTags },
   props: {
     teamId: {
-      type: String,
+      type: Number,
       required: true
     }
   },
   setup(props) {
-    const teamRecord = ref({} as ReadTeamRecord);
     const membersList = ref({} as PaginatedList<MemberRecord>);
     const listPage = ref(1);
-    const teamId = parseInt(props.teamId);
     const unapprovedList = ref({} as Array<MemberRecord>);
 
     const getTeamMembers = async () => {
-      const axiosInstance = store.getters.generateAxiosInstance;
-      try {
-        membersList.value = await listMembers(
-          axiosInstance,
-          teamId,
-          listPage.value
-        );
+      const [membersResponse, membersError] = await listMembers(
+        props.teamId,
+        listPage.value
+      );
 
-        // create an array of unapproved users by filtering memberList
-        unapprovedList.value = membersList.value.results.filter(member => member.role === 'UA');
-        // console.log(unapprovedList.value);
-      } catch (error) {
-        console.log(error);
+      if (membersError) {
+        console.log(membersError.message);
+        return;
+      }
+
+      if (membersResponse) {
+        membersList.value = membersResponse.data;
       }
     };
-
-    const getTeamRecord = async () => {
-      const axiosInstance = store.getters.generateAxiosInstance;
-      const teamId = parseInt(props.teamId);
-      try {
-        const team = await getTeam(axiosInstance, teamId);
-        teamRecord.value = team;
-        console.log("team loaded :)");
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    const approveUser = async (member: MemberRecord) => {
-      const axiosInstance = store.getters.generateAxiosInstance;
-      const teamId = parseInt(props.teamId);
-
-      // send API request (patch) to update user role from "UA" to "AP"
-      try {
-        await approveMember(
-          axiosInstance,
-          teamId,
-          member
-        );
-        console.log("approving: " + member.owner.username);
-      } catch (error) {
-        console.log(error);
-      }
-
-      // update team members since a member's role has changed
-      await getTeamMembers();
-    }
 
     onMounted(async () => {
-      await getTeamRecord();
       await getTeamMembers();
     });
 
     return {
-      teamRecord,
       membersList,
       listPage,
       getTeamMembers,
-      getTeamRecord,
-      approveUser,
       unapprovedList
     };
   }

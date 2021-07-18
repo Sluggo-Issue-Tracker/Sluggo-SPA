@@ -1,14 +1,19 @@
-import { APIResponse, LoginDetails, LoginResponse, SignupDetails, UserRecord } from "./types";
+import {
+  LoginDetails,
+  LoginResponse,
+  SignupDetails,
+  UserRecord
+} from "./types";
 import { axiosInstance } from "@/api/base";
-import { requestWrapper } from "@/api/util";
+import { AxiosResponse } from "axios";
 
 export const signup = async ({
   username,
   email,
   password,
   secondaryPassword
-}: SignupDetails): Promise<APIResponse<LoginResponse>> =>
-  requestWrapper(axiosInstance.post, "/auth/registration/", {
+}: SignupDetails): Promise<AxiosResponse<LoginResponse>> =>
+  axiosInstance.post<LoginResponse>("/auth/registration/", {
     username,
     email,
     password1: password,
@@ -17,11 +22,11 @@ export const signup = async ({
 
 export const login = async (
   details: LoginDetails
-): Promise<APIResponse<LoginResponse>> =>
-  requestWrapper(axiosInstance.post, "/auth/login/", details);
+): Promise<AxiosResponse<LoginResponse>> =>
+  axiosInstance.post<LoginResponse>("/auth/login/", details);
 
-export const getUser = async (): Promise<APIResponse<UserRecord>> =>
-  requestWrapper(axiosInstance.get, "/auth/user/");
+export const getUser = async (): Promise<AxiosResponse<UserRecord>> =>
+  axiosInstance.get<UserRecord>("/auth/user/");
 
-export const logoutUser = async (): Promise<void> =>
-  await axiosInstance.post("/auth/logout/");
+export const logoutUser = async (): Promise<AxiosResponse<void>> =>
+  await axiosInstance.post<void>("/auth/logout/");

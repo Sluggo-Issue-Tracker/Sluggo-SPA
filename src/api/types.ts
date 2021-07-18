@@ -13,10 +13,6 @@ export interface LoginResponse {
   };
 }
 
-export type APIResponse<T> = [
-  AxiosResponse<T> | null,
-  Error | AxiosError | null
-];
 
 // MARK: Interfaces
 export interface LoginDetails {
@@ -83,7 +79,6 @@ export interface ReadTicketRecord {
   status?: StatusRecordOutput;
   title: string;
   description?: string;
-  comments?: Array<number>; // TODO: tdimhcsleumas 2/22/2021, this will eventually change to a comment record
   created: string;
   activated?: string;
   deactivated?: string;

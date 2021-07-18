@@ -1,10 +1,12 @@
 import { createDirectStore } from "direct-vuex";
-import { signup, login, getUser } from "@/api/auth";
+import { signup, login } from "@/api/auth";
 import { getTeam } from "@/api/teams";
-import { generateAxiosInstance } from "@/api/base";
-import { AxiosInstance } from "axios";
-import { LoginResponse } from "@/types";
-import { LoginDetails, ReadTeamRecord, SignupDetails, UserRecord } from "@/api/types";
+import {
+  LoginDetails,
+  ReadTeamRecord,
+  SignupDetails,
+  UserRecord
+} from "@/api/types";
 
 interface RootStoreState {
   token?: string;
@@ -33,14 +35,16 @@ const {
   actions: {
     async doSignup(ctxRaw, details: SignupDetails) {
       const context = rootActionContext(ctxRaw);
-      const axios = generateAxiosInstance(context.state.token);
-
-      await signup(details, axios);
+      const {
+        data: { user }
+      } = await signup(details);
+      context.commit.setUser(user);
     },
     async doLogin(ctxRaw, details: LoginDetails) {
       const context = rootActionContext(ctxRaw);
-      const axios = generateAxiosInstance(context.state.token);
-      const { user } = await login(details, axios);
+      const {
+        data: { user }
+      } = await login(details);
       context.commit.setUser(user);
     },
     async doSetTeam(ctxRaw, teamRecord: ReadTeamRecord) {
@@ -50,20 +54,14 @@ const {
     },
     async doFetchAndSetTeam(ctxRaw, teamId: number) {
       const context = rootActionContext(ctxRaw);
-      const axios = generateAxiosInstance(context.state.token);
+      const { data } = await getTeam(teamId);
 
-      const teamRecord = await getTeam(axios, teamId);
-      await context.dispatch.doSetTeam(teamRecord);
-
-      return teamRecord;
+      await context.dispatch.doSetTeam(data);
+      return data;
     }
   },
   modules: {},
-  getters: {
-    generateAxiosInstance(): AxiosInstance {
-      return generateAxiosInstance(store.state.token);
-    }
-  }
+  getters: {}
 });
 
 export default store;

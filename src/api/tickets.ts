@@ -1,20 +1,18 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { AxiosInstance } from "axios";
-import { axiosInstance} from "@/api/base";
+import { AxiosInstance, AxiosResponse } from "axios";
+import { axiosInstance } from "@/api/base";
 import {
-  APIResponse, PaginatedList,
+  PaginatedList,
   ReadTicketRecord,
   TicketFilterOptions,
   WriteTicketRecord
 } from "@/api/types";
-import { requestWrapper } from "@/api/util";
 
 export const createTicket = async (
   record: WriteTicketRecord,
   teamId: number
-): Promise<APIResponse<ReadTicketRecord>> =>
-  await requestWrapper(
-    axiosInstance.post,
+): Promise<AxiosResponse<ReadTicketRecord>> =>
+  await axiosInstance.post<ReadTicketRecord>(
     `/api/teams/${teamId}/tickets/`,
     record
   );
@@ -22,7 +20,7 @@ export const createTicket = async (
 export const updateTicket = async (
   record: ReadTicketRecord,
   teamId: number
-): Promise<APIResponse<ReadTicketRecord>> => {
+): Promise<AxiosResponse<ReadTicketRecord>> => {
   const { tag_list, assigned_user, status, ...rest } = record;
 
   const updateRecord: WriteTicketRecord = {
@@ -32,8 +30,7 @@ export const updateTicket = async (
     ...rest
   };
 
-  return await requestWrapper(
-    axiosInstance.put,
+  return await axiosInstance.put<ReadTicketRecord>(
     `/api/teams/${teamId}/tickets/${record.id}/`,
     updateRecord
   );
@@ -44,7 +41,7 @@ export const listTickets = async (
   page: number,
   axios: AxiosInstance,
   filter?: TicketFilterOptions
-): Promise<APIResponse<PaginatedList<ReadTicketRecord>>> => {
+): Promise<AxiosResponse<PaginatedList<ReadTicketRecord>>> => {
   let queryParams = `?page=${page}`;
   if (filter?.assigned) {
     queryParams += `&assigned__username=${filter.assigned.username}`;
@@ -56,8 +53,7 @@ export const listTickets = async (
     queryParams += `&search=${filter.search}`;
   }
 
-  return await requestWrapper(
-    axiosInstance.get,
+  return await axiosInstance.get<PaginatedList<ReadTicketRecord>>(
     `/api/teams/${teamId}/tickets/${queryParams}`
   );
 };
@@ -65,17 +61,13 @@ export const listTickets = async (
 export const getTicket = async (
   id: number,
   teamId: number
-): Promise<APIResponse<ReadTicketRecord>> =>
-  await requestWrapper(
-    axiosInstance.get,
+): Promise<AxiosResponse<ReadTicketRecord>> =>
+  await axiosInstance.get<ReadTicketRecord>(
     `/api/teams/${teamId}/tickets/${id}/`
   );
 
 export const deleteTicket = async (
   record: ReadTicketRecord,
   teamId: number
-): Promise<APIResponse<void>> =>
-  await requestWrapper(
-    axiosInstance.delete,
-    `/api/teams/${teamId}/tickets/${record.id}`
-  );
+): Promise<AxiosResponse<void>> =>
+  await axiosInstance.delete<void>(`/api/teams/${teamId}/tickets/${record.id}`);

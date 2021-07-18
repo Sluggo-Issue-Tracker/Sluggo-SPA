@@ -234,6 +234,7 @@ import StoredTags from "@/components/StoredTags.vue";
 import { defineComponent, ref, onMounted } from "vue";
 import { listMembers } from "@/api";
 import { MemberRecord, PaginatedList } from "@/api/types";
+import { wrapExceptions } from "@/methods";
 
 export default defineComponent({
   name: "Admin",
@@ -250,7 +251,8 @@ export default defineComponent({
     const unapprovedList = ref({} as Array<MemberRecord>);
 
     const getTeamMembers = async () => {
-      const [membersResponse, membersError] = await listMembers(
+      const [membersResponse, membersError] = await wrapExceptions(
+        listMembers,
         props.teamId,
         listPage.value
       );

@@ -41,30 +41,28 @@
     </nav>
 
     <!-- Table to show tags -->
-    <div class="section" style="height:60vh;overflow-x:auto;overflow:auto;">
+    <div class="section" style="height:60vh;overflow:auto;">
       <table class="table is-striped is-fullwidth">
         <thead>
-        <tr>
-          <th>Tag</th>
+          <tr>
+            <th>Tag</th>
             <th></th>
-          <th>Actions</th>
-        </tr>
+            <th>Actions</th>
+          </tr>
         </thead>
         <tbody>
-        <thead>
-        <tr>
-          <th>Active Tags</th>
-        </tr>
-        </thead>
-        <tag-entry
-          v-for="tag in tagsList.results"
-          v-bind:key="tag.id"
-          v-bind:tagId="tag.id"
-          v-bind:teamId="teamId"
-          v-bind:tagTitle="tag.title"
-          v-on:update="getTags"
-        >
-        </tag-entry>
+          <tr>
+            <th>Active Tags</th>
+          </tr>
+          <tag-entry
+            v-for="tag in tagsList.results"
+            v-bind:key="tag.id"
+            v-bind:tagId="tag.id"
+            v-bind:teamId="teamId"
+            v-bind:tagTitle="tag.title"
+            v-on:update="getTags"
+          >
+          </tag-entry>
         </tbody>
       </table>
     </div>
@@ -73,80 +71,68 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
-import { getTeam } from "@/api/teams";
 import TagEntry from "@/components/TagEntry.vue";
 import { createTag, listTag } from "@/api/tags";
-import store from "@/store";
-import { PaginatedList, ReadTeamRecord, TagRecord, WriteTagRecord } from "@/api/types";
+import { PaginatedList, TagRecord, WriteTagRecord } from "@/api/types";
+import { wrapExceptions } from "@/methods";
 
 export default defineComponent({
   components: { TagEntry },
   name: "Tags",
   props: {
     teamId: {
-      type: String,
+      type: Number,
       required: true
     }
   },
   setup(props) {
-    const teamRecord = ref({} as ReadTeamRecord);
     const tagsList = ref({} as PaginatedList<TagRecord>);
     const listPage = ref(1);
     const newTag = ref({} as WriteTagRecord);
     const isValidTag = ref(true);
 
-    const getTeamRecord = async () => {
-      const axiosInstance = store.getters.generateAxiosInstance;
-      const teamId = parseInt(props.teamId);
-      const team = await getTeam(axiosInstance, teamId);
-      if (team) {
-        teamRecord.value = team;
-      }
-    };
-
     const getTags = async () => {
-      const team = teamRecord.value;
-      if (team) {
-        tagsList.value = await listTag(
-          teamRecord.value,
-          listPage.value
-        );
-        console.log(tagsList.value);
+      const [listTagResponse, listTagError] = await wrapExceptions(
+        listTag,
+        props.teamId,
+        listPage.value
+      );
+
+      if (listTagError) {
+        console.log(listTagError.message);
+        return;
+      }
+
+      if (listTagResponse) {
+        tagsList.value = listTagResponse.data;
       }
     };
 
     const createTags = async () => {
-      const team = teamRecord.value;
-      if (team) {
-        try {
-          await createTag(newTag.value, teamRecord.value);
-          await getTags();
-        } catch (error) {
-          alert(error);
-          return;
-        }
+      const [, createTagError] = await wrapExceptions(
+        createTag,
+        newTag.value,
+        props.teamId
+      );
+
+      if (createTagError) {
+        alert(createTagError);
+        return;
       }
     };
 
     const validateTag = async () => {
-      if (newTag.value.title.match("^[A-Za-z0-9]+$")) {
-        isValidTag.value = true;
-      } else {
-        isValidTag.value = false;
-      }
+      isValidTag.value = Boolean(newTag.value.title.match("^[A-Za-z0-9]+$"));
     };
 
     onMounted(async () => {
-      await getTeamRecord();
       await getTags();
     });
 
     return {
-      teamRecord,
       tagsList,
       listPage,
       getTags,
-      getTeamRecord,
       newTag,
       createTags,
       isValidTag,

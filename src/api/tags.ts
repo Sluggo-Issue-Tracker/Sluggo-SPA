@@ -1,55 +1,43 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { axiosInstance} from "./base";
-import { APIResponse, PaginatedList, ReadTeamRecord, TagRecord, WriteTagRecord } from "@/api/types";
-import { requestWrapper } from "@/api/util";
+import { axiosInstance } from "./base";
+import { PaginatedList, TagRecord, WriteTagRecord } from "@/api/types";
+import { AxiosResponse } from "axios";
 
 export const createTag = async (
   record: WriteTagRecord,
-  team: ReadTeamRecord
-): Promise<APIResponse<TagRecord>> =>
-  await requestWrapper<TagRecord>(
-    axiosInstance.post,
-    `/api/teams/${team.id}/tags/`,
-    record
-  );
+  teamId: number
+): Promise<AxiosResponse<TagRecord>> =>
+  await axiosInstance.post<TagRecord>(`/api/teams/${teamId}/tags/`, record);
 
 export const updateTag = async (
   record: TagRecord,
-  team: ReadTeamRecord
-): Promise<APIResponse<TagRecord>> => {
+  teamId: number
+): Promise<AxiosResponse<TagRecord>> => {
   const updateRecord = {
     title: record.title
   };
-  return await requestWrapper(
-    axiosInstance.put,
-    `/api/teams/${team.id}/tags/${record.id}/`,
+  return await axiosInstance.put<TagRecord>(
+    `/api/teams/${teamId}/tags/${record.id}/`,
     updateRecord
   );
 };
 
 export const getTag = async (
   id: number,
-  team: ReadTeamRecord
-): Promise<APIResponse<TagRecord>> =>
-  await requestWrapper(
-    axiosInstance.get,
-    `/api/teams/${team.id}/tags/${id}]`
-  );
+  teamId: number
+): Promise<AxiosResponse<TagRecord>> =>
+  await axiosInstance.get<TagRecord>(`/api/teams/${teamId}/tags/${id}]`);
 
 export const listTag = async (
-  team: ReadTeamRecord,
+  teamId: number,
   page: number
-): Promise<APIResponse<PaginatedList<TagRecord>>> =>
-  await requestWrapper(
-    axiosInstance.get,
-    `/api/teams/${team.id}/tags/?page=${page}`
+): Promise<AxiosResponse<PaginatedList<TagRecord>>> =>
+  await axiosInstance.get<PaginatedList<TagRecord>>(
+    `/api/teams/${teamId}/tags/?page=${page}`
   );
 
 export const deleteTag = async (
   record: TagRecord,
-  team: ReadTeamRecord
-): Promise<APIResponse<void>> =>
-  await requestWrapper(
-    axiosInstance.delete,
-    `/api/teams/${team.id}/tags/${record.id}`
-  );
+  teamId: number
+): Promise<AxiosResponse<void>> =>
+  await axiosInstance.delete<void>(`/api/teams/${teamId}/tags/${record.id}`);

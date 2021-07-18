@@ -1,12 +1,11 @@
-import { axiosInstance} from "./base";
-import { APIResponse, MemberRecord, PaginatedList } from "@/api/types";
-import { requestWrapper } from "@/api/util";
+import { axiosInstance } from "./base";
+import { MemberRecord, PaginatedList } from "@/api/types";
+import { AxiosResponse } from "axios";
 
 export const listMembers = async (
   teamId: number,
   page: number
-): Promise<APIResponse<PaginatedList<MemberRecord>>> =>
-  await requestWrapper(
-    axiosInstance.get,
+): Promise<AxiosResponse<PaginatedList<MemberRecord>>> =>
+  await axiosInstance.get<PaginatedList<MemberRecord>>(
     `/api/teams/${teamId}/members/?page=${page}`
   );

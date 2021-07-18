@@ -43,9 +43,8 @@ export default defineComponent({
     };
 
     const submit = async () => {
-      const axiosInstance = store.getters.generateAxiosInstance;
       try {
-        await createTicket(ticketRecord.value, teamId, axiosInstance);
+        await createTicket(ticketRecord.value, teamId);
       } catch (error) {
         alert(error);
         return;

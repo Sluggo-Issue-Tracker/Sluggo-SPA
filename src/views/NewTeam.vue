@@ -13,6 +13,7 @@
         <div class="field">
           <label class="label" for="team_name">Team Name </label>
           <input
+            id="team_name"
             class="input"
             type="text"
             name="team_name"
@@ -54,7 +55,7 @@ const newTeamComponent = defineComponent({
     const teamName = ref("");
 
     const teamSubmissionTriggered = async () => {
-      const record = await createTeam(store.getters.generateAxiosInstance, {
+      const { data: record } = await createTeam({
         name: teamName.value.toLowerCase(),
         description: "UNUSED"
       });

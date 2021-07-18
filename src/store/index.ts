@@ -1,5 +1,5 @@
 import { createDirectStore } from "direct-vuex";
-import { signup, login } from "@/api/auth";
+import { signup, login, logoutUser } from "@/api/auth";
 import { getTeam } from "@/api/teams";
 import {
   LoginDetails,
@@ -25,34 +25,39 @@ const {
     token: undefined
   } as RootStoreState,
   mutations: {
-    setTeam(state, newTeam: ReadTeamRecord) {
+    setTeam(state, newTeam?: ReadTeamRecord) {
       state.team = newTeam;
     },
-    setUser(state, newUser: UserRecord) {
+    setUser(state, newUser?: UserRecord) {
       state.user = newUser;
     }
   },
   actions: {
-    async doSignup(ctxRaw, details: SignupDetails) {
+    doSignup: async (ctxRaw, details: SignupDetails) => {
       const context = rootActionContext(ctxRaw);
       const {
         data: { user }
       } = await signup(details);
       context.commit.setUser(user);
     },
-    async doLogin(ctxRaw, details: LoginDetails) {
+    doLogin: async (ctxRaw, details: LoginDetails) => {
       const context = rootActionContext(ctxRaw);
       const {
         data: { user }
       } = await login(details);
       context.commit.setUser(user);
     },
-    async doSetTeam(ctxRaw, teamRecord: ReadTeamRecord) {
+    doLogout: async ctxRaw => {
+      const context = rootActionContext(ctxRaw);
+      await logoutUser();
+      context.commit.setUser(undefined);
+    },
+    doSetTeam: async (ctxRaw, teamRecord: ReadTeamRecord) => {
       const context = rootActionContext(ctxRaw);
 
       context.commit.setTeam(teamRecord);
     },
-    async doFetchAndSetTeam(ctxRaw, teamId: number) {
+    doFetchAndSetTeam: async (ctxRaw, teamId: number) => {
       const context = rootActionContext(ctxRaw);
       const { data } = await getTeam(teamId);
 

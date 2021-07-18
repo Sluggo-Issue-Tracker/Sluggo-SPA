@@ -72,9 +72,10 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
 import TagEntry from "@/components/TagEntry.vue";
-import { createTag, listTag } from "@/api/tags";
+import { createTag, listTags } from "@/api/tags";
 import { PaginatedList, TagRecord, WriteTagRecord } from "@/api/types";
 import { wrapExceptions } from "@/methods";
+import { AxiosResponse } from "axios";
 
 export default defineComponent({
   components: { TagEntry },
@@ -93,7 +94,7 @@ export default defineComponent({
 
     const getTags = async () => {
       const [listTagResponse, listTagError] = await wrapExceptions(
-        listTag,
+        listTags,
         props.teamId,
         listPage.value
       );

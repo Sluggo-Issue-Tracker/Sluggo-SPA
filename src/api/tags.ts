@@ -28,7 +28,7 @@ export const getTag = async (
 ): Promise<AxiosResponse<TagRecord>> =>
   await axiosInstance.get<TagRecord>(`/api/teams/${teamId}/tags/${id}]`);
 
-export const listTag = async (
+export const listTags = async (
   teamId: number,
   page: number
 ): Promise<AxiosResponse<PaginatedList<TagRecord>>> =>

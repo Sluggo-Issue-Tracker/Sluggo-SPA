@@ -2,7 +2,7 @@ import { signup, login } from "./auth";
 
 import { listMembers } from "./members";
 
-import { createTag, updateTag, getTag, listTag, deleteTag } from "./tags";
+import { createTag, updateTag, getTag, listTags, deleteTag } from "./tags";
 
 import { createTeam, getTeam } from "./teams";
 
@@ -21,7 +21,7 @@ export {
   createTag,
   updateTag,
   getTag,
-  listTag,
+  listTags,
   deleteTag,
   createTeam,
   getTeam,

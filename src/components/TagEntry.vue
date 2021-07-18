@@ -41,6 +41,7 @@
 import { defineComponent, ref } from "vue";
 import { updateTag, deleteTag } from "@/api/tags";
 import { PaginatedList, TagRecord } from "@/api/types";
+import { wrapExceptions } from "@/methods";
 
 export default defineComponent({
   name: "DeleteTag",
@@ -61,7 +62,7 @@ export default defineComponent({
 
   emits: ["update"],
 
-  setup(props, context) {
+  setup: function(props, context) {
     const tagsList = ref({} as PaginatedList<TagRecord>);
     const listPage = ref(1);
     const tagRecord = ref({} as TagRecord);
@@ -74,7 +75,11 @@ export default defineComponent({
     };
 
     const remove = async () => {
-      const [, deleteError] = await deleteTag(tagRecord.value, props.teamId);
+      const [, deleteError] = await wrapExceptions(
+        deleteTag,
+        tagRecord.value,
+        props.teamId
+      );
 
       if (deleteError) {
         console.log(deleteError.message);
@@ -87,7 +92,11 @@ export default defineComponent({
     const changeTitle = async () => {
       console.log(newTitle);
       tagRecord.value.title = newTitle.value;
-      const [, updateErrors] = await updateTag(tagRecord.value, props.teamId);
+      const [, updateErrors] = await wrapExceptions(
+        updateTag,
+        tagRecord.value,
+        props.teamId
+      );
 
       if (updateErrors) {
         console.log(updateErrors);

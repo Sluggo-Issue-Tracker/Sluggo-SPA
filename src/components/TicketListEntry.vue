@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { ReadTicketRecord } from "@/api/tickets";
+import { ReadTicketRecord } from "@/api/types";
 import { defineComponent, ref } from "vue";
 
 export default defineComponent({

@@ -22,6 +22,7 @@
       <form @submit.prevent="login">
         <label for="username">Username </label>
         <input
+          id="username"
           type="text"
           name="username"
           v-model="username"
@@ -29,10 +30,11 @@
         />
         <br />
         <label for="email">Email (used for login) </label>
-        <input type="text" name="email" v-model="email" placeholder="email" />
+        <input id="email" type="text" name="email" v-model="email" placeholder="email" />
         <br />
         <label for="password">Password (used for login) </label>
         <input
+          id="password"
           type="password"
           name="password"
           v-model="password"
@@ -41,6 +43,7 @@
         <br />
         <label for="secondaryPassword">Secondary Password (for signup) </label>
         <input
+          id="secondaryPassword"
           type="password"
           name="secondaryPassword"
           v-model="secondaryPassword"
@@ -62,7 +65,13 @@
 
       <form @submit.prevent="setTeam">
         <label for="teamId">Team ID </label>
-        <input type="number" name="teamId" v-model="teamId" placeholder="0" />
+        <input
+          id="teamId"
+          type="number"
+          name="teamId"
+          v-model="teamId"
+          placeholder="0"
+        />
         <br />
 
         <button>Set Team</button>
@@ -112,7 +121,7 @@ export default defineComponent({
 
     const setTeam = async () => {
       const teamRecord = await store.dispatch.doFetchAndSetTeam(teamId.value);
-      router.push(generateTeamPageLink(teamRecord));
+      await router.push(generateTeamPageLink(teamRecord));
     };
 
     return {

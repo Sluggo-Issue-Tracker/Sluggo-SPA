@@ -1,12 +1,21 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import router from "../router";
 import { SLUGGO_API_URL } from "../../constants";
+import { wrapExceptions } from "@/methods";
 
 // This is not hardwired and not bad.
 export const axiosInstance = axios.create({
   baseURL: SLUGGO_API_URL,
   withCredentials: true
 });
+
+export const refreshToken = async (): Promise<AxiosResponse<void>> => {
+  const refreshAxiosInstance = axios.create({
+    baseURL: SLUGGO_API_URL,
+    withCredentials: true
+  });
+  return await refreshAxiosInstance.post<void>("/auth/token/refresh/");
+};
 
 axiosInstance.interceptors.response.use(
   response => response,
@@ -27,7 +36,12 @@ axiosInstance.interceptors.response.use(
     }
 
     if (error.response && error.response.status === 401) {
-      await router.push("/login");
+      const [, refreshError] = await wrapExceptions(refreshToken);
+
+      if (refreshError) {
+        console.log(refreshError.message);
+        await router.push("/login");
+      }
     }
 
     return error;

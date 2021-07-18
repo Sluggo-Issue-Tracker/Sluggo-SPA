@@ -30,3 +30,4 @@ export const getUser = async (): Promise<AxiosResponse<UserRecord>> =>
 
 export const logoutUser = async (): Promise<AxiosResponse<void>> =>
   await axiosInstance.post<void>("/auth/logout/");
+

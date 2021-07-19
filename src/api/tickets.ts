@@ -39,7 +39,6 @@ export const updateTicket = async (
 export const listTickets = async (
   teamId: number,
   page: number,
-  axios: AxiosInstance,
   filter?: TicketFilterOptions
 ): Promise<AxiosResponse<PaginatedList<ReadTicketRecord>>> => {
   let queryParams = `?page=${page}`;

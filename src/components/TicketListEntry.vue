@@ -28,14 +28,14 @@
 </template>
 
 <script lang="ts">
-import { TicketRecord } from "@/api/tickets";
+import { ReadTicketRecord } from "@/api/types";
 import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   name: "TicketListEntry",
   props: {
     data: {
-      type: Object as () => TicketRecord,
+      type: Object as () => ReadTicketRecord,
       required: true
     }
   },

@@ -23,8 +23,9 @@
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PaginatedList, pageSize } from "@/api/base";
 import { defineComponent, computed } from "vue";
+import { PaginatedList } from "@/api/types";
+import { PAGE_SIZE } from "../../constants";
 // import TicketListEntry from "@/components/TicketListEntry.vue";
 
 export default defineComponent({
@@ -45,7 +46,7 @@ export default defineComponent({
   emits: ["next", "prev"],
   setup(props) {
     const maxPage = computed(() => {
-      return Math.ceil(props.data.count / pageSize);
+      return Math.ceil(props.data.count / PAGE_SIZE);
     });
     return {
       maxPage

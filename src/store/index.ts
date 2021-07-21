@@ -1,12 +1,16 @@
 import { createDirectStore } from "direct-vuex";
-import { SignupDetails, LoginDetails, signup, login, UserRecord, getUser } from "@/api/auth";
-import { TeamRecord, getTeam } from "@/api/teams";
-import { generateAxiosInstance } from "@/api/base";
-import { AxiosInstance } from "axios";
+import { signup, login, logoutUser } from "@/api/auth";
+import { getTeam } from "@/api/teams";
+import {
+  LoginDetails,
+  ReadTeamRecord,
+  SignupDetails,
+  UserRecord
+} from "@/api/types";
 
 interface RootStoreState {
   token?: string;
-  team?: TeamRecord;
+  team?: ReadTeamRecord;
   user?: UserRecord;
 }
 
@@ -21,71 +25,48 @@ const {
     token: undefined
   } as RootStoreState,
   mutations: {
-    setToken(state, newToken: string | undefined) {
-      state.token = newToken;
-      if (newToken) {
-        localStorage.setItem('token', newToken);
-      } else {
-        localStorage.removeItem('token');
-      }
-    },
-    setTeam(state, newTeam: TeamRecord) {
+    setTeam(state, newTeam?: ReadTeamRecord) {
       state.team = newTeam;
     },
-    setUser(state, newUser: UserRecord) {
+    setUser(state, newUser?: UserRecord) {
       state.user = newUser;
     }
   },
   actions: {
-    async doSignup(ctxRaw, details: SignupDetails) {
+    doSignup: async (ctxRaw, details: SignupDetails) => {
       const context = rootActionContext(ctxRaw);
-      const axios = generateAxiosInstance(context.state.token);
-
-      const key = await signup(details, axios);
-      context.commit.setToken(key);
+      const {
+        data: { user }
+      } = await signup(details);
+      context.commit.setUser(user);
     },
-    async doLogin(ctxRaw, details: LoginDetails) {
+    doLogin: async (ctxRaw, details: LoginDetails) => {
       const context = rootActionContext(ctxRaw);
-      const axios = generateAxiosInstance(context.state.token);
-      const key = await login(details, axios);
-
-      context.dispatch.attempt(key);
+      const {
+        data: { user }
+      } = await login(details);
+      context.commit.setUser(user);
     },
-    async attempt(ctxRaw, key: string | null) { // validate the token by fetching the user record
+    doLogout: async ctxRaw => {
       const context = rootActionContext(ctxRaw);
-
-      const newKey = key ? key : undefined;
-      context.commit.setToken(newKey);
-      const axios = generateAxiosInstance(newKey);
-
-      const user = await getUser(axios);
-      context.commit.setUser(user); 
+      await logoutUser();
+      context.commit.setUser(undefined);
     },
-    doLogout(ctxRaw) {
-      const context = rootActionContext(ctxRaw);
-      context.commit.setToken(undefined);
-    },
-    async doSetTeam(ctxRaw, teamRecord: TeamRecord) {
+    doSetTeam: async (ctxRaw, teamRecord: ReadTeamRecord) => {
       const context = rootActionContext(ctxRaw);
 
       context.commit.setTeam(teamRecord);
     },
-    async doFetchAndSetTeam(ctxRaw, teamId: number) {
+    doFetchAndSetTeam: async (ctxRaw, teamId: number) => {
       const context = rootActionContext(ctxRaw);
-      const axios = generateAxiosInstance(context.state.token);
+      const { data } = await getTeam(teamId);
 
-      const teamRecord = await getTeam(axios, teamId);
-      await context.dispatch.doSetTeam(teamRecord);
-
-      return teamRecord;
+      await context.dispatch.doSetTeam(data);
+      return data;
     }
   },
   modules: {},
-  getters: {
-    generateAxiosInstance(): AxiosInstance {
-      return generateAxiosInstance(store.state.token);
-    }
-  }
+  getters: {}
 });
 
 export default store;

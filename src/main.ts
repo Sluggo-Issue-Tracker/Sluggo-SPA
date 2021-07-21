@@ -7,8 +7,6 @@ import "boxicons/css/boxicons.min.css";
 
 require("@/assets/common.scss");
 
-store.dispatch.attempt(localStorage.getItem("token"));
-
 createApp(App)
   .use(store.original)
   .use(router)

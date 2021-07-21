@@ -12,7 +12,9 @@
     </td>
     <td>
       <div>
-        <button v-if="!show" class="button is-link" @click="show = true">Edit</button>
+        <button v-if="!show" class="button is-link" @click="show = true">
+          Edit
+        </button>
         <div v-if="show" class="level">
           <div class="level-left">
             <input
@@ -22,8 +24,12 @@
               placeholder="Enter new title here"
               v-on:keyup.esc="reset"
             />
-            <button class="level-item button is-link" @click="changeTitle"> Submit</button>
-            <button class="level-item button is-link" @click="reset"> Cancel</button>
+            <button class="level-item button is-link" @click="changeTitle">
+              Submit
+            </button>
+            <button class="level-item button is-link" @click="reset">
+              Cancel
+            </button>
           </div>
         </div>
       </div>
@@ -32,59 +38,36 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
-import { TeamRecord, getTeam } from "@/api/teams";
-import { PaginatedList } from "@/api/base";
-import {
-  createTagRecord,
-  createTag,
-  updateTag,
-  getTag,
-  listTag,
-  deleteTag,
-  TagRecord,
-} from "@/api/tags";
-import store from "@/store";
+import { defineComponent, ref } from "vue";
+import { updateTag, deleteTag } from "@/api/tags";
+import { PaginatedList, TagRecord } from "@/api/types";
+import { wrapExceptions } from "@/methods";
+
 export default defineComponent({
   name: "DeleteTag",
   props: {
     teamId: {
-      type: String,
-      required: true,
+      type: Number,
+      required: true
     },
     tagId: {
-      type: String,
-      required: true,
+      type: Number,
+      required: true
     },
     tagTitle: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
 
   emits: ["update"],
 
-  setup(props, context) {
-    const teamRecord = ref({} as TeamRecord);
+  setup: function(props, context) {
     const tagsList = ref({} as PaginatedList<TagRecord>);
     const listPage = ref(1);
     const tagRecord = ref({} as TagRecord);
-    const tagId = parseInt(props.tagId);
     const show = ref(false);
     const newTitle = ref("");
-    console.log(tagId);
-
-    const getTeamRecord = async () => {
-      const axiosInstance = store.getters.generateAxiosInstance;
-      const teamId = parseInt(props.teamId);
-      try {
-        const team = await getTeam(axiosInstance, teamId);
-        teamRecord.value = team;
-      } catch (error) {
-        alert(error);
-        return;
-      }
-    };
 
     const reset = () => {
       show.value = false;
@@ -92,54 +75,48 @@ export default defineComponent({
     };
 
     const remove = async () => {
-      const axiosInstance = store.getters.generateAxiosInstance;
-      try {
-        tagRecord.value = await getTag(tagId, teamRecord.value, axiosInstance);
-        await deleteTag(
-          tagRecord.value as TagRecord,
-          teamRecord.value,
-          axiosInstance
-        );
-      } catch (error) {
-        alert(error);
+      const [, deleteError] = await wrapExceptions(
+        deleteTag,
+        tagRecord.value,
+        props.teamId
+      );
+
+      if (deleteError) {
+        console.log(deleteError.message);
         return;
       }
+
       context.emit("update");
     };
 
     const changeTitle = async () => {
-      const axiosInstance = store.getters.generateAxiosInstance;
       console.log(newTitle);
-      try {
-        tagRecord.value = await getTag(tagId, teamRecord.value, axiosInstance);
-        tagRecord.value.title = newTitle.value;
-        await updateTag(tagRecord.value as TagRecord,
-                        teamRecord.value, 
-                        axiosInstance);
-      }catch (error) {
-        alert(error);
+      tagRecord.value.title = newTitle.value;
+      const [, updateErrors] = await wrapExceptions(
+        updateTag,
+        tagRecord.value,
+        props.teamId
+      );
+
+      if (updateErrors) {
+        console.log(updateErrors);
         return;
       }
+
       reset();
       context.emit("update");
     };
 
-    onMounted(async () => {
-      await getTeamRecord();
-    });
-
     return {
-      teamRecord,
       tagsList,
       listPage,
-      getTeamRecord,
       remove,
       show,
       changeTitle,
       tagRecord,
       newTitle,
-      reset,
+      reset
     };
-  },
+  }
 });
 </script>

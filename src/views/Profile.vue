@@ -105,7 +105,7 @@
                 </span>
                 <span>ButtonText</span>
               </button>
-              <button class="button is-warning" @click="resetCurrent">
+              <button class="button is-warning">
                 <span class="icon is-small">
                   <i class="bx bx-x"></i>
                 </span>

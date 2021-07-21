@@ -1,6 +1,6 @@
-import { TeamRecord } from "@/api/teams";
+import { ReadTeamRecord } from "@/api/types";
 
-export function generateTeamPageLink(team: TeamRecord, loc?: string) {
+export function generateTeamPageLink(team: ReadTeamRecord, loc?: string) {
   return `/teams/${team.id}` + (typeof loc !== "undefined" ? `/${loc}/` : ``);
 }
 

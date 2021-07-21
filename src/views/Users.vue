@@ -56,10 +56,9 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
-import { TeamRecord, getTeam } from "@/api/teams";
-import { PaginatedList } from "@/api/base";
-import { listMembers, MemberRecord } from "@/api/users";
-import store from "@/store";
+import { getTeam } from "@/api/teams";
+import { listMembers } from "@/api/members";
+import { MemberRecord, PaginatedList, ReadTeamRecord } from "@/api/types";
 
 export default defineComponent({
   name: "Users",
@@ -70,30 +69,24 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const teamRecord = ref({} as TeamRecord);
+    const teamRecord = ref({} as ReadTeamRecord);
     const membersList = ref({} as PaginatedList<MemberRecord>);
     const listPage = ref(1);
     const teamId = parseInt(props.teamId);
 
     const getTeamMembers = async () => {
-      const axiosInstance = store.getters.generateAxiosInstance;
       try {
-        membersList.value = await listMembers(
-          axiosInstance,
-          teamId,
-          listPage.value
-        );
-        console.log("found team :)");
+        const { data } = await listMembers(teamId, listPage.value);
+        membersList.value = data;
       } catch (error) {
         console.log(error);
       }
     };
 
     const getTeamRecord = async () => {
-      const axiosInstance = store.getters.generateAxiosInstance;
       const teamId = parseInt(props.teamId);
       try {
-        const team = await getTeam(axiosInstance, teamId);
+        const { data: team } = await getTeam(teamId);
         teamRecord.value = team;
         console.log("team loaded :)");
       } catch (error) {
@@ -107,7 +100,6 @@ export default defineComponent({
     });
 
     return {
-      teamRecord,
       membersList,
       listPage,
       getTeamMembers,

@@ -61,10 +61,12 @@
 import { defineComponent, onMounted, ref } from "vue";
 import {
   updateTicket,
-  TicketRecord,
   deleteTicket,
   getTicket
 } from "@/api/tickets";
+import {
+  ReadTicketRecord
+} from "@/api/types";
 import store from "@/store";
 
 export default defineComponent({
@@ -90,22 +92,19 @@ export default defineComponent({
     };
 
     const getData = async () => {
-      const axiosInstance = store.getters.generateAxiosInstance;
       try {
         console.log(props.teamId);
-        ticketRecord.value = await getTicket(ticketId, teamId, axiosInstance);
+        ticketRecord.value = await getTicket(ticketId, teamId);
       } catch (error) {
         alert(error);
       }
     };
 
     const submit = async () => {
-      const axiosInstance = store.getters.generateAxiosInstance;
       try {
         await updateTicket(
-          ticketRecord.value as TicketRecord,
-          teamId,
-          axiosInstance
+          ticketRecord.value as ReadTicketRecord,
+          teamId
         );
       } catch (error) {
         alert(error);
@@ -115,12 +114,10 @@ export default defineComponent({
     };
 
     const remove = async () => {
-      const axiosInstance = store.getters.generateAxiosInstance;
       try {
         await deleteTicket(
-          ticketRecord.value as TicketRecord,
-          teamId,
-          axiosInstance
+          ticketRecord.value as ReadTicketRecord,
+          teamId
         );
       } catch (error) {
         alert(error);

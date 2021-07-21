@@ -1,52 +1,81 @@
-import axios, { AxiosError } from "axios";
+import axios, {AxiosError, AxiosResponse} from "axios";
+import router from "../router";
+import {SLUGGO_API_URL} from "../../constants";
+import {wrapExceptions} from "@/methods";
 
-export const pageSize = 10;
+// Refresh logic
+let refresher: Promise<AxiosResponse<void>> | null = null;
 
-export interface PaginatedList<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: Array<T>;
-}
+const refreshAxiosInstance = axios.create({
+  baseURL: SLUGGO_API_URL,
+  withCredentials: true
+});
 
-export function generateAxiosInstance(token?: string) {
-  const instance = axios.create({
-    baseURL: "http://127.0.0.1:8080/"
-  }); // TODO: This is hardwired and bad
+export const refreshToken = (): Promise<AxiosResponse<void>> => {
+  if (refresher) {
+    return refresher;
+  }
 
-  instance.interceptors.request.use(config => {
-    config.headers.Authorization = token ? `Bearer ${token}` : "";
-    return config;
-  });
+  refresher = refreshAxiosInstance.post<void>("/auth/token/refresh/");
 
-  // TODO: Expand below into properly reporting such errors on the frontend
-  // This can probably be done centrally if most code that chains simply
-  // stops. Noting, this means that bad chains of actions may partially complete
-  // this is probably fine but could be looked into later.
-  instance.interceptors.response.use(
-    function (response) {
-      return response;
-    },
-    function (e) {
-      if (e.isAxiosError) {
-        const error = e as AxiosError;
-        console.log(`Error occurred!`);
-        console.log(`Printing error details: `);
-        if (error.response) {
-          console.log(
-            `Got bad status ${error.response.status}: ${error.response.statusText}`
-          );
-          console.log(error.response.data);
-        } else if (error.request) {
-          console.log(error.request);
-        } else {
-          console.log("Unable to print details.");
-        }
-      }
+  return refresher.finally(() => refresher = null);
+};
 
-      return e;
+const logError = (error: AxiosError) => {
+  if (error.isAxiosError) {
+    console.log(`Error occurred!`);
+    console.log(`Printing error details: `);
+    if (error.response) {
+      console.log(
+        `Got bad status ${error.response.status}: ${error.response.statusText}`
+      );
+      console.log(error.response.data);
+    } else if (error.request) {
+      console.log(error.request);
+    } else {
+      console.log("Unable to print details.");
     }
-  );
+  }
+};
 
-  return instance;
-}
+// This is not hardwired and not bad.
+export const axiosInstance = axios.create({
+  baseURL: SLUGGO_API_URL,
+  withCredentials: true
+});
+
+// the interception for errors is a bit tricky because if
+// two requests that run after another in short succession
+// both receive 401 statuses, then there may be interleaved
+// refresh requests. However, this should not be an issue because
+// the loser of that race will set an authentication cookie, which will
+// be the correct one.
+axiosInstance.interceptors.response.use(
+  undefined,
+  async (error: AxiosError) => {
+    logError(error);
+
+    // Return error if not an authentication issue.
+    if (error.response?.status !== 401) {
+      return Promise.reject(error);
+    }
+
+    // Attempt to refresh the token
+    const [, refreshError] = await wrapExceptions(refreshToken);
+
+    if (refreshError) {
+      console.log(refreshError.message);
+      await router.push("/login");
+      return Promise.reject(error);
+    }
+
+    // Retry the request if refreshing successful
+    const [retryResponse, retryError] = await wrapExceptions(
+      axiosInstance.request,
+      error.config
+    );
+
+    if (retryResponse) return retryResponse;
+    return Promise.reject(retryError);
+  }
+);

@@ -1,119 +1,46 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { AxiosInstance } from "axios";
+import { AxiosInstance, AxiosResponse } from "axios";
+import { axiosInstance } from "@/api/base";
 import {
-  StatusRecord,
-  createStatusRecord,
-  ReadStatusRecord
-} from "@/api/statuses";
-import { TeamRecord } from "@/api/teams";
-import { UserRecord } from "@/api/auth";
-import { PaginatedList } from "@/api/base";
-import { TagRecord, ReadTagRecord, createTagRecord } from "@/api/tags";
-import { DateTime } from "luxon";
+  PaginatedList,
+  ReadTicketRecord,
+  TicketFilterOptions,
+  WriteTicketRecord
+} from "@/api/types";
 
-export interface WriteTicketRecord {
-  tag_list?: Array<number>;
-  assigned_user?: number;
-  status?: number;
-  title: string;
-  description?: string;
-}
-
-interface ReadTicketRecord {
-  id: number;
-  ticket_number: number;
-  tag_list: Array<ReadTagRecord>;
-  owner: UserRecord;
-  object_uuid: number;
-  assigned_user?: UserRecord;
-  status?: ReadStatusRecord;
-  title: string;
-  description?: string;
-  comments?: Array<number>; // TODO: tdimhcsleumas 2/22/2021, this will eventually change to a comment record
-  created: string; // TODO: convert these to datetime objects
-  activated?: string;
-  deactivated?: string;
-}
-
-export interface TicketRecord {
-  id: number;
-  ticket_number: number;
-  tag_list?: Array<TagRecord>;
-  owner: UserRecord;
-  object_uuid: number;
-  assigned_user?: UserRecord;
-  status?: StatusRecord;
-  title: string;
-  description?: string;
-  comments?: Array<number>; // TODO: tdimhcsleumas 2/22/2021, this will eventually change to a comment record
-  created: DateTime; // TODO: convert these to datetime objects
-  activated?: DateTime;
-  deactivated?: DateTime;
-}
-
-function createTicketRecord(response: ReadTicketRecord): TicketRecord {
-  return {
-    id: response.id,
-    ticket_number: response.ticket_number,
-    tag_list: response.tag_list?.map(elem => createTagRecord(elem)),
-    owner: response.owner,
-    object_uuid: response.object_uuid,
-    assigned_user: response.assigned_user,
-    status: response.status ? createStatusRecord(response.status) : undefined,
-    title: response.title,
-    description: response.description,
-    comments: response.comments,
-    created: DateTime.fromISO(response.created),
-    activated: response.activated
-      ? DateTime.fromISO(response.activated)
-      : undefined,
-    deactivated: response.deactivated
-      ? DateTime.fromISO(response.deactivated)
-      : undefined
-  };
-}
-
-export async function createTicket(
+export const createTicket = async (
   record: WriteTicketRecord,
-  teamId: number,
-  axios: AxiosInstance
-): Promise<TicketRecord> {
-  const response = await axios.post(`/api/teams/${teamId}/tickets/`, record);
-  return createTicketRecord(response.data as ReadTicketRecord);
-}
+  teamId: number
+): Promise<AxiosResponse<ReadTicketRecord>> =>
+  await axiosInstance.post<ReadTicketRecord>(
+    `/api/teams/${teamId}/tickets/`,
+    record
+  );
 
-export async function updateTicket(
-  record: TicketRecord,
-  teamId: number,
-  axios: AxiosInstance
-): Promise<TicketRecord> {
-  const updateRecord = {
-    tag_list: record.tag_list?.map(elem => elem.id),
-    assigned_user: record.assigned_user?.id,
-    status: record.status?.id,
-    title: record.title,
-    description: record.description
-  } as WriteTicketRecord;
+export const updateTicket = async (
+  record: ReadTicketRecord,
+  teamId: number
+): Promise<AxiosResponse<ReadTicketRecord>> => {
+  const { tag_list, assigned_user, status, ...rest } = record;
 
-  const response = await axios.put(
+  const updateRecord: WriteTicketRecord = {
+    tag_list: tag_list?.map(elem => elem.id),
+    assigned_user: assigned_user?.pk,
+    status: status?.id,
+    ...rest
+  };
+
+  return await axiosInstance.put<ReadTicketRecord>(
     `/api/teams/${teamId}/tickets/${record.id}/`,
     updateRecord
   );
-  return createTicketRecord(response.data as ReadTicketRecord);
-}
+};
 
-export interface FilterOptions {
-  search?: string;
-  owner?: UserRecord;
-  assigned?: UserRecord;
-}
-
-export async function listTickets(
+export const listTickets = async (
   teamId: number,
   page: number,
-  axios: AxiosInstance,
-  filter?: FilterOptions
-): Promise<PaginatedList<TicketRecord>> {
+  filter?: TicketFilterOptions
+): Promise<AxiosResponse<PaginatedList<ReadTicketRecord>>> => {
   let queryParams = `?page=${page}`;
   if (filter?.assigned) {
     queryParams += `&assigned__username=${filter.assigned.username}`;
@@ -125,47 +52,21 @@ export async function listTickets(
     queryParams += `&search=${filter.search}`;
   }
 
-  const response = await axios.get(
+  return await axiosInstance.get<PaginatedList<ReadTicketRecord>>(
     `/api/teams/${teamId}/tickets/${queryParams}`
   );
-  const listing: PaginatedList<ReadTicketRecord> = response.data;
+};
 
-  return {
-    count: listing.count,
-    next: listing.next,
-    previous: listing.previous,
-    results: listing.results.map(elem =>
-      createTicketRecord(elem as ReadTicketRecord)
-    )
-  };
-}
-
-// export async function listOwnedTickets(
-
-// ) {
-
-// }
-
-// export async function listAssignedTickets(
-
-// ) {
-
-// }
-
-// this will attach the list of subtickets, eventually
-export async function getTicket(
+export const getTicket = async (
   id: number,
-  teamId: number,
-  axios: AxiosInstance
-): Promise<TicketRecord> {
-  const response = await axios.get(`/api/teams/${teamId}/tickets/${id}/`);
-  return createTicketRecord(response.data);
-}
+  teamId: number
+): Promise<AxiosResponse<ReadTicketRecord>> =>
+  await axiosInstance.get<ReadTicketRecord>(
+    `/api/teams/${teamId}/tickets/${id}/`
+  );
 
-export async function deleteTicket(
-  record: TicketRecord,
-  teamId: number,
-  axios: AxiosInstance
-): Promise<void> {
-  await axios.delete(`/api/teams/${teamId}/tickets/${record.id}/`);
-}
+export const deleteTicket = async (
+  record: ReadTicketRecord,
+  teamId: number
+): Promise<AxiosResponse<void>> =>
+  await axiosInstance.delete<void>(`/api/teams/${teamId}/tickets/${record.id}`);

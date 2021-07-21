@@ -1,55 +1,33 @@
-import { AxiosInstance } from "axios";
+import {
+  LoginDetails,
+  LoginResponse,
+  SignupDetails,
+  UserRecord
+} from "./types";
+import { axiosInstance } from "@/api/base";
+import { AxiosResponse } from "axios";
 
-// MARK: Interfaces
-export interface LoginDetails {
-  username: string;
-  password: string;
-}
-
-export interface SignupDetails {
-  username: string;
-  email: string;
-  password: string;
-  secondaryPassword: string;
-}
-
-export interface UserRecord {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  username: string;
-}
-
-// MARK: Authentication Methods
-export async function signup(
-  details: SignupDetails,
-  axios: AxiosInstance
-): Promise<string> {
-  const response = await axios.post("/auth/registration/", {
-    username: details.username,
-    email: details.email,
-    password1: details.password,
-    password2: details.secondaryPassword
+export const signup = async ({
+  username,
+  email,
+  password,
+  secondaryPassword
+}: SignupDetails): Promise<AxiosResponse<LoginResponse>> =>
+  axiosInstance.post<LoginResponse>("/auth/registration/", {
+    username,
+    email,
+    password1: password,
+    password2: secondaryPassword
   });
 
-  const responseData = response.data;
+export const login = async (
+  details: LoginDetails
+): Promise<AxiosResponse<LoginResponse>> =>
+  axiosInstance.post<LoginResponse>("/auth/login/", details);
 
-  return responseData.key;
-}
+export const getUser = async (): Promise<AxiosResponse<UserRecord>> =>
+  axiosInstance.get<UserRecord>("/auth/user/");
 
-export async function login(
-  details: LoginDetails,
-  axios: AxiosInstance
-): Promise<string> {
-  const response = await axios.post("/auth/login/", details);
-  console.log("Successful login! Printing response key:");
-  console.log(response.data);
+export const logoutUser = async (): Promise<AxiosResponse<void>> =>
+  await axiosInstance.post<void>("/auth/logout/");
 
-  return response.data.key as string;
-}
-
-export async function getUser(axios: AxiosInstance): Promise<UserRecord> {
-  const response = await axios.get("/auth/user/");
-  return response.data as UserRecord;
-}

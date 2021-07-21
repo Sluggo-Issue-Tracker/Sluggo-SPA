@@ -47,14 +47,14 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
 import router from "@/router/index";
-import { listTickets, TicketRecord } from "@/api/tickets";
-import { PaginatedList } from "@/api/base";
+import { listTickets } from "@/api";
 import { generateTicketPageLink } from "@/methods/teamPage";
-import store from "@/store";
 import TicketModal from "@/components/TicketModal.vue";
 import PaginatedListView from "@/components/PaginatedListView.vue";
 import TicketListEntry from "@/components/TicketListEntry.vue";
 import TicketInput from "@/components/TicketInput.vue";
+import { PaginatedList, ReadTicketRecord } from "@/api/types";
+import { wrapExceptions } from "@/methods";
 
 export default defineComponent({
   name: "Tickets",
@@ -76,26 +76,30 @@ export default defineComponent({
   },
   setup(props) {
     // reactive data
-    const ticketList = ref({} as PaginatedList<TicketRecord>);
+    const ticketList = ref({} as PaginatedList<ReadTicketRecord>);
     const listPage = ref(1);
     const selectedTicket = ref({});
     const showModal = ref(false);
     const teamId = parseInt(props.teamId);
 
     const getTeamTickets = async () => {
-      const axiosInstance = store.getters.generateAxiosInstance;
-
-      // hack. v-for does not detect change on results unless this is reset
-      // manually
-      ticketList.value.results = [];
-      ticketList.value = await listTickets(
+      const [listTicketResponse, listTicketsError] = await wrapExceptions(
+        listTickets,
         teamId,
-        listPage.value,
-        axiosInstance
+        listPage.value
       );
+
+      if (listTicketsError) {
+        console.log(listTicketsError.message);
+        return;
+      }
+
+      if (listTicketResponse) {
+        ticketList.value = listTicketResponse.data;
+      }
     };
 
-    const selectTicket = async (ticket?: TicketRecord) => {
+    const selectTicket = async (ticket?: ReadTicketRecord) => {
       await router.replace(generateTicketPageLink(props.teamId, ticket?.id));
       await getTeamTickets();
     };

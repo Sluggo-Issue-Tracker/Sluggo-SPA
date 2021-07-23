@@ -1,4 +1,13 @@
 .navigationContainer {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 9fr;
+}
+
+.sidebarMenu {
+  border-right: 2px var(--borderColor) solid;
+  height: 100%;
+}
+
+.navbarContainer {
+  border-bottom: 2px var(--borderColor) solid;
 }

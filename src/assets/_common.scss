@@ -44,8 +44,7 @@
 }
 
 // primary variables
-:root {
-  --borderColor: #AAAAAA;
-  --primaryBackground: #FFFFFF;
-  --secondaryBackground: #EEEEEE;
-}
+$borderColor: #AAAAAA;
+$primaryBackground: #FFFFFF;
+$secondaryBackground: #EEEEEE;
+$colorPrimary: $blue;

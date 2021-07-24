@@ -2,10 +2,9 @@ import { createApp } from "vue";
 import store from "@/store";
 import App from "./App.vue";
 import router from "./router";
-// import { store, key } from "./store";
 import "boxicons/css/boxicons.min.css";
 
-require("@/assets/common.scss");
+require("@/assets/_common.scss");
 
 createApp(App)
   .use(store.original)

@@ -5,6 +5,7 @@
     aria-label="main navigation"
   >
     <IconSluggo :height="50" :width="50" />
+    <ProfileEmblem name="Sam" />
   </nav>
   <div class="navigationContainer">
     <div class="sidebarMenu">
@@ -18,11 +19,15 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import IconSluggo from "@/assets/IconSluggo/IconSluggo.vue";
+import IconSluggo from "@/assets/IconSluggo";
+import ProfileEmblem from "@/components/ProfileEmblem";
 
 const sluggoNavbarComponent = defineComponent({
   name: "SluggoNavbar",
-  components: {IconSluggo}
+  components: {
+    IconSluggo,
+    ProfileEmblem
+  }
 });
 
 export default sluggoNavbarComponent;

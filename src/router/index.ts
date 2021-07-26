@@ -8,6 +8,7 @@ import Auth from "@/views/Auth.vue";
 import Profile from "@/views/Profile.vue";
 import NewTeam from "@/views/NewTeam.vue";
 import SluggoNavbar from "@/views/SluggoNavbar";
+import Error from "@/views/Error";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -64,6 +65,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/new_team/",
     name: "NewTeam",
     component: NewTeam
+  },
+  {
+    path: "/error",
+    name: "Error",
+    component: Error
   }
 ];
 

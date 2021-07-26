@@ -6,7 +6,14 @@ import "boxicons/css/boxicons.min.css";
 
 require("@/assets/common.scss");
 
-createApp(App)
+const app = createApp(App);
+
+app
   .use(store.original)
   .use(router)
   .mount("#app");
+
+app.config.errorHandler = async () => {
+  await router.replace("/error");
+};
+

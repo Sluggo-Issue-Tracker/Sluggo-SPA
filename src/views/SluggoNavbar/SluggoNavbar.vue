@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, provide } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 import store from "@/store";
 import IconSluggo from "@/assets/IconSluggo";
 import ProfileEmblem from "@/components/ProfileEmblem";
@@ -47,8 +47,11 @@ const sluggoNavbarComponent = defineComponent({
     ProfileEmblem
   },
   setup: () => {
-    const authUser = computed<UserRecord>(() => store.getters.getAuthUser);
-    provide("authUser", store.getters.getAuthUser);
+    const authUser = ref<UserRecord | null>(null);
+
+    onMounted(async () => {
+      authUser.value = await store.dispatch.getAuthUser();
+    });
 
     return {
       authUser

@@ -92,14 +92,7 @@ const {
     }
   },
   modules: {},
-  getters: {
-    getAuthUser: (state): UserRecord => {
-      if (!state.authUser) {
-        throw new UserNotDefinedError("user must be defined!");
-      }
-      return state.authUser;
-    }
-  }
+  getters: {}
 });
 
 export default store;

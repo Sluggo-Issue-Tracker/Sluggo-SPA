@@ -7,7 +7,7 @@ import Help from "@/views/Help.vue";
 import Auth from "@/views/Auth.vue";
 import Profile from "@/views/Profile.vue";
 import NewTeam from "@/views/NewTeam.vue";
-import SluggoNavbar from "@/components/SluggoNavbar";
+import SluggoNavbar from "@/views/SluggoNavbar";
 
 const routes: Array<RouteRecordRaw> = [
   {

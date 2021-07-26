@@ -8,9 +8,10 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import { computed } from "vue";
 
-export default {
+export default defineComponent({
   name: "ProfileEmblem",
   props: {
     name: {
@@ -29,7 +30,7 @@ export default {
       initials
     };
   }
-};
+});
 </script>
 
 <style src="./styles.module.scss" lang="scss"></style>

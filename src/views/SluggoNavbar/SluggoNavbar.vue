@@ -11,6 +11,12 @@
           <IconSluggo :height="50" :width="50" />
           <span class="title">Sluggo</span>
         </a>
+
+      </div>
+      <div class="navbar-menu">
+        <div class="navbar-item hasDividerLeft">
+          <Search />
+        </div>
       </div>
       <!-- Right side of the navbar -->
       <div class="navbar-end">
@@ -38,13 +44,15 @@ import { defineComponent, ref, onMounted } from "vue";
 import store from "@/store";
 import IconSluggo from "@/assets/IconSluggo";
 import ProfileEmblem from "@/components/ProfileEmblem";
+import Search from "@/components/Search";
 import { UserRecord } from "@/api/types";
 
 const sluggoNavbarComponent = defineComponent({
   name: "SluggoNavbar",
   components: {
     IconSluggo,
-    ProfileEmblem
+    ProfileEmblem,
+    Search
   },
   setup: () => {
     const authUser = ref<UserRecord | null>(null);

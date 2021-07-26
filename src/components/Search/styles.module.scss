@@ -1,0 +1,16 @@
+.searchContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 30px;
+
+  input,
+  input:active,
+  input:focus {
+    outline: none;
+    border: none;
+    height: 56px;
+    font-size: 16px;
+  }
+
+}

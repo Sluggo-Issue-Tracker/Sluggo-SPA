@@ -1,22 +1,32 @@
-@use '@common';
+.sizeMedium {
+   --avatarSize: 36px;
+}
 
 .profile {
-  background: #FFFFFF;
-  color: $colorPrimary;
-  border: 1px solid $colorPrimary;
+  color: var(--textColor);
+  font-size: calc(var(--avatarSize) / 2);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 2rem;
 }
 
 .profileContainer {
-  position: relative;
-  flex-direction: row;
-  width: 36px;
-  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: var(--avatarSize);
+  height: var(--avatarSize);
   border-radius: 50%;
-  background: $primaryBackground;
-  color: #FFFFFF;
-  font-size: 0.9em;
-  font-weight: 600;
-  line-height: 36px;
-  text-align: center;
+  background-color: var(--secondaryBackground);
+  line-height: var(--avatarSize)px;
   text-transform: uppercase;
+}
+
+.simpleLevel {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 185px;
 }

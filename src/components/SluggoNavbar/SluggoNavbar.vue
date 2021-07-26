@@ -4,8 +4,19 @@
     role="navigation"
     aria-label="main navigation"
   >
-    <IconSluggo :height="50" :width="50" />
-    <ProfileEmblem name="Sam" />
+    <!-- Left side of the navbar -->
+    <div class="navbar-brand">
+      <a class="navbar-item">
+        <IconSluggo :height="50" :width="50" />
+        <span class="title">Sluggo</span>
+      </a>
+    </div>
+    <!-- Right side of the navbar -->
+    <div class="navbar-end">
+      <div class="navbar-item simpleLevel hasDividerLeft">
+        <ProfileEmblem name="" />
+      </div>
+    </div>
   </nav>
   <div class="navigationContainer">
     <div class="sidebarMenu">

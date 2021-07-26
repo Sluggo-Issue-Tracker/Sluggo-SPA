@@ -1,10 +1,13 @@
 <template>
-  <div class="profileContainer">
-    <span class="profile">{{ initials }}</span>
+  <div class="simpleLevel">
+    <div class="sizeMedium profileContainer">
+      <span class="sizeMedium profile">{{ initials }}</span>
+    </div>
+    <span>{{ name }}</span>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { computed } from "vue";
 
 export default {
@@ -16,10 +19,10 @@ export default {
     }
   },
   setup: props => {
-    const initials = computed(
+    const initials = computed(() =>
       props.name
         .split(" ")
-        .map(value => value[0])
+        .map((value: string) => value[0])
         .join("")
     );
     return {

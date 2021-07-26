@@ -4,7 +4,7 @@ import App from "./App.vue";
 import router from "./router";
 import "boxicons/css/boxicons.min.css";
 
-require("@/assets/_common.scss");
+require("@/assets/common.scss");
 
 createApp(App)
   .use(store.original)

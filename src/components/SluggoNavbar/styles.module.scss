@@ -1,13 +1,25 @@
 .navigationContainer {
   display: grid;
   grid-template-columns: 1fr 9fr;
+  height: 1080px;
 }
 
 .sidebarMenu {
   border-right: 2px var(--borderColor) solid;
-  height: 100%;
 }
 
 .navbarContainer {
   border-bottom: 2px var(--borderColor) solid;
+}
+
+.title {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+
+
+.hasDividerLeft {
+  border-left: 2px var(--borderColor) solid;
 }

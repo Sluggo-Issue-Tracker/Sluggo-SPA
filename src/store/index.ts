@@ -1,5 +1,5 @@
 import { createDirectStore } from "direct-vuex";
-import { signup, login, logoutUser } from "@/api/auth";
+import { signup, login, logoutUser, getUser } from "@/api/auth";
 import { getTeam } from "@/api/teams";
 import {
   LoginDetails,
@@ -7,11 +7,14 @@ import {
   SignupDetails,
   UserRecord
 } from "@/api/types";
+import { AxiosResponse } from "axios";
+import { UserNotDefinedError } from "@/types";
 
 interface RootStoreState {
   token?: string;
   team?: ReadTeamRecord;
-  user?: UserRecord;
+  authUser?: UserRecord;
+  fetchingAuthUser?: Promise<AxiosResponse<UserRecord>>;
 }
 
 const {
@@ -29,7 +32,13 @@ const {
       state.team = newTeam;
     },
     setUser(state, newUser?: UserRecord) {
-      state.user = newUser;
+      state.authUser = newUser;
+    },
+    setFetchingAuthUser: (
+      state,
+      fetchingAuthUser?: Promise<AxiosResponse<UserRecord>>
+    ) => {
+      state.fetchingAuthUser = fetchingAuthUser;
     }
   },
   actions: {
@@ -63,10 +72,34 @@ const {
 
       await context.dispatch.doSetTeam(data);
       return data;
+    },
+    getAuthUser: async (ctxRaw): Promise<UserRecord> => {
+      const context = rootActionContext(ctxRaw);
+      if (!context.state.authUser) {
+        // if a fetch for this user is already in progress, await that
+        // promise (unlikely to happen?)
+        let fetchingAuthUser = context.state.fetchingAuthUser;
+        if (!fetchingAuthUser) {
+          fetchingAuthUser = getUser();
+          context.commit.setFetchingAuthUser(fetchingAuthUser);
+        }
+
+        const { data } = await fetchingAuthUser;
+        context.commit.setUser(data);
+        return data;
+      }
+      return context.state.authUser;
     }
   },
   modules: {},
-  getters: {}
+  getters: {
+    getAuthUser: (state): UserRecord => {
+      if (!state.authUser) {
+        throw new UserNotDefinedError("user must be defined!");
+      }
+      return state.authUser;
+    }
+  }
 });
 
 export default store;

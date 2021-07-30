@@ -7,10 +7,10 @@
   input,
   input:active,
   input:focus {
+    flex-grow: 1;
     outline: none;
     border: none;
     height: 56px;
     font-size: 16px;
   }
-
 }

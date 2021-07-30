@@ -13,8 +13,11 @@
         </a>
       </div>
       <div class="navbar-menu">
-        <div class="navbar-item hasDividerLeft">
+        <div class="searchBarContainer hasDividerLeft">
           <Search />
+        </div>
+        <div class="navbar-item hasDividerLeft">
+          <button class="button is-link">Create Ticket</button>
         </div>
       </div>
       <!-- Right side of the navbar -->

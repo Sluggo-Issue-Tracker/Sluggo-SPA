@@ -8,7 +8,6 @@ import {
   UserRecord
 } from "@/api/types";
 import { AxiosResponse } from "axios";
-import { UserNotDefinedError } from "@/types";
 
 interface RootStoreState {
   token?: string;
@@ -73,22 +72,10 @@ const {
       await context.dispatch.doSetTeam(data);
       return data;
     },
-    getAuthUser: async (ctxRaw): Promise<UserRecord> => {
+    doFetchAuthUser: async (ctxRaw): Promise<void> => {
       const context = rootActionContext(ctxRaw);
-      if (!context.state.authUser) {
-        // if a fetch for this user is already in progress, await that
-        // promise (unlikely to happen?)
-        let fetchingAuthUser = context.state.fetchingAuthUser;
-        if (!fetchingAuthUser) {
-          fetchingAuthUser = getUser();
-          context.commit.setFetchingAuthUser(fetchingAuthUser);
-        }
-
-        const { data } = await fetchingAuthUser;
-        context.commit.setUser(data);
-        return data;
-      }
-      return context.state.authUser;
+      const { data } = await getUser();
+      context.commit.setUser(data);
     }
   },
   modules: {},

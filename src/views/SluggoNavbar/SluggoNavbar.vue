@@ -11,7 +11,6 @@
           <IconSluggo :height="50" :width="50" />
           <span class="title">Sluggo</span>
         </a>
-
       </div>
       <div class="navbar-menu">
         <div class="navbar-item hasDividerLeft">
@@ -55,10 +54,13 @@ const sluggoNavbarComponent = defineComponent({
     Search
   },
   setup: () => {
-    const authUser = ref<UserRecord | null>(null);
+    const authUser = ref<UserRecord | undefined>(store.state.authUser);
 
     onMounted(async () => {
-      authUser.value = await store.dispatch.getAuthUser();
+      if (!store.state.authUser) {
+        await store.dispatch.doFetchAuthUser();
+        authUser.value = store.state.authUser;
+      }
     });
 
     return {

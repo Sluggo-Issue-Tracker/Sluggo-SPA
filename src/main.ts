@@ -23,4 +23,3 @@ app.config.errorHandler = async error => {
 
   await router.replace("/error");
 };
-

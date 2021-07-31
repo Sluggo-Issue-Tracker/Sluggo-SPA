@@ -1,8 +1,11 @@
 <template>
   <div :class="{ dropdown: true, 'is-right': true, 'is-active': isOpen }">
-    <div class="dropdown-trigger emblemContainer" :onclick="() => {isOpen = !isOpen}">
-        <ProfileEmblem :name="username" />
-        <span>{{ username }}</span>
+    <div
+      class="dropdown-trigger emblemContainer"
+      :onclick="handleToggle"
+    >
+      <ProfileEmblem :name="username" />
+      <span>{{ username }}</span>
     </div>
     <div :v-if="isOpen" class="dropdown-menu">
       <div class="dropdown-content">
@@ -32,11 +35,18 @@ export default defineComponent({
   },
   setup: () => {
     const isOpen = ref<boolean>(false);
+
+    const handleToggle = () => {
+      isOpen.value = !isOpen.value;
+    };
+
     const handleLogout = async () => {
       await store.dispatch.doLogout();
       await router.push("/login");
     };
+
     return {
+      handleToggle,
       handleLogout,
       isOpen
     };

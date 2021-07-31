@@ -11,8 +11,24 @@
           <IconSluggo :height="50" :width="50" />
           <span class="title">Sluggo</span>
         </a>
+
+        <a
+          role="button"
+          class="navbar-burger"
+          aria-label="menu"
+          aria-expanded="false"
+          data-target="sluggo-menu"
+          :onclick="handleBurgerClicked"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
       </div>
-      <div class="navbar-menu">
+      <div
+        id="sluggo-menu"
+        :class="{ 'navbar-menu': true, 'is-active': isMenuOpen }"
+      >
         <div class="searchBarContainer hasDividerLeft">
           <Search />
         </div>
@@ -58,6 +74,11 @@ const sluggoNavbarComponent = defineComponent({
   },
   setup: () => {
     const authUser = ref<UserRecord | undefined>(store.state.authUser);
+    const isMenuOpen = ref<boolean>(false);
+
+    const handleBurgerClicked = () => {
+      isMenuOpen.value = !isMenuOpen.value;
+    };
 
     onMounted(async () => {
       if (!store.state.authUser) {
@@ -67,7 +88,9 @@ const sluggoNavbarComponent = defineComponent({
     });
 
     return {
-      authUser
+      authUser,
+      isMenuOpen,
+      handleBurgerClicked
     };
   }
 });

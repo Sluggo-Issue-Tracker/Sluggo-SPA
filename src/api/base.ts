@@ -65,8 +65,7 @@ axiosInstance.interceptors.response.use(
 
     if (refreshError) {
       console.log(refreshError.message);
-      await router.push("/login");
-      return Promise.reject(error);
+      return Promise.reject(refreshError);
     }
 
     // Retry the request if refreshing successful

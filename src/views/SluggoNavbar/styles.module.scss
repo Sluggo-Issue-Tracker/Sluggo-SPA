@@ -1,15 +1,33 @@
 .navigationContainer {
-  display: grid;
-  grid-template-columns: 1fr 9fr;
-  height: 1080px;
+  display: flex;
 }
 
 .sidebarMenu {
-  border-right: 2px var(--borderColor) solid;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  @media screen and (max-width: 1003px) {
+    & {
+      position: absolute;
+      z-index: 3;
+      background: var(--primaryBackground);
+    }
+  }
+
+  @media screen and (min-width: 1004px) {
+    & {
+      flex: 1;
+      border-right: 2px var(--borderColor) solid;
+    }
+  }
 }
 
 .navbarContainer {
   border-bottom: 2px var(--borderColor) solid;
+}
+
+.viewContainer {
+  flex: 11;
 }
 
 .title {

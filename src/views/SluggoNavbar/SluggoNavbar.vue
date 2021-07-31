@@ -7,7 +7,7 @@
     >
       <!-- Left side of the navbar -->
       <div class="navbar-brand">
-        <a class="navbar-item">
+        <a class="navbar-item" :onclick="handleBrandClicked">
           <IconSluggo :height="50" :width="50" />
           <span class="title">Sluggo</span>
         </a>
@@ -27,7 +27,7 @@
       </div>
       <div
         id="sluggo-menu"
-        :class="{ 'navbar-menu': true, 'is-active': isMenuOpen }"
+        :class="{ 'navbar-menu': true, 'is-active': isNavMenuOpen }"
       >
         <div class="searchBarContainer hasDividerLeft">
           <Search />
@@ -43,13 +43,16 @@
         </div>
       </div>
     </nav>
+    <!-- Side bar menu -->
     <div class="navigationContainer">
-      <div class="sidebarMenu">
+      <div class="sidebarMenu" v-if="isSidebarOpen">
         <p>
           Hello world!
         </p>
       </div>
-      <router-view />
+      <div class="viewContainer">
+        <router-view />
+      </div>
     </div>
   </div>
   <div v-if="!authUser">
@@ -74,10 +77,15 @@ const sluggoNavbarComponent = defineComponent({
   },
   setup: () => {
     const authUser = ref<UserRecord | undefined>(store.state.authUser);
-    const isMenuOpen = ref<boolean>(false);
+    const isNavMenuOpen = ref<boolean>(false);
+    const isSidebarOpen = ref<boolean>(false);
 
     const handleBurgerClicked = () => {
-      isMenuOpen.value = !isMenuOpen.value;
+      isNavMenuOpen.value = !isNavMenuOpen.value;
+    };
+
+    const handleBrandClicked = () => {
+      isSidebarOpen.value = !isSidebarOpen.value;
     };
 
     onMounted(async () => {
@@ -89,8 +97,10 @@ const sluggoNavbarComponent = defineComponent({
 
     return {
       authUser,
-      isMenuOpen,
-      handleBurgerClicked
+      isNavMenuOpen,
+      isSidebarOpen,
+      handleBurgerClicked,
+      handleBrandClicked
     };
   }
 });

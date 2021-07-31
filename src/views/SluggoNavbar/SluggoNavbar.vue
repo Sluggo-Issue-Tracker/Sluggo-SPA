@@ -23,7 +23,7 @@
       <!-- Right side of the navbar -->
       <div class="navbar-end">
         <div class="navbar-item simpleLevel hasDividerLeft">
-          <ProfileEmblem :name="authUser?.username ?? ''" />
+          <NavbarDropdown :username="authUser?.username ?? ''" />
         </div>
       </div>
     </nav>
@@ -45,7 +45,7 @@
 import { defineComponent, ref, onMounted } from "vue";
 import store from "@/store";
 import IconSluggo from "@/assets/IconSluggo";
-import ProfileEmblem from "@/components/ProfileEmblem";
+import NavbarDropdown from "./components/NavbarDropdown.vue";
 import Search from "@/components/Search";
 import { UserRecord } from "@/api/types";
 
@@ -53,7 +53,7 @@ const sluggoNavbarComponent = defineComponent({
   name: "SluggoNavbar",
   components: {
     IconSluggo,
-    ProfileEmblem,
+    NavbarDropdown,
     Search
   },
   setup: () => {

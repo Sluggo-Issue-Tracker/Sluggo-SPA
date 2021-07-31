@@ -27,3 +27,12 @@
 .hasDividerLeft {
   border-left: 2px var(--borderColor) solid;
 }
+
+.emblemContainer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  min-width: 185px;
+}

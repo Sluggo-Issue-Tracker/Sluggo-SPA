@@ -1,9 +1,6 @@
 <template>
-  <div class="simpleLevel">
-    <div class="sizeMedium profileContainer">
-      <span class="sizeMedium profile">{{ initials }}</span>
-    </div>
-    <span>{{ name }}</span>
+  <div class="sizeMedium profileContainer">
+    <span class="sizeMedium profile">{{ initials }}</span>
   </div>
 </template>
 

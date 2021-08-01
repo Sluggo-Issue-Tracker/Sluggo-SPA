@@ -17,7 +17,7 @@
   @media screen and (min-width: 1004px) {
     & {
       flex: 1;
-      border-right: 2px var(--borderColor) solid;
+      border-right: 1px var(--borderColor) solid;
     }
   }
 }
@@ -25,7 +25,7 @@
 .navbarContainer {
   position: sticky;
   top: 0;
-  border-bottom: 2px var(--borderColor) solid;
+  border-bottom: 1px var(--borderColor) solid;
 }
 
 .viewContainer {
@@ -39,13 +39,13 @@
 }
 
 .searchBarContainer {
-  padding: 0.5rem 0.5rem;
+  padding: 0.5rem 1rem;
   white-space: nowrap;
   flex-grow: 9;
 }
 
 .hasDividerLeft {
-  border-left: 2px var(--borderColor) solid;
+  border-left: 1px var(--borderColor) solid;
 }
 
 .emblemContainer {

@@ -1,26 +1,19 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "@/views/Home.vue";
 import Tickets from "@/views/Tickets.vue";
-import Users from "@/views/Users.vue";
-import Admin from "@/views/Admin.vue";
 import Help from "@/views/Help.vue";
 import Auth from "@/views/Auth.vue";
-import Profile from "@/views/Profile.vue";
 import NewTeam from "@/views/NewTeam.vue";
-import SluggoNavbar from "@/views/SluggoNavbar";
 import Error from "@/views/Error";
+import UserProvidedNavbar from "@/views/SluggoNavbar";
+import UserProvidedRouter from "@/components/UserProvidedRouter.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: "/teams/:teamId",
-    name: "Team",
-    component: SluggoNavbar,
+    path: "/",
+    name: "Navbar",
+    component: UserProvidedNavbar,
     children: [
-      {
-        path: "",
-        name: "Home",
-        component: Home
-      },
       {
         path: "tickets/:selected?",
         name: "Tickets",
@@ -28,28 +21,17 @@ const routes: Array<RouteRecordRaw> = [
         props: true
       },
       {
-        path: "users",
-        name: "Users",
-        component: Users,
-        props: true
-      },
-      {
-        path: "users/:userId",
-        name: "Profile",
-        component: Profile
-      },
-      {
-        path: "admin",
-        name: "Admin",
-        component: Admin,
-        props: true
-      },
-      {
         path: "",
         name: "Home",
         component: Home
-      },
+      }
     ]
+  },
+  {
+    path: "/user",
+    name: "User",
+    component: UserProvidedRouter,
+    children: []
   },
   {
     path: "/help",

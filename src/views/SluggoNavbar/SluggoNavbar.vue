@@ -1,5 +1,5 @@
 <template>
-  <div v-if="authUser">
+  <div>
     <nav
       class="navbar navbarContainer"
       role="navigation"
@@ -55,13 +55,10 @@
       </div>
     </div>
   </div>
-  <div v-if="!authUser">
-    Currently loading!
-  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref } from "vue";
 import store from "@/store";
 import IconSluggo from "@/assets/IconSluggo";
 import NavbarDropdown from "./components/NavbarDropdown.vue";
@@ -76,7 +73,7 @@ const sluggoNavbarComponent = defineComponent({
     Search
   },
   setup: () => {
-    const authUser = ref<UserRecord | undefined>(store.state.authUser);
+    const authUser = ref<UserRecord>(store.getters.authUser);
     const isNavMenuOpen = ref<boolean>(false);
     const isSidebarOpen = ref<boolean>(false);
 
@@ -87,13 +84,6 @@ const sluggoNavbarComponent = defineComponent({
     const handleBrandClicked = () => {
       isSidebarOpen.value = !isSidebarOpen.value;
     };
-
-    onMounted(async () => {
-      if (!store.state.authUser) {
-        await store.dispatch.doFetchAuthUser();
-        authUser.value = store.state.authUser;
-      }
-    });
 
     return {
       authUser,

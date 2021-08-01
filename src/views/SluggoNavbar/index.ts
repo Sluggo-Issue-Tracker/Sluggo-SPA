@@ -1,3 +1,3 @@
-import SluggoNavbar from "./SluggoNavbar.vue";
+import UserProvidedNavbar from "./UserProvidedNavbar.vue";
 
-export default SluggoNavbar;
+export default UserProvidedNavbar;

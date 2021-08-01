@@ -23,6 +23,8 @@
 }
 
 .navbarContainer {
+  position: sticky;
+  top: 0;
   border-bottom: 2px var(--borderColor) solid;
 }
 
@@ -37,7 +39,7 @@
 }
 
 .searchBarContainer {
-  padding: 0.375rem 1rem;
+  padding: 0.5rem 0.5rem;
   white-space: nowrap;
   flex-grow: 9;
 }

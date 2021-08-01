@@ -33,11 +33,8 @@
           <Search />
         </div>
         <div class="navbar-item hasDividerLeft">
-          <button class="button is-link">Create Ticket</button>
+          <button class="button is-info">Create Ticket</button>
         </div>
-      </div>
-      <!-- Right side of the navbar -->
-      <div class="navbar-end">
         <div class="navbar-item simpleLevel hasDividerLeft">
           <NavbarDropdown :username="authUser?.username ?? ''" />
         </div>

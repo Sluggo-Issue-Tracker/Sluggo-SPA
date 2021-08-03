@@ -1,0 +1,58 @@
+.navigationContainer {
+  display: flex;
+}
+
+.sidebarMenu {
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  @media screen and (max-width: 1003px) {
+    & {
+      position: absolute;
+      z-index: 3;
+      background: var(--primaryBackground);
+    }
+  }
+
+  @media screen and (min-width: 1004px) {
+    & {
+      flex: 1;
+      border-right: 1px var(--borderColor) solid;
+    }
+  }
+}
+
+.navbarContainer {
+  position: sticky;
+  top: 0;
+  border-bottom: 1px var(--borderColor) solid;
+}
+
+.viewContainer {
+  flex: 11;
+}
+
+.title {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.searchBarContainer {
+  padding: 0.5rem 1rem;
+  white-space: nowrap;
+  flex-grow: 9;
+}
+
+.hasDividerLeft {
+  border-left: 1px var(--borderColor) solid;
+}
+
+.emblemContainer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  min-width: 185px;
+}

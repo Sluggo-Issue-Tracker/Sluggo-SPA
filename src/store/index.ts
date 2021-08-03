@@ -1,5 +1,5 @@
 import { createDirectStore } from "direct-vuex";
-import { signup, login, logoutUser } from "@/api/auth";
+import { signup, login, logoutUser, getUser } from "@/api/auth";
 import { getTeam } from "@/api/teams";
 import {
   LoginDetails,
@@ -7,11 +7,13 @@ import {
   SignupDetails,
   UserRecord
 } from "@/api/types";
+import { AxiosResponse } from "axios";
 
 interface RootStoreState {
   token?: string;
   team?: ReadTeamRecord;
-  user?: UserRecord;
+  authUser?: UserRecord;
+  fetchingAuthUser?: Promise<AxiosResponse<UserRecord>>;
 }
 
 const {
@@ -29,7 +31,13 @@ const {
       state.team = newTeam;
     },
     setUser(state, newUser?: UserRecord) {
-      state.user = newUser;
+      state.authUser = newUser;
+    },
+    setFetchingAuthUser: (
+      state,
+      fetchingAuthUser?: Promise<AxiosResponse<UserRecord>>
+    ) => {
+      state.fetchingAuthUser = fetchingAuthUser;
     }
   },
   actions: {
@@ -63,10 +71,22 @@ const {
 
       await context.dispatch.doSetTeam(data);
       return data;
+    },
+    doFetchAuthUser: async (ctxRaw): Promise<void> => {
+      const context = rootActionContext(ctxRaw);
+      const { data } = await getUser();
+      context.commit.setUser(data);
     }
   },
   modules: {},
-  getters: {}
+  getters: {
+    authUser: (state): UserRecord => {
+      if (state.authUser) {
+        return state.authUser;
+      }
+      throw new Error("User is not defined!");
+    }
+  }
 });
 
 export default store;

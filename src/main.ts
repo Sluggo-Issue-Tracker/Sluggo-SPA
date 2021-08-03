@@ -2,12 +2,24 @@ import { createApp } from "vue";
 import store from "@/store";
 import App from "./App.vue";
 import router from "./router";
-// import { store, key } from "./store";
 import "boxicons/css/boxicons.min.css";
 
 require("@/assets/common.scss");
 
-createApp(App)
+const app = createApp(App);
+
+app
   .use(store.original)
   .use(router)
   .mount("#app");
+
+app.config.errorHandler = async error => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore
+  if (error.response?.status === 401) {
+    await router.replace("/login");
+    return;
+  }
+
+  await router.replace("/error");
+};

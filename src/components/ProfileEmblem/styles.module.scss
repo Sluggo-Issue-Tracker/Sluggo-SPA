@@ -1,0 +1,24 @@
+.sizeMedium {
+   --avatarSize: 36px;
+}
+
+.profile {
+  color: var(--textColor);
+  font-size: calc(var(--avatarSize) / 2);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 2rem;
+}
+
+.profileContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: var(--avatarSize);
+  height: var(--avatarSize);
+  border-radius: 50%;
+  background-color: var(--secondaryBackground);
+  line-height: var(--avatarSize)px;
+  text-transform: uppercase;
+}

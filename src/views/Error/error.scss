@@ -1,0 +1,48 @@
+
+.error-page{
+    color: black;
+    height: 100%;
+    overflow: visible;
+  }
+
+.error-default-message{
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    top: 40vmin;
+    width: 30vmin;
+  }
+
+  .error-home-button{
+    border: 1px var(--borderColor) solid;
+    background-color: var(--colorPrimary);
+    color: white;
+    border-radius: 4px;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    top: 45vmin;
+    width: 30vmin;
+  
+    &:hover{
+      background: var(--borderColor);
+      color: var(--colorPrimary);
+    }
+  }
+
+  .error-full-message{
+    position: absolute;
+    color:var(--textColor);
+    font-family: 'Courier New', Courier, monospace;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    top: 50vmin;
+    width: 30vmin;
+  }
+

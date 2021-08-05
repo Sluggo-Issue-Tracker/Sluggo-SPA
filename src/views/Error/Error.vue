@@ -1,25 +1,33 @@
 <template>
-  <div>Error! something went wrong</div>
-  <button @click="$router.push('home')">Click to Return Home</button>
-  <div v-if="shouldDisplayError == true">Dev Mode</div>
+  <body class="error-page">
+    <div class="error-default-message">Error, something went wrong!</div>
+    <button class="error-home-button" @click="$router.push('/')">
+      Click to Return Home
+    </button>
+    <div class="error-full-message" v-if="shouldDisplayError == true">
+      {{ error }}
+    </div>
+  </body>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import store from "@/store";
 
 export default defineComponent({
   name: "Error",
   setup() {
+    const error = store.getters.error.message;
     const shouldDisplayError =
       process.env.NODE_ENV == "test" || process.env.NODE_ENV == "development"
         ? true
         : false;
-
     return {
-      shouldDisplayError
+      shouldDisplayError,
+      error
     };
   }
 });
 </script>
 
-<style scoped></style>
+<style src="./error.scss" lang="scss"></style>

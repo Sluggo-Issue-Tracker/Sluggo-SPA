@@ -59,15 +59,8 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/camelcase */
 import { defineComponent, onMounted, ref } from "vue";
-import {
-  updateTicket,
-  deleteTicket,
-  getTicket
-} from "@/api/tickets";
-import {
-  ReadTicketRecord
-} from "@/api/types";
-import store from "@/store";
+import { updateTicket, deleteTicket, getTicket } from "@/api/tickets";
+import { ReadTicketRecord } from "@/api/types";
 
 export default defineComponent({
   name: "TicketModal",
@@ -102,10 +95,7 @@ export default defineComponent({
 
     const submit = async () => {
       try {
-        await updateTicket(
-          ticketRecord.value as ReadTicketRecord,
-          teamId
-        );
+        await updateTicket(ticketRecord.value as ReadTicketRecord, teamId);
       } catch (error) {
         alert(error);
         return;
@@ -115,10 +105,7 @@ export default defineComponent({
 
     const remove = async () => {
       try {
-        await deleteTicket(
-          ticketRecord.value as ReadTicketRecord,
-          teamId
-        );
+        await deleteTicket(ticketRecord.value as ReadTicketRecord, teamId);
       } catch (error) {
         alert(error);
         return;

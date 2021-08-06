@@ -1,47 +1,30 @@
-
-template {
-    color: black !important;
-  }
+.error-page {
+  background-color: orange;
+  height:50vmin;
+}
 
 .error-default-message{
-    position: absolute;
-    margin-left: auto;
-    margin-right: auto;
-    font-size: x-large;
-    left: 580px;
-    top: 40vmin;
-    width: 50vmin;
-  }
+  position:relative;
+  font-size: x-large;
+  top: 40vmin;
+  width: 70vmin;
+  left: 590px;
+}
 
-  .error-home-button{
-    border: 1px var(--borderColor) solid;
-    background-color: var(--colorPrimary);
-    color: white;
-    border-radius: 8px;
-    position: absolute;
-    margin-left: auto;
-    margin-right: auto;
-    left: 0;
-    right: 0;
-    top: 47vmin;
-    width: 30vmin;
+.error-home-button{
+  border: 1px var(--borderColor) solid;
+  background-color: var(--colorPrimary);
+  position: absolute;
+  color: white;
+  border-radius: 8px;
+  width: 30vmin;
+  top: 47vmin;
+  left: 84vmin;
   
-    &:hover{
-      background: var(--borderColor);
-      color: var(--colorPrimary);
-      cursor: pointer;
+  &:hover{
+    background: var(--borderColor);
+    color: var(--colorPrimary);
+    cursor: pointer;
     }
-  }
-
-  .error-full-message{
-    position: absolute;
-    color:var(--textColor);
-
-    margin-left: auto;
-    margin-right: auto;
-    left: 0;
-    right: 0;
-    top: 60vmin;
-    width: 30vmin;
   }
 

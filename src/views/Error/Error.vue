@@ -1,11 +1,13 @@
 <template>
-  <body>
-    <div class="error-default-message" v-if="shouldDisplayError == true">{{ error }}</div>
+  <span class="error-page"> 
+    <div class="error-default-message" v-if="isInDevMode == false">
+      {{ error || "No error to display!" }}
+    </div>
     <div class="error-default-message" v-else>Error, something went wrong!</div>
     <button class="error-home-button" @click="$router.push('/')">
       Click to Return Home
     </button>
-  </body>
+  </span>
 </template>
 
 <script lang="ts">
@@ -16,12 +18,12 @@ export default defineComponent({
   name: "Error",
   setup() {
     const error = store.getters.error.message;
-    const shouldDisplayError =
+    const isInDevMode =
       process.env.NODE_ENV == "test" || process.env.NODE_ENV == "development"
         ? true
         : false;
     return {
-      shouldDisplayError,
+      isInDevMode,
       error
     };
   }

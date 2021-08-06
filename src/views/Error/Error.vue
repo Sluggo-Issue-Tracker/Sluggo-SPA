@@ -1,6 +1,6 @@
 <template>
-  <span class="error-page"> 
-    <div class="error-default-message" v-if="isInDevMode == false">
+  <span class="error-page">
+    <div class="error-default-message" v-if="isInDevMode == true">
       {{ error || "No error to display!" }}
     </div>
     <div class="error-default-message" v-else>Error, something went wrong!</div>

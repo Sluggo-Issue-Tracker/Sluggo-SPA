@@ -1,9 +1,6 @@
 <template>
   <div :class="{ dropdown: true, 'is-right': true, 'is-active': isOpen }">
-    <div
-      class="dropdown-trigger emblemContainer"
-      :onclick="handleToggle"
-    >
+    <div class="dropdown-trigger emblemContainer" :onclick="handleToggle">
       <ProfileEmblem :name="username" />
       <span>{{ username }}</span>
     </div>

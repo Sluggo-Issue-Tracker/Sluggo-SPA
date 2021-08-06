@@ -1,48 +1,47 @@
 
-.error-page{
-    color: black;
-    height: 100%;
-    overflow: visible;
+template {
+    color: black !important;
   }
 
 .error-default-message{
     position: absolute;
     margin-left: auto;
     margin-right: auto;
-    left: 0;
-    right: 0;
+    font-size: x-large;
+    left: 580px;
     top: 40vmin;
-    width: 30vmin;
+    width: 50vmin;
   }
 
   .error-home-button{
     border: 1px var(--borderColor) solid;
     background-color: var(--colorPrimary);
     color: white;
-    border-radius: 4px;
+    border-radius: 8px;
     position: absolute;
     margin-left: auto;
     margin-right: auto;
     left: 0;
     right: 0;
-    top: 45vmin;
+    top: 47vmin;
     width: 30vmin;
   
     &:hover{
       background: var(--borderColor);
       color: var(--colorPrimary);
+      cursor: pointer;
     }
   }
 
   .error-full-message{
     position: absolute;
     color:var(--textColor);
-    font-family: 'Courier New', Courier, monospace;
+
     margin-left: auto;
     margin-right: auto;
     left: 0;
     right: 0;
-    top: 50vmin;
+    top: 60vmin;
     width: 30vmin;
   }
 

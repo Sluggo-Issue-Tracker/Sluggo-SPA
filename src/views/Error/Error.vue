@@ -1,12 +1,10 @@
 <template>
-  <body class="error-page">
-    <div class="error-default-message">Error, something went wrong!</div>
+  <body>
+    <div class="error-default-message" v-if="shouldDisplayError == true">{{ error }}</div>
+    <div class="error-default-message" v-else>Error, something went wrong!</div>
     <button class="error-home-button" @click="$router.push('/')">
       Click to Return Home
     </button>
-    <div class="error-full-message" v-if="shouldDisplayError == true">
-      {{ error }}
-    </div>
   </body>
 </template>
 

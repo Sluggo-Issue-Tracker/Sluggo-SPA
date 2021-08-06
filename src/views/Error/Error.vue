@@ -1,9 +1,9 @@
 <template>
   <span class="error-page">
-    <div class="error-default-message" v-if="isInDevMode == true">
+    <div class="error-message" v-if="isInDevMode == true">
       {{ error || "No error to display!" }}
     </div>
-    <div class="error-default-message" v-else>Error, something went wrong!</div>
+    <div class="error-message" v-else>Error, something went wrong!</div>
     <button class="error-home-button" @click="$router.push('/')">
       Click to Return Home
     </button>

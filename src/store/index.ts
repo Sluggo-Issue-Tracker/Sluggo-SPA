@@ -99,7 +99,7 @@ const {
       if (state.error) {
         return state.error;
       }
-      return "No error found!";
+      return "No error to display!";
     }
   }
 });

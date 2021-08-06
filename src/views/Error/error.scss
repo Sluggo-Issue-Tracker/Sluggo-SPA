@@ -1,24 +1,28 @@
-.error-default-message{
-  position:relative;
+
+.error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.error-message{
   font-size: x-large;
-  top: 40vmin;
-  width: 70vmin;
-  left: 590px;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .error-home-button{
-  border: 1px var(--borderColor) solid;
-  background-color: var(--colorPrimary);
-  position: absolute;
-  color: white;
+  border: 1px solid #3298dc;
+  background-color: transparent;
+  color: #3298dc;
   border-radius: 8px;
-  width: 30vmin;
-  top: 47vmin;
-  left: 84vmin;
+  width: 18em;
   
   &:hover{
-    background: var(--borderColor);
-    color: var(--colorPrimary);
+    background: #3298dc;
+    color: white;
     cursor: pointer;
     }
   }

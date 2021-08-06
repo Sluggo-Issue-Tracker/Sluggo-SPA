@@ -14,6 +14,7 @@ interface RootStoreState {
   team?: ReadTeamRecord;
   authUser?: UserRecord;
   fetchingAuthUser?: Promise<AxiosResponse<UserRecord>>;
+  error?: any;
 }
 
 const {
@@ -24,7 +25,8 @@ const {
   moduleGetterContext
 } = createDirectStore({
   state: {
-    token: undefined
+    token: undefined,
+    error: ""
   } as RootStoreState,
   mutations: {
     setTeam(state, newTeam?: ReadTeamRecord) {
@@ -38,7 +40,10 @@ const {
       fetchingAuthUser?: Promise<AxiosResponse<UserRecord>>
     ) => {
       state.fetchingAuthUser = fetchingAuthUser;
-    }
+    },
+    setError (state, newError?: string) {
+      state.error = newError;
+    },
   },
   actions: {
     doSignup: async (ctxRaw, details: SignupDetails) => {
@@ -76,6 +81,10 @@ const {
       const context = rootActionContext(ctxRaw);
       const { data } = await getUser();
       context.commit.setUser(data);
+    },
+    doSetError: async (ctxRaw, errorMessage?: any) => {
+      const context = rootActionContext(ctxRaw);
+      context.commit.setError(errorMessage);
     }
   },
   modules: {},
@@ -85,6 +94,12 @@ const {
         return state.authUser;
       }
       throw new Error("User is not defined!");
+    },
+    error: (state): any => {
+      if (state.error) {
+        return state.error;
+      }
+      return "No error to display!";
     }
   }
 });

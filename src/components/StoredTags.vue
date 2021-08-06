@@ -75,7 +75,6 @@ import TagEntry from "@/components/TagEntry.vue";
 import { createTag, listTags } from "@/api/tags";
 import { PaginatedList, TagRecord, WriteTagRecord } from "@/api/types";
 import { wrapExceptions } from "@/methods";
-import { AxiosResponse } from "axios";
 
 export default defineComponent({
   components: { TagEntry },

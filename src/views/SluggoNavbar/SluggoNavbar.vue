@@ -43,9 +43,7 @@
     <!-- Side bar menu -->
     <div class="navigationContainer">
       <div class="sidebarMenu" v-if="isSidebarOpen">
-        <p>
-          Hello world!
-        </p>
+        <Sidebar />
       </div>
       <div class="viewContainer">
         <router-view />
@@ -61,13 +59,15 @@ import IconSluggo from "@/assets/IconSluggo";
 import NavbarDropdown from "./components/NavbarDropdown.vue";
 import Search from "@/components/Search";
 import { UserRecord } from "@/api/types";
+import Sidebar from "@/views/SluggoNavbar/components/Sidebar.vue";
 
 const sluggoNavbarComponent = defineComponent({
   name: "SluggoNavbar",
   components: {
     IconSluggo,
     NavbarDropdown,
-    Search
+    Search,
+    Sidebar
   },
   setup: () => {
     const authUser = ref<UserRecord>(store.getters.authUser);

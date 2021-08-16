@@ -1,34 +1,47 @@
 <template>
   <aside class="menu">
-    <ul :class="{ 'menu-list': true, 'is-active': selectedView[0] === '' }">
-      <li><a>Home</a></li>
+    <p class="menu-label">You</p>
+    <ul class="menu-list">
+      <li>
+        <router-link
+          :class="{
+            'menu-list': true,
+            'is-active': currentRouteName === 'Home'
+          }"
+          :to="{ name: 'Home' }"
+        >
+          Home
+        </router-link>
+      </li>
     </ul>
-    <ul class="menu-list" >
+    <!-- team stuff -->
+    <p class="menu-label">
+      Your Teams
+    </p>
+    <ul class="menu-list" v-if="!loadingTeams && teams.length > 0">
       <li v-for="team in teams" :key="team.id">
         <TeamEntry :team="team" :selected-view="selectedView" />
       </li>
     </ul>
+    <ul v-if="!loadingTeams && teams.length === 0">
+      You are not a member of any teams!
+    </ul>
+    <ul v-if="loadingTeams">
+      Loading teams...
+    </ul>
+    <!-- invites stuff -->
+    <ul class="menu-list" v-if="!loadingInvites"></ul>
   </aside>
 </template>
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/camelcase */
 
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import router from "@/router";
 import TeamEntry from "./TeamEntry.vue";
 import { ReadTeamRecord } from "@/api/types";
-
-const sampleTeamData: ReadTeamRecord[] = [
-  {
-    id: 1,
-    name: "bugsltoics",
-    description: "this is unused?",
-    object_uuid: "asdf",
-    ticket_head: 1,
-    created: '12'
-  }
-];
+import { getUsersTeams } from "@/api";
 
 export default defineComponent({
   name: "Sidebar",
@@ -36,31 +49,40 @@ export default defineComponent({
     TeamEntry
   },
   setup: () => {
+    const currentRouteName = computed<string | symbol | null | undefined>(
+      () => router.currentRoute.value.name
+    );
+
+    const loadingTeams = ref<boolean>(false);
+    const teams = ref<ReadTeamRecord[]>([]);
+    const loadingInvites = ref<boolean>(false);
 
     const selectedView = computed<[string?, string?, string?]>(() => {
       // split always yields an empty string at the beginning of the path,
       // hence we omit it
-      const [, ...tokens] = router.currentRoute.value.path.split('/');
+      const [, ...tokens] = router.currentRoute.value.path.split("/");
 
-      const selected: [string?, string?, string?] = [
-        undefined,
-        undefined,
-        undefined
-      ];
-
-      for (let i = 0; i < tokens.length && i < 3; ++i) {
-        selected[i] = tokens[i];
-      }
-
-      return selected;
+      return [tokens[0], tokens[1], tokens[2]];
     });
+
+    const loadTeams = async () => {
+      loadingTeams.value = true;
+
+      const { data } = await getUsersTeams();
+      teams.value = data;
+      loadingTeams.value = false;
+    };
+
+    onMounted(loadTeams);
 
     return {
       selectedView,
-      teams: sampleTeamData
+      currentRouteName,
+      loadingTeams,
+      loadingInvites,
+      teams
     };
   }
-
 });
 </script>
 

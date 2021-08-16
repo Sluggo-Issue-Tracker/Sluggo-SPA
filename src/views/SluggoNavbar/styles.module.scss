@@ -2,23 +2,35 @@
   display: flex;
 }
 
-.sidebarMenu {
-  padding-left: 1rem;
-  padding-right: 1rem;
-
-  @media screen and (max-width: 1003px) {
-    & {
-      position: absolute;
-      z-index: 3;
-      background: var(--primaryBackground);
-    }
+@media screen and (max-width: 1003px) {
+  .sidebarMenu {
+    padding: 1rem 1rem 1rem 1rem;
+    top: var(--navbarHeight);
+    position: fixed;
+    z-index: 3;
+    background: var(--primaryBackground);
+    height: calc(100vh - var(--navbarHeight));
+    flex: 1;
+    min-width: 160px;
+    overflow: auto;
+    box-shadow: 0 8px 16px var(--shadowColor) ;
   }
+  .menuHidden{
+    display: none;
+  }
+}
 
-  @media screen and (min-width: 1004px) {
-    & {
-      flex: 1;
-      border-right: 1px var(--borderColor) solid;
-    }
+@media screen and (min-width: 1004px) {
+  .sidebarMenu {
+    top: var(--navbarHeight);
+    position: sticky;
+    padding: 1rem 1rem 1rem 1rem;
+    border-right: 1px var(--borderColor) solid;
+    height: calc(100vh - var(--navbarHeight));
+    width: var(--navbarTitleWidth);
+    overflow: auto;
+  }
+  .menuHidden{
   }
 }
 
@@ -26,6 +38,7 @@
   position: sticky;
   top: 0;
   border-bottom: 1px var(--borderColor) solid;
+  height: var(--navbarHeight);
 }
 
 .viewContainer {

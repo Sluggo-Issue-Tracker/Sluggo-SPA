@@ -61,8 +61,9 @@ export default defineComponent({
 
     console.log(props.selectedView);
 
+    // mark the subview as selected if the team is also selected
     const currentSubviewSelection = computed<{ [p: string]: boolean }>(() => ({
-      [props.selectedView[2]]: true
+      [props.selectedView[2]]: isSelected.value
     }));
 
     const isOpen = ref<boolean>(false);

@@ -14,3 +14,7 @@ export const getTeam = async (
   teamId: number
 ): Promise<AxiosResponse<ReadTeamRecord>> =>
   await axiosInstance.get<ReadTeamRecord>(`/api/teams/${teamId}`);
+
+export const getUsersTeams = async (): Promise<AxiosResponse<
+  ReadTeamRecord[]
+>> => await axiosInstance.get<ReadTeamRecord[]>("/api/teams");

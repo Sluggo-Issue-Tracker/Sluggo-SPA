@@ -7,7 +7,7 @@
     >
       <!-- Left side of the navbar -->
       <div class="navbar-brand">
-        <a class="navbar-item" :onclick="handleBrandClicked">
+        <a class="navbar-item navbarTitle" :onclick="handleBrandClicked">
           <IconSluggo :height="50" :width="50" />
           <span class="title">Sluggo</span>
         </a>
@@ -42,7 +42,7 @@
     </nav>
     <!-- Side bar menu -->
     <div class="navigationContainer">
-      <div class="sidebarMenu" v-if="isSidebarOpen">
+      <div :class="{ sidebarMenu: true, menuHidden: !isSidebarOpen }">
         <Sidebar />
       </div>
       <div class="viewContainer">

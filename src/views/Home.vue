@@ -177,10 +177,9 @@ import { defineComponent } from "vue";
 import TicketModal from "@/views/TicketModal/TicketModal.vue";
 
 export default defineComponent({
-  name: "Home"
   name: "Home",
-   components: {
-     TicketModal
-   }
+  components: {
+    TicketModal
+  }
 });
 </script>

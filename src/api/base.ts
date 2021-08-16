@@ -60,13 +60,10 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    console.log(JSON.stringify(error, null, 2));
-
     // Attempt to refresh the token
     const [, refreshError] = await wrapExceptions(refreshToken);
 
     if (refreshError) {
-      console.log(refreshError.message);
       return Promise.reject(refreshError);
     }
 

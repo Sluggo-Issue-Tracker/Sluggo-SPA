@@ -78,6 +78,7 @@
                       USERNAME just marked Ticket TICKET: RELATED DESCRIPTION
                       <span> Awesome!</span>
                     </p>
+                    <TicketModal />
                     <!-- <p><span class="has-text-weight-bold">Andrew Gavgavian posted on Ticket 21 "Submitting software proposal for...": </span>
                          </p><p>"Great work! I think we can start moving this proposal forward. I cleaned up some of the wording
                             and described some more technical mechanisms.""
@@ -173,8 +174,13 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import TicketModal from "@/views/TicketModal/TicketModal.vue";
 
 export default defineComponent({
   name: "Home"
+  name: "Home",
+   components: {
+     TicketModal
+   }
 });
 </script>

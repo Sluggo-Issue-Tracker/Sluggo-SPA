@@ -35,6 +35,9 @@
         <div class="navbar-item hasDividerLeft">
           <button class="button is-info">Create Ticket</button>
         </div>
+        <div class="navbar-item hasDividerLeft">
+          <i class="bx bx-bell bellContainer" />
+        </div>
         <div class="navbar-item simpleLevel hasDividerLeft">
           <NavbarDropdown :username="authUser?.username ?? ''" />
         </div>

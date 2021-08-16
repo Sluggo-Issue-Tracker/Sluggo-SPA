@@ -1,16 +1,39 @@
 <template>
   <div>
     <a
-      :class="{ 'is-active': isSelected }"
-      :onclick="() => {isOpen = !isOpen}"
+      :class="{ 'is-active': isSelected, iconTitle: true }"
+      :onclick="toggleOpen"
     >
-      {{ team.name }}
+      <i
+        :class="{ 'bx bx-chevron-down': !isOpen, 'bx bx-chevron-up': isOpen }"
+      ></i>
+      <span>{{ team.name }}</span>
     </a>
     <ul v-if="isOpen">
-      <li><a>Team</a></li>
-      <li><a>Tickets</a></li>
-      <li><a>Members</a></li>
-      <li><a>Admin</a></li>
+      <li>
+        <router-link
+          :class="{ 'is-active': Boolean(currentSubviewSelection['tickets']) }"
+          :to="{ name: 'TeamsTickets', params: { id: team.id } }"
+        >
+          Tickets
+        </router-link>
+      </li>
+      <li>
+        <router-link
+          :class="{ 'is-active': Boolean(currentSubviewSelection['members']) }"
+          :to="{ name: 'TeamsMembers', params: { id: team.id } }"
+        >
+          Members
+        </router-link>
+      </li>
+      <li>
+        <router-link
+          :class="{ 'is-active': Boolean(currentSubviewSelection['admin']) }"
+          :to="{ name: 'TeamsAdmin', params: { id: team.id } }"
+        >
+          Admin
+        </router-link>
+      </li>
     </ul>
   </div>
 </template>
@@ -36,14 +59,26 @@ export default defineComponent({
       () => parseInt(props.selectedView[1]) === props.team.id
     );
 
+    console.log(props.selectedView);
+
+    const currentSubviewSelection = computed<{ [p: string]: boolean }>(() => ({
+      [props.selectedView[2]]: true
+    }));
+
     const isOpen = ref<boolean>(false);
+
+    const toggleOpen = () => {
+      isOpen.value = !isOpen.value;
+    };
 
     return {
       isSelected,
-      isOpen
+      isOpen,
+      currentSubviewSelection,
+      toggleOpen
     };
   }
 });
 </script>
 
-<style scoped></style>
+<style scoped src="../styles.module.scss" lang="scss"></style>

@@ -7,6 +7,9 @@ import NewTeam from "@/views/NewTeam.vue";
 import Error from "@/views/Error";
 import UserProvidedNavbar from "@/views/SluggoNavbar";
 import UserProvidedRouter from "@/components/UserProvidedRouter.vue";
+import TeamsTickets from "@/views/TeamsTickets";
+import TeamsMembers from "@/views/TeamsMembers";
+import TeamsAdmin from "@/views/TeamsAdmin";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -15,15 +18,24 @@ const routes: Array<RouteRecordRaw> = [
     component: UserProvidedNavbar,
     children: [
       {
-        path: "tickets/:selected?",
-        name: "Tickets",
-        component: Tickets,
-        props: true
-      },
-      {
         path: "",
         name: "Home",
         component: Home
+      },
+      {
+        path: "teams/:id/tickets",
+        name: "TeamsTickets",
+        component: TeamsTickets
+      },
+      {
+        path: "teams/:id/members",
+        name: "TeamsMembers",
+        component: TeamsMembers
+      },
+      {
+        path: "teams/:id/admin",
+        name: "TeamsAdmin",
+        component: TeamsAdmin
       }
     ]
   },

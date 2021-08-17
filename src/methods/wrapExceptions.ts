@@ -1,7 +1,7 @@
 // this allows any keyword to be applied to rest args.
 // imo this is okay, but it will require that users of this
 /*eslint @typescript-eslint/no-explicit-any: ["error", { "ignoreRestArgs": true }]*/
-import {AxiosError, AxiosResponse} from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 
 export type WrappedResponse<T> = [T | null, Error | AxiosError | null];
 

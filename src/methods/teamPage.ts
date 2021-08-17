@@ -5,5 +5,5 @@ export function generateTeamPageLink(team: ReadTeamRecord, loc?: string) {
 }
 
 export function generateTicketPageLink(teamId: string, selectedId?: number) {
-  return `/teams/${teamId}/tickets/${selectedId ?? ''}`;
+  return `/teams/${teamId}/tickets/${selectedId ?? ""}`;
 }

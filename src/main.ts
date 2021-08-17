@@ -13,7 +13,7 @@ app
   .use(router)
   .mount("#app");
 
-app.config.errorHandler = async (error) => {
+app.config.errorHandler = async error => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
   // @ts-ignore
   if (error.response?.status === 401) {

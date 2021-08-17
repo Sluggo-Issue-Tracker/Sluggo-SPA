@@ -1,7 +1,7 @@
 <template>
   <div class="searchContainer">
     <i class="bx bx-search"></i>
-    <input type="text" placeholder="Search"/>
+    <input type="text" placeholder="Search" />
   </div>
 </template>
 

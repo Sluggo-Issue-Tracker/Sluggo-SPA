@@ -41,9 +41,9 @@ const {
     ) => {
       state.fetchingAuthUser = fetchingAuthUser;
     },
-    setError (state, newError?: string) {
+    setError(state, newError?: string) {
       state.error = newError;
-    },
+    }
   },
   actions: {
     doSignup: async (ctxRaw, details: SignupDetails) => {

@@ -1,3 +1,3 @@
-import Error from './Error.vue';
+import Error from "./Error.vue";
 
 export default Error;

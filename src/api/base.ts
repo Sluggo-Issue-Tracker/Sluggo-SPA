@@ -1,7 +1,7 @@
-import axios, {AxiosError, AxiosResponse} from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import router from "../router";
-import {SLUGGO_API_URL} from "../../constants";
-import {wrapExceptions} from "@/methods";
+import { SLUGGO_API_URL } from "../../constants";
+import { wrapExceptions } from "@/methods";
 
 // Refresh logic
 let refresher: Promise<AxiosResponse<void>> | null = null;
@@ -18,7 +18,7 @@ export const refreshToken = (): Promise<AxiosResponse<void>> => {
 
   refresher = refreshAxiosInstance.post<void>("/auth/token/refresh/");
 
-  return refresher.finally(() => refresher = null);
+  return refresher.finally(() => (refresher = null));
 };
 
 const logError = (error: AxiosError) => {

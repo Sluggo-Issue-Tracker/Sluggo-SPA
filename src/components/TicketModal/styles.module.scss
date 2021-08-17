@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css?family=Overpass');
+
+.ticket-modal-header {
+    display: flex;
+    font-family: 'Overpass';
+    font-style: normal;
+    color: #FFFFFF;
+}
+
+.ticket-modal-footer {
+    gap: .5rem;
+    display: flex;
+    flex-direction: row-reverse;
+}

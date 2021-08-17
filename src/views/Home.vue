@@ -174,7 +174,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import TicketModal from "@/views/TicketModal/TicketModal.vue";
+import TicketModal from "@/components/TicketModal/TicketModal.vue";
 
 export default defineComponent({
   name: "Home",

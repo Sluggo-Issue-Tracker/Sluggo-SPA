@@ -49,7 +49,7 @@ import { defineComponent, ref, onMounted } from "vue";
 import router from "@/router/index";
 import { listTickets } from "@/api";
 import { generateTicketPageLink } from "@/methods/teamPage";
-import TicketModal from "@/components/TicketModal.vue";
+import TicketModal from "@/components/TicketModal/TicketModal.vue";
 import PaginatedListView from "@/components/PaginatedListView.vue";
 import TicketListEntry from "@/components/TicketListEntry.vue";
 import TicketInput from "@/components/TicketInput.vue";

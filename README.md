@@ -4,7 +4,7 @@ TypeScript.
 
 ## Project setup
 ```
-npm install
+yarn
 ```
 
 ### Run the Application
@@ -15,7 +15,7 @@ default port configuration).
 
 Then run:
 ```
-npm run serve
+yarn run serve
 ```
 
 You may access the SPA instance from http://127.0.0.1:8080 in your browser.
@@ -26,23 +26,29 @@ Ideally, this will be privately configurable later.
 
 ### Compiles and minifies for production
 ```
-npm run build
+yarn run build
 ```
 
 ### Run your unit tests
 ```
-npm run test:unit
+yarn run test:unit
 ```
 
 ### Run your end-to-end tests
 ```
-npm run test:e2e
+yarn run test:e2e
 ```
 
 ### Lints and fixes files
 ```
-npm run lint
+yarn run lint
 ```
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### Key Technologies
+* [Sluggo-API](https://github.com/Slugbotics/Sluggo-API)
+* [Boxicons](https://boxicons.com/) (icon pack)
+* [Bulma](https://bulma.io/) (Css framework)
+* [Vue v3](https://v3.vuejs.org/guide/introduction.html)

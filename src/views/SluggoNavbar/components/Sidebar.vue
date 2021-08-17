@@ -20,15 +20,15 @@
     </p>
     <ul
       class="menu-list"
-      v-if="!loadingTeams && teams && teams.data.length > 0"
+      v-if="!loadingTeams && teams && teams.length > 0"
       data-testid="sidebar-teams"
     >
-      <li v-for="team in teams.data" :key="team.id">
+      <li v-for="team in teams" :key="team.id">
         <TeamEntry :team="team" :selected-view="selectedView" />
       </li>
     </ul>
     <ul
-      v-if="!loadingTeams && teams.data.length === 0"
+      v-if="!loadingTeams && teams && teams.length === 0"
       data-testid="sidebar-empty"
     >
       You are not a member of any teams!
@@ -37,10 +37,8 @@
       Loading teams...
     </ul>
     <ul v-if="error">
-      Error!
+      Error while loading teams!
     </ul>
-    <!-- invites stuff -->
-    <ul class="menu-list" v-if="!loadingInvites"></ul>
   </aside>
 </template>
 
@@ -53,7 +51,6 @@ import TeamEntry from "./TeamEntry.vue";
 import { ReadTeamRecord } from "@/api/types";
 import { getUsersTeams } from "@/api";
 import { apiExecutor } from "@/methods";
-import { AxiosResponse } from "axios";
 
 export default defineComponent({
   name: "Sidebar",
@@ -68,7 +65,7 @@ export default defineComponent({
     const [
       queryUsersTeams,
       { data: teams, loading: loadingTeams, error }
-    ] = apiExecutor<AxiosResponse<Teams[]>>(getUsersTeams);
+    ] = apiExecutor<ReadTeamRecord[]>(getUsersTeams);
 
     const selectedView = computed<[string?, string?, string?]>(() => {
       // split always yields an empty string at the beginning of the path,

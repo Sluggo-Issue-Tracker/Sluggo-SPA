@@ -1,6 +1,7 @@
 // this allows any keyword to be applied to rest args.
 // imo this is okay, but it will require that users of this
 /*eslint @typescript-eslint/no-explicit-any: ["error", { "ignoreRestArgs": true }]*/
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import { AxiosError, AxiosResponse } from "axios";
 import { ref, Ref, UnwrapRef } from "vue";
 
@@ -40,7 +41,8 @@ export const apiExecutor = <T = unknown>(
     loading.value = true;
     try {
       const response = await request(...args);
-      data.value = undefined;
+      // @ts-ignore vue is weird in the way it handles generic refs
+      data.value = response;
       loading.value = false;
       return response;
     } catch (caughtError) {

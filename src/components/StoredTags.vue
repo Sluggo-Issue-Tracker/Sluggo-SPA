@@ -104,7 +104,7 @@ export default defineComponent({
       }
 
       if (listTagResponse) {
-        tagsList.value = listTagResponse.data;
+        tagsList.value = listTagResponse;
       }
     };
 

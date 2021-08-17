@@ -48,16 +48,12 @@ const {
   actions: {
     doSignup: async (ctxRaw, details: SignupDetails) => {
       const context = rootActionContext(ctxRaw);
-      const {
-        data: { user }
-      } = await signup(details);
+      const { user } = await signup(details);
       context.commit.setUser(user);
     },
     doLogin: async (ctxRaw, details: LoginDetails) => {
       const context = rootActionContext(ctxRaw);
-      const {
-        data: { user }
-      } = await login(details);
+      const { user } = await login(details);
       context.commit.setUser(user);
     },
     doLogout: async ctxRaw => {
@@ -72,14 +68,14 @@ const {
     },
     doFetchAndSetTeam: async (ctxRaw, teamId: number) => {
       const context = rootActionContext(ctxRaw);
-      const { data } = await getTeam(teamId);
+      const data = await getTeam(teamId);
 
       await context.dispatch.doSetTeam(data);
       return data;
     },
     doFetchAuthUser: async (ctxRaw): Promise<void> => {
       const context = rootActionContext(ctxRaw);
-      const { data } = await getUser();
+      const data = await getUser();
       context.commit.setUser(data);
     },
     doSetError: async (ctxRaw, errorMessage?: any) => {

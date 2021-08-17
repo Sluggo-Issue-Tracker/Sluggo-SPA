@@ -7,7 +7,7 @@ import { ref, Ref, UnwrapRef } from "vue";
 
 export type WrappedResponse<T> = [T | null, Error | AxiosError | null];
 
-export const wrapExceptions = async <T extends AxiosResponse>(
+export const wrapExceptions = async <T = unknown>(
   request: (...args: any[]) => Promise<T>,
   ...args: any[]
 ): Promise<WrappedResponse<T>> => {

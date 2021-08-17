@@ -56,7 +56,14 @@ axiosInstance.interceptors.response.use(
     logError(error);
 
     // Return error if not an authentication issue.
-    if (error.response?.status !== 401) {
+    // cookies are a little weird in that they will not be included if they expire
+    // which means either the cookie will not be included or an expired token is included
+    // when a request fails due to expired token either can happen
+    if (
+      error.response?.data?.detail !==
+        "Authentication credentials were not provided." &&
+      error.response?.data?.code !== "token_not_valid"
+    ) {
       return Promise.reject(error);
     }
 

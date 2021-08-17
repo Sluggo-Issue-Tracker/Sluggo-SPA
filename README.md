@@ -3,6 +3,14 @@ The single-page-application frontend for Sluggo written in Vue.js and
 TypeScript.
 
 ## Project setup
+
+### nvm setup (optional)
+```
+nvm install --lts
+nvm use --lts
+```
+
+### Install packages
 ```
 yarn
 ```
@@ -48,6 +56,7 @@ yarn run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### Key Technologies
+* node v14.17.5
 * [Sluggo-API](https://github.com/Slugbotics/Sluggo-API)
 * [Boxicons](https://boxicons.com/) (icon pack)
 * [Bulma](https://bulma.io/) (Css framework)

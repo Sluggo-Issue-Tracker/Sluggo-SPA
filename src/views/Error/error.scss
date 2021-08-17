@@ -1,0 +1,27 @@
+
+.error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.error-message{
+  font-size: x-large;
+}
+
+.error-home-button{
+  border: 1px solid #3298dc;
+  background-color: transparent;
+  color: #3298dc;
+  border-radius: 8px;
+  width: 18em;
+  
+  &:hover{
+    background: #3298dc;
+    color: white;
+    cursor: pointer;
+    }
+  }
+

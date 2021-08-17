@@ -13,7 +13,6 @@ export interface LoginResponse {
   };
 }
 
-
 // MARK: Interfaces
 export interface LoginDetails {
   username: string;

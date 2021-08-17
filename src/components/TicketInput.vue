@@ -17,8 +17,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { createTicket} from "@/api/tickets";
-import store from "@/store";
+import { createTicket } from "@/api/tickets";
 import { WriteTicketRecord } from "@/api/types";
 export default defineComponent({
   name: "TicketInput",

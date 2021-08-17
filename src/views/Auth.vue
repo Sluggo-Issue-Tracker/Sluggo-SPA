@@ -30,7 +30,13 @@
         />
         <br />
         <label for="email">Email (used for login) </label>
-        <input id="email" type="text" name="email" v-model="email" placeholder="email" />
+        <input
+          id="email"
+          type="text"
+          name="email"
+          v-model="email"
+          placeholder="email"
+        />
         <br />
         <label for="password">Password (used for login) </label>
         <input

@@ -20,6 +20,6 @@ app.config.errorHandler = async error => {
     await router.replace("/login");
     return;
   }
-
+  store.dispatch.doSetError(error);
   await router.replace("/error");
 };

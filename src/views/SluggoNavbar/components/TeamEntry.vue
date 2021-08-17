@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div data-testid="team-details-container">
     <a
       :class="{ 'is-active': isSelected, iconTitle: true }"
       :onclick="toggleOpen"
     >
       <i
         :class="{ 'bx bx-chevron-down': !isOpen, 'bx bx-chevron-up': isOpen }"
-      ></i>
+      />
       <span>{{ team.name }}</span>
     </a>
     <ul v-if="isOpen">
@@ -58,8 +58,6 @@ export default defineComponent({
     const isSelected = computed<boolean>(
       () => parseInt(props.selectedView[1]) === props.team.id
     );
-
-    console.log(props.selectedView);
 
     // mark the subview as selected if the team is also selected
     const currentSubviewSelection = computed<{ [p: string]: boolean }>(() => ({

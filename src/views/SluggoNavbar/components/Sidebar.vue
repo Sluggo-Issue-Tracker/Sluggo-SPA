@@ -18,15 +18,19 @@
     <p class="menu-label">
       Your Teams
     </p>
-    <ul class="menu-list" v-if="!loadingTeams && teams.length > 0">
+    <ul
+      class="menu-list"
+      v-if="!loadingTeams && teams.length > 0"
+      data-testid="sidebar-teams"
+    >
       <li v-for="team in teams" :key="team.id">
         <TeamEntry :team="team" :selected-view="selectedView" />
       </li>
     </ul>
-    <ul v-if="!loadingTeams && teams.length === 0">
+    <ul v-if="!loadingTeams && teams.length === 0" data-testid="sidebar-empty">
       You are not a member of any teams!
     </ul>
-    <ul v-if="loadingTeams">
+    <ul v-if="loadingTeams" data-testid="sidebar-loading">
       Loading teams...
     </ul>
     <!-- invites stuff -->

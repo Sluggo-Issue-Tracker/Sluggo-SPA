@@ -20,18 +20,24 @@
     </p>
     <ul
       class="menu-list"
-      v-if="!loadingTeams && teams.length > 0"
+      v-if="!loadingTeams && teams && teams.data.length > 0"
       data-testid="sidebar-teams"
     >
-      <li v-for="team in teams" :key="team.id">
+      <li v-for="team in teams.data" :key="team.id">
         <TeamEntry :team="team" :selected-view="selectedView" />
       </li>
     </ul>
-    <ul v-if="!loadingTeams && teams.length === 0" data-testid="sidebar-empty">
+    <ul
+      v-if="!loadingTeams && teams.data.length === 0"
+      data-testid="sidebar-empty"
+    >
       You are not a member of any teams!
     </ul>
     <ul v-if="loadingTeams" data-testid="sidebar-loading">
       Loading teams...
+    </ul>
+    <ul v-if="error">
+      Error!
     </ul>
     <!-- invites stuff -->
     <ul class="menu-list" v-if="!loadingInvites"></ul>
@@ -46,6 +52,8 @@ import router from "@/router";
 import TeamEntry from "./TeamEntry.vue";
 import { ReadTeamRecord } from "@/api/types";
 import { getUsersTeams } from "@/api";
+import { apiExecutor } from "@/methods";
+import { AxiosResponse } from "axios";
 
 export default defineComponent({
   name: "Sidebar",
@@ -57,9 +65,10 @@ export default defineComponent({
       () => router.currentRoute.value.name
     );
 
-    const loadingTeams = ref<boolean>(false);
-    const teams = ref<ReadTeamRecord[]>([]);
-    const loadingInvites = ref<boolean>(false);
+    const [
+      queryUsersTeams,
+      { data: teams, loading: loadingTeams, error }
+    ] = apiExecutor<AxiosResponse<Teams[]>>(getUsersTeams);
 
     const selectedView = computed<[string?, string?, string?]>(() => {
       // split always yields an empty string at the beginning of the path,
@@ -69,22 +78,14 @@ export default defineComponent({
       return [tokens[0], tokens[1], tokens[2]];
     });
 
-    const loadTeams = async () => {
-      loadingTeams.value = true;
-
-      const { data } = await getUsersTeams();
-      teams.value = data;
-      loadingTeams.value = false;
-    };
-
-    onMounted(loadTeams);
+    onMounted(queryUsersTeams);
 
     return {
       selectedView,
       currentRouteName,
       loadingTeams,
-      loadingInvites,
-      teams
+      teams,
+      error
     };
   }
 });

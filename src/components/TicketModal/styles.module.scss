@@ -1,3 +1,6 @@
+.ticket-modal {
+    border: .1rem solid grey;
+}
 .ticket-modal-header {
     display: flex;
     color: #FFFFFF;
@@ -17,37 +20,41 @@
 .ticket-modal-first-row {
     display:flex;
     justify-content: space-between;
-    margin-top: 2rem;
-}
-
-.ticket-user {
-    width: 18.2rem;
+    margin-top: .4rem;
     margin-left: .7rem;
+    margin-right: .7rem;
+    margin-bottom: .5rem;
 }
 
-.ticket-team {
-    width: 17rem;
-    margin-right: .7rem;
+.ticket-field-label {
+    display:block;
+    font-size: small;
+    margin-left: .5rem;
+    color: #767676;
 }
 
 .ticket-modal-second-row {
     display:flex;
+    justify-content: space-between;
     margin-left: .7rem;
     margin-right: .7rem;
-}
-
-.ticket-tags {
-    width: auto;
+    margin-bottom: .5rem;
+    margin-top: .5rem;
 }
 
 .ticket-modal-third-row {
     display:flex;
+    justify-content: space-between;
+    margin-left: .7rem;
+    margin-right: .7rem;
 }
 
 .ticket-modal-footer {
-    gap: .3rem;
+    gap: .4rem;
     display: flex;
     flex-direction: row-reverse;
+    margin-bottom: .4rem;
+    margin-right: .4rem;
 }
 
 .dropdown-item:hover {
@@ -56,6 +63,7 @@
 
 .text-box {
     color: white;
+    font-size: 1.5rem;
 }
 
 

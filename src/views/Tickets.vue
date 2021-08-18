@@ -9,12 +9,12 @@
 
     <!-- TODO: Samuel Schmidt 5 / 21 / 2020 move this into a vue component -->
     <div class="section">
-      <ticket-modal
+      <TicketModal
         v-if="selected"
         v-bind:ticketId="selected"
         v-bind:teamId="teamId"
         v-on:close="selectTicket()"
-      ></ticket-modal>
+      />
     </div>
     <div class="container">
       <paginated-list-view

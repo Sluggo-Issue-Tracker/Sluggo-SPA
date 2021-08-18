@@ -78,6 +78,7 @@
     <div class="ticket-modal-first-row">
       <div class="dropdown">
         <div class="dropdown-trigger">
+          <label class="ticket-field-label">Assigned to</label>
           <button
             class="button ticket-user"
             aria-haspopup="true"
@@ -92,8 +93,9 @@
       </div>
       <div class="dropdown">
         <div class="dropdown-trigger">
+          <label class="ticket-field-label">Team</label>
           <button class="button ticket-team">
-            <span>Team</span>
+            <span>Slugbotics</span>
             <span class="icon is-small">
               <i class="bx bx-chevron-down"></i>
             </span>
@@ -104,18 +106,28 @@
     <div class="ticket-modal-second-row">
       <div class="dropdown">
         <div class="dropdown-trigger">
+          <label class="ticket-field-label">Tags</label>
           <button class="button ticket-tags">
-            <span>Tags</span>
+            <span>Mechanical, Topside</span>
             <span class="icon is-small">
               <i class="bx bx-chevron-down"></i>
             </span>
           </button>
         </div>
       </div>
-      <div class="ticket-due-date"></div>
+      <div class="ticket-due-date">
+        <label class="ticket-field-label">Due Date</label>
+        <input class="input" type="date" placeholder="mm / dd / yyyy" />
+      </div>
     </div>
     <div class="ticket-modal-third-row">
-      <div class="ticket-description"></div>
+      <div class="ticket-description">
+        <label class="ticket-field-label">Description</label>
+        <textarea
+          class="textarea has-fixed-size"
+          placeholder="Description"
+        ></textarea>
+      </div>
     </div>
     <div class="ticket-modal-footer">
       <button class="button is-success" @click="submit">Save changes</button>
@@ -175,11 +187,13 @@ const ticketModalComponent = defineComponent({
     };
     const enableEditing = () => {
       isEditing.value = true;
+      shouldShowPencil.value = false;
       tempText.value = placeholderText.value;
       isEditing.value = true;
     };
     const disableEditing = () => {
       isEditing.value = false;
+      shouldShowPencil.value = true;
       tempText.value = "";
       isEditing.value = false;
     };

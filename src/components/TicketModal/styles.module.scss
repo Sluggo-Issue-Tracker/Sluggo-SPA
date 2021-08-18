@@ -12,10 +12,19 @@
     flex-direction: row-reverse;
 }
 
-.ticket-modal-body {
+.ticket-modal-first-row {
+    display:flex;
+}
+
+.ticket-modal-second-row {
+    display:flex;
+}
+
+.ticket-modal-third-row {
     display:flex;
 }
 
 .ticket-status {
     margin-left:auto;
 }
+

@@ -21,43 +21,9 @@
       <div class="editable-icon" v-if="shouldShowPencil">
         <i class="bx bx-pencil"></i>
       </div>
-      <div class="dropdown ticket-status is-primary">
-        <div class="dropdown-trigger is-primary">
-          <button
-            class="button is-primary"
-            :style="{ 'background-color': computedStatusColor }"
-            aria-haspopup="true"
-            aria-controls="dropdown-menu"
-          >
-            <span>{{ ticketStatus }}</span>
-            <span class="icon is-small">
-              <i class="fas fa-angle-down" aria-hidden="true"></i>
-            </span>
-          </button>
-        </div>
-        <div class="dropdown-menu" id="dropdown-menu" role="menu">
-          <div class="dropdown-content">
-            <a href="#" class="dropdown-item">
-              Dropdown item
-            </a>
-            <a class="dropdown-item">
-              Other dropdown item
-            </a>
-            <a href="#" class="dropdown-item is-active">
-              Active dropdown item
-            </a>
-            <a href="#" class="dropdown-item">
-              Other dropdown item
-            </a>
-            <hr class="dropdown-divider" />
-            <a href="#" class="dropdown-item">
-              With a divider
-            </a>
-          </div>
-        </div>
-      </div>
+      <StatusDropdownComponent class="ticket-status" />
     </div>
-    <div class="ticket-modal-body">
+    <div class="ticket-modal-first-row">
       <div class="dropdown-trigger">
         <button class="button">
           <span>Username</span>
@@ -68,10 +34,14 @@
           <span>Team</span>
         </button>
       </div>
+    </div>
+    <div class="ticket-modal-second-row">
       <div class="ticket-tags">
         <textarea>Tags</textarea>
       </div>
       <div class="ticket-due-date"></div>
+    </div>
+    <div class="ticket-modal-third-row">
       <div class="ticket-description"></div>
     </div>
     <div class="ticket-modal-footer">
@@ -86,13 +56,15 @@
 import { defineComponent, ref, onMounted, computed } from "vue";
 import { updateTicket, deleteTicket, getTicket } from "@/api/tickets";
 import { ReadTicketRecord } from "@/api/types";
-import EditableTextComponent from "@/components/TicketModal/components/EditableText.vue";
+import EditableTextComponent from "@/components/TicketModal/components/EditableText/EditableText.vue";
+import StatusDropdownComponent from "@/components/TicketModal/components/StatusDropdown/StatusDropdown.vue";
 import IconSluggo from "@/assets/IconSluggo";
 
 const ticketModalComponent = defineComponent({
   name: "TicketModal",
   components: {
     EditableTextComponent,
+    StatusDropdownComponent,
     IconSluggo
   },
   props: {
@@ -111,7 +83,7 @@ const ticketModalComponent = defineComponent({
     const teamId = parseInt(props.teamId);
     const ticketRecord = ref({});
     const shouldShowPencil = ref(true);
-    const ticketStatus = "In Progress";
+    const ticketStatus = ref("Done");
     const ticketTitle = "Temp Title";
     const resetData = () => {
       ticketRecord.value = {};
@@ -149,11 +121,11 @@ const ticketModalComponent = defineComponent({
       await getData();
     });
     const computedStatusColor = computed(() => {
-      if (ticketStatus == "In Progress") {
+      if (ticketStatus.value == "In Progress") {
         return "#20A6EE";
-      } else if (ticketStatus == "To Do") {
+      } else if (ticketStatus.value == "To Do") {
         return "#828282";
-      } else if (ticketStatus == "Done") {
+      } else if (ticketStatus.value == "Done") {
         return "#219653";
       } else {
         console.log("Ticket status error");

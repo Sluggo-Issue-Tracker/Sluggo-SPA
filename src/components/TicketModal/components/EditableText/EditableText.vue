@@ -1,5 +1,5 @@
 <template>
-  <div class="editableText" ref="inputElement">
+  <div class="editableText">
     <div v-if="!isEditing">
       <span class="text" @click="enableEditing">{{ placeholderText }}</span>
     </div>
@@ -40,7 +40,6 @@ export default defineComponent({
     const placeholderText = ref(props.placeholderText);
     const isEditing = ref(false);
     const tempText = ref("");
-    const inputElement = ref(null);
     const enableEditing = () => {
       context.emit("isEditing");
       tempText.value = placeholderText.value;
@@ -64,7 +63,6 @@ export default defineComponent({
       disableEditing,
       saveChanges,
       tempText,
-      inputElement,
       isEditing
     };
   }

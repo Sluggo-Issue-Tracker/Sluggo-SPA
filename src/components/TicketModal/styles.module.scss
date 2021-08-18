@@ -1,5 +1,8 @@
 .ticket-modal {
     border: .1rem solid grey;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
 }
 .ticket-modal-header {
     display: flex;
@@ -10,7 +13,7 @@
 }
 
 .ticket-name {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
 }
 
 .ticket-status {
@@ -24,6 +27,18 @@
     margin-left: .7rem;
     margin-right: .7rem;
     margin-bottom: .5rem;
+}
+
+.ticket-user {
+    width: 100%;
+}
+
+.ticket-user-button {
+    width: 100%;
+}
+
+.ticket-team {
+    width: 50%;
 }
 
 .ticket-field-label {
@@ -55,6 +70,7 @@
     flex-direction: row-reverse;
     margin-bottom: .4rem;
     margin-right: .4rem;
+    margin-top: .7rem;
 }
 
 .dropdown-item:hover {
@@ -63,7 +79,7 @@
 
 .text-box {
     color: white;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
 }
 
 

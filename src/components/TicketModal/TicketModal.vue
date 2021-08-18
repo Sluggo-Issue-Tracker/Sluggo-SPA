@@ -14,7 +14,7 @@
         <div class="editableText">
           <div v-if="!isEditing">
             <span class="text" @click="enableEditing">
-              {{ placeholderText }}
+              {{ ticketTitle }}
             </span>
           </div>
           <div v-if="isEditing" @focusout="disableEditing">
@@ -76,11 +76,11 @@
       </div>
     </div>
     <div class="ticket-modal-first-row">
-      <div class="dropdown">
+      <div class="dropdown ticket-user">
         <div class="dropdown-trigger">
           <label class="ticket-field-label">Assigned to</label>
           <button
-            class="button ticket-user"
+            class="button"
             aria-haspopup="true"
             aria-controls="dropdown-menu"
           >
@@ -91,10 +91,10 @@
           </button>
         </div>
       </div>
-      <div class="dropdown">
+      <div class="dropdown ticket-team">
         <div class="dropdown-trigger">
           <label class="ticket-field-label">Team</label>
-          <button class="button ticket-team">
+          <button class="button">
             <span>Slugbotics</span>
             <span class="icon is-small">
               <i class="bx bx-chevron-down"></i>
@@ -175,7 +175,6 @@ const ticketModalComponent = defineComponent({
     const ticketStatus = ref("In Progress");
     const statusClass = ref("");
     const statusElement = ref<HTMLElement | null>(null);
-    const placeholderText = ref("Temp Title");
     const isEditing = ref(false);
     const tempText = ref("");
     const toggleStatusDropdown = () => {
@@ -188,7 +187,7 @@ const ticketModalComponent = defineComponent({
     const enableEditing = () => {
       isEditing.value = true;
       shouldShowPencil.value = false;
-      tempText.value = placeholderText.value;
+      tempText.value = ticketTitle.value;
       isEditing.value = true;
     };
     const disableEditing = () => {
@@ -200,11 +199,8 @@ const ticketModalComponent = defineComponent({
     const saveChanges = () => {
       if (isEditing.value == true) {
         isEditing.value = false;
-        placeholderText.value = tempText.value;
+        ticketTitle.value = tempText.value;
       }
-    };
-    const resetData = () => {
-      ticketRecord.value = {};
     };
     const getData = async () => {
       try {
@@ -231,12 +227,16 @@ const ticketModalComponent = defineComponent({
       }
       context.emit("close");
     };
+    const resetData = () => {
+      ticketRecord.value = {};
+    };
     const cancel = () => {
       resetData();
       context.emit("close");
     };
     onMounted(async () => {
       await getData();
+      console.log(ticketRecord.value);
     });
     const computedStatusColor = computed(() => {
       if (ticketStatus.value == "In Progress") {
@@ -258,7 +258,6 @@ const ticketModalComponent = defineComponent({
       shouldShowPencil,
       statusElement,
       isEditing,
-      placeholderText,
       tempText,
       enableEditing,
       disableEditing,

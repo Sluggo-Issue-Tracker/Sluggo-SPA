@@ -6,25 +6,58 @@
     height: 4rem;
 }
 
-.ticket-modal-footer {
-    gap: .3rem;
-    display: flex;
-    flex-direction: row-reverse;
+.ticket-name {
+    font-size: 1.5rem;
+}
+
+.ticket-status {
+    margin-left:auto;
 }
 
 .ticket-modal-first-row {
     display:flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+}
+
+.ticket-user {
+    width: 18.2rem;
+    margin-left: .7rem;
+}
+
+.ticket-team {
+    width: 17rem;
+    margin-right: .7rem;
 }
 
 .ticket-modal-second-row {
     display:flex;
+    margin-left: .7rem;
+    margin-right: .7rem;
+}
+
+.ticket-tags {
+    width: auto;
 }
 
 .ticket-modal-third-row {
     display:flex;
 }
 
-.ticket-status {
-    margin-left:auto;
+.ticket-modal-footer {
+    gap: .3rem;
+    display: flex;
+    flex-direction: row-reverse;
 }
+
+.dropdown-item:hover {
+    cursor:pointer;
+}
+
+.text-box {
+    color: white;
+}
+
+
+
 

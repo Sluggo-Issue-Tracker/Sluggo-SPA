@@ -11,33 +11,106 @@
         class="ticket-name"
         :style="{ 'background-color': computedStatusColor }"
       >
-        <EditableTextComponent
-          :placeholderText="ticketTitle"
-          :backgroundColor="computedStatusColor"
-          @isEditing="shouldShowPencil = false"
-          @isHiding="shouldShowPencil = true"
-        />
+        <div class="editableText">
+          <div v-if="!isEditing">
+            <span class="text" @click="enableEditing">
+              {{ placeholderText }}
+            </span>
+          </div>
+          <div v-if="isEditing" @focusout="disableEditing">
+            <input
+              v-model="tempText"
+              class="input text-box"
+              v-bind:style="{ 'background-color': computedStatusColor }"
+              v-focus
+            />
+          </div>
+        </div>
       </div>
       <div class="editable-icon" v-if="shouldShowPencil">
         <i class="bx bx-pencil"></i>
       </div>
-      <StatusDropdownComponent class="ticket-status" />
+      <div
+        class="dropdown ticket-status"
+        ref="statusElement"
+        :class="statusClass"
+      >
+        <div class="dropdown-trigger" @click="toggleStatusDropdown">
+          <button
+            class="button is-primary"
+            :style="{ 'background-color': computedStatusColor }"
+            aria-haspopup="true"
+            aria-controls="dropdown-menu"
+          >
+            <span>{{ ticketStatus }}</span>
+            <span class="icon is-small">
+              <i class="bx bx-chevron-down"></i>
+            </span>
+          </button>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+          <div class="dropdown-content">
+            <div
+              class="dropdown-item"
+              v-if="ticketStatus != 'To Do'"
+              @click="setTicketStatus('To Do')"
+            >
+              To Do
+            </div>
+            <div
+              class="dropdown-item"
+              v-if="ticketStatus != 'In Progress'"
+              @click="setTicketStatus('In Progress')"
+            >
+              In Progress
+            </div>
+            <div
+              class="dropdown-item"
+              v-if="ticketStatus != 'Done'"
+              @click="setTicketStatus('Done')"
+            >
+              Done
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="ticket-modal-first-row">
-      <div class="dropdown-trigger">
-        <button class="button">
-          <span>Username</span>
-        </button>
+      <div class="dropdown">
+        <div class="dropdown-trigger">
+          <button
+            class="button ticket-user"
+            aria-haspopup="true"
+            aria-controls="dropdown-menu"
+          >
+            <span>Username</span>
+            <span class="icon is-small">
+              <i class="bx bx-chevron-down"></i>
+            </span>
+          </button>
+        </div>
       </div>
-      <div class="dropdown-trigger">
-        <button class="button">
-          <span>Team</span>
-        </button>
+      <div class="dropdown">
+        <div class="dropdown-trigger">
+          <button class="button ticket-team">
+            <span>Team</span>
+            <span class="icon is-small">
+              <i class="bx bx-chevron-down"></i>
+            </span>
+          </button>
+        </div>
       </div>
     </div>
     <div class="ticket-modal-second-row">
-      <div class="ticket-tags">
-        <textarea>Tags</textarea>
+      <div class="dropdown">
+        <div class="dropdown-trigger">
+          <button class="button ticket-tags">
+            <span>Tags</span>
+            <span class="icon is-small">
+              <i class="bx bx-chevron-down"></i>
+            </span>
+          </button>
+        </div>
       </div>
       <div class="ticket-due-date"></div>
     </div>
@@ -56,15 +129,11 @@
 import { defineComponent, ref, onMounted, computed } from "vue";
 import { updateTicket, deleteTicket, getTicket } from "@/api/tickets";
 import { ReadTicketRecord } from "@/api/types";
-import EditableTextComponent from "@/components/TicketModal/components/EditableText/EditableText.vue";
-import StatusDropdownComponent from "@/components/TicketModal/components/StatusDropdown/StatusDropdown.vue";
 import IconSluggo from "@/assets/IconSluggo";
 
 const ticketModalComponent = defineComponent({
   name: "TicketModal",
   components: {
-    EditableTextComponent,
-    StatusDropdownComponent,
     IconSluggo
   },
   props: {
@@ -78,13 +147,48 @@ const ticketModalComponent = defineComponent({
     }
   },
   emits: ["close"],
+  created() {
+    window.addEventListener("keydown", e => {
+      if (e.key == "Enter") {
+        this.saveChanges();
+      }
+    });
+  },
   setup: (props, context) => {
     const ticketId = parseInt(props.ticketId);
     const teamId = parseInt(props.teamId);
     const ticketRecord = ref({});
     const shouldShowPencil = ref(true);
-    const ticketStatus = ref("Done");
-    const ticketTitle = "Temp Title";
+    const ticketTitle = ref("Temp Title");
+    const ticketStatus = ref("In Progress");
+    const statusClass = ref("");
+    const statusElement = ref<HTMLElement | null>(null);
+    const placeholderText = ref("Temp Title");
+    const isEditing = ref(false);
+    const tempText = ref("");
+    const toggleStatusDropdown = () => {
+      statusClass.value = statusClass.value == "is-active" ? "" : "is-active";
+    };
+    const setTicketStatus = (status: string) => {
+      statusClass.value = "";
+      ticketStatus.value = status;
+    };
+    const enableEditing = () => {
+      isEditing.value = true;
+      tempText.value = placeholderText.value;
+      isEditing.value = true;
+    };
+    const disableEditing = () => {
+      isEditing.value = false;
+      tempText.value = "";
+      isEditing.value = false;
+    };
+    const saveChanges = () => {
+      if (isEditing.value == true) {
+        isEditing.value = false;
+        placeholderText.value = tempText.value;
+      }
+    };
     const resetData = () => {
       ticketRecord.value = {};
     };
@@ -135,8 +239,18 @@ const ticketModalComponent = defineComponent({
     return {
       ticketStatus,
       computedStatusColor,
+      statusClass,
       ticketTitle,
       shouldShowPencil,
+      statusElement,
+      isEditing,
+      placeholderText,
+      tempText,
+      enableEditing,
+      disableEditing,
+      toggleStatusDropdown,
+      setTicketStatus,
+      saveChanges,
       submit,
       remove,
       cancel

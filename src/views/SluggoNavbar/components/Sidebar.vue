@@ -45,7 +45,7 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/camelcase */
 
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted } from "vue";
 import router from "@/router";
 import TeamEntry from "./TeamEntry.vue";
 import { ReadTeamRecord } from "@/api/types";

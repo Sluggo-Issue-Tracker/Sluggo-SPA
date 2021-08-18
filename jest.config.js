@@ -1,7 +1,7 @@
 module.exports = {
+  preset: "@vue/cli-plugin-unit-jest/presets/typescript-and-babel",
   transform: {
-    ".ts": "ts-jest"
-  },
-  testRegex: "(/__tests__/.*|\\.test\\.ts)$",
-  moduleFileExtensions: ["ts", "js"]
+    "^.+\\.vue$": "vue-jest",
+    "^.+\\.ts$": "ts-jest"
+  }
 };

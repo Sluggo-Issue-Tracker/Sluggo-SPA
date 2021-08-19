@@ -16,7 +16,6 @@
                 <p class="is-size-4 has-text-weight-semibold">
                   Assigned to You
                 </p>
-                <input type="date" />
               </div>
             </div>
             <div>

@@ -23,13 +23,13 @@ export const refreshToken = (): Promise<AxiosResponse<void>> => {
 
 const logError = (error: AxiosError) => {
   if (error.isAxiosError) {
-    console.log(`Error occurred!`);
-    console.log(`Printing error details: `);
+    //console.log(`Error occurred!`);
+    //console.log(`Printing error details: `);
     if (error.response) {
-      console.log(
-        `Got bad status ${error.response.status}: ${error.response.statusText}`
-      );
-      console.log(error.response.data);
+      //console.log(
+      //  `Got bad status ${error.response.status}: ${error.response.statusText}`
+      //);
+      //console.log(error.response.data);
     } else if (error.request) {
       console.log(error.request);
     } else {

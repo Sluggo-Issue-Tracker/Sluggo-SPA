@@ -30,11 +30,7 @@
       <div class="editable-icon" v-if="shouldShowPencil">
         <i class="bx bx-pencil"></i>
       </div>
-      <div
-        class="dropdown ticket-status"
-        ref="statusElement"
-        :class="statusClass"
-      >
+      <div class="dropdown ticket-status" :class="statusClass">
         <div class="dropdown-trigger" @click="toggleStatusDropdown">
           <button
             class="button is-primary"
@@ -48,7 +44,7 @@
             </span>
           </button>
         </div>
-        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+        <div class="dropdown-menu">
           <div class="dropdown-content">
             <div
               class="dropdown-item"
@@ -75,12 +71,12 @@
         </div>
       </div>
     </div>
-    <div class="ticket-modal-first-row">
-      <div class="dropdown ticket-user">
+    <div class="ticket-modal-first-row columns">
+      <div class="dropdown column">
+        <label class="ticket-field-label">Assigned to</label>
         <div class="dropdown-trigger">
-          <label class="ticket-field-label">Assigned to</label>
           <button
-            class="button"
+            class="button is-fullwidth"
             aria-haspopup="true"
             aria-controls="dropdown-menu"
           >
@@ -90,11 +86,18 @@
             </span>
           </button>
         </div>
+        <div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-item">
+              To Doooooo
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="dropdown ticket-team">
+      <div class="dropdown column">
+        <label class="ticket-field-label">Team</label>
         <div class="dropdown-trigger">
-          <label class="ticket-field-label">Team</label>
-          <button class="button">
+          <button class="button is-fullwidth">
             <span>Slugbotics</span>
             <span class="icon is-small">
               <i class="bx bx-chevron-down"></i>
@@ -103,11 +106,11 @@
         </div>
       </div>
     </div>
-    <div class="ticket-modal-second-row">
-      <div class="dropdown">
+    <div class="ticket-modal-second-row columns">
+      <div class="dropdown column">
+        <label class="ticket-field-label">Tags</label>
         <div class="dropdown-trigger">
-          <label class="ticket-field-label">Tags</label>
-          <button class="button ticket-tags">
+          <button class="button ticket-tags is-fullwidth">
             <span>Mechanical, Topside</span>
             <span class="icon is-small">
               <i class="bx bx-chevron-down"></i>
@@ -115,16 +118,20 @@
           </button>
         </div>
       </div>
-      <div class="ticket-due-date">
+      <div class="ticket-due-date column">
         <label class="ticket-field-label">Due Date</label>
-        <input class="input" type="date" placeholder="mm / dd / yyyy" />
+        <input
+          class="input is-fullwidth"
+          type="date"
+          placeholder="mm / dd / yyyy"
+        />
       </div>
     </div>
-    <div class="ticket-modal-third-row">
-      <div class="ticket-description">
+    <div class="ticket-modal-third-row columns">
+      <div class="ticket-description column">
         <label class="ticket-field-label">Description</label>
         <textarea
-          class="textarea has-fixed-size"
+          class="textarea has-fixed-size is-fullwidth"
           placeholder="Description"
         ></textarea>
       </div>
@@ -138,8 +145,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed } from "vue";
-import { updateTicket, deleteTicket, getTicket } from "@/api/tickets";
+import { defineComponent, ref, computed } from "vue";
 import { ReadTicketRecord } from "@/api/types";
 import IconSluggo from "@/assets/IconSluggo";
 
@@ -149,13 +155,8 @@ const ticketModalComponent = defineComponent({
     IconSluggo
   },
   props: {
-    teamId: {
-      type: String,
-      required: true
-    },
-    ticketId: {
-      type: String,
-      required: true
+    ticketRecord: {
+      type: Object as () => ReadTicketRecord
     }
   },
   emits: ["close"],
@@ -166,10 +167,7 @@ const ticketModalComponent = defineComponent({
       }
     });
   },
-  setup: (props, context) => {
-    const ticketId = parseInt(props.ticketId);
-    const teamId = parseInt(props.teamId);
-    const ticketRecord = ref({});
+  setup: () => {
     const shouldShowPencil = ref(true);
     const ticketTitle = ref("Temp Title");
     const ticketStatus = ref("In Progress");
@@ -202,42 +200,6 @@ const ticketModalComponent = defineComponent({
         ticketTitle.value = tempText.value;
       }
     };
-    const getData = async () => {
-      try {
-        ticketRecord.value = await getTicket(ticketId, teamId);
-      } catch (error) {
-        alert(error);
-      }
-    };
-    const submit = async () => {
-      try {
-        await updateTicket(ticketRecord.value as ReadTicketRecord, teamId);
-      } catch (error) {
-        alert(error);
-        return;
-      }
-      context.emit("close");
-    };
-    const remove = async () => {
-      try {
-        await deleteTicket(ticketRecord.value as ReadTicketRecord, teamId);
-      } catch (error) {
-        alert(error);
-        return;
-      }
-      context.emit("close");
-    };
-    const resetData = () => {
-      ticketRecord.value = {};
-    };
-    const cancel = () => {
-      resetData();
-      context.emit("close");
-    };
-    onMounted(async () => {
-      await getData();
-      console.log(ticketRecord.value);
-    });
     const computedStatusColor = computed(() => {
       if (ticketStatus.value == "In Progress") {
         return "#20A6EE";
@@ -263,10 +225,7 @@ const ticketModalComponent = defineComponent({
       disableEditing,
       toggleStatusDropdown,
       setTicketStatus,
-      saveChanges,
-      submit,
-      remove,
-      cancel
+      saveChanges
     };
   }
 });

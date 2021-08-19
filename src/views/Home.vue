@@ -85,7 +85,6 @@
                   </div>
                 </div>
               </article>
-              <TicketModal />
             </div>
           </div>
           <div class="column is-one-third">
@@ -174,12 +173,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import TicketModal from "@/components/TicketModal/TicketModal.vue";
 
 export default defineComponent({
-  name: "Home",
-  components: {
-    TicketModal
-  }
+  name: "Home"
 });
 </script>

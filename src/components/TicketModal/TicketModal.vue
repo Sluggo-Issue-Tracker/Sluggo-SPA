@@ -151,9 +151,9 @@
       </div>
     </div>
     <div class="ticket-modal-footer">
-      <button class="button is-success" @click="submit">Save changes</button>
-      <button class="button" @click="cancel">Cancel</button>
-      <button class="button is-danger" @click="remove">Delete</button>
+      <button class="button is-success">Save changes</button>
+      <button class="button">Cancel</button>
+      <button class="button is-danger">Delete</button>
     </div>
   </div>
 </template>

@@ -9,7 +9,7 @@
 
     <!-- TODO: Samuel Schmidt 5 / 21 / 2020 move this into a vue component -->
     <div class="section">
-      <TicketModal v-bind:ticketId="'1'" v-bind:teamId="'1'" />
+      <TicketModal />
     </div>
     <div class="container">
       <paginated-list-view

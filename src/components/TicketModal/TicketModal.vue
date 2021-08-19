@@ -30,7 +30,7 @@
       <div class="editable-icon" v-if="shouldShowPencil">
         <i class="bx bx-pencil"></i>
       </div>
-      <div class="dropdown ticket-status" :class="statusClass">
+      <div class="dropdown ticket-status" :class="statusDropdownClass">
         <div class="dropdown-trigger" @click="toggleStatusDropdown">
           <button
             class="button is-primary"
@@ -72,9 +72,9 @@
       </div>
     </div>
     <div class="ticket-modal-first-row columns">
-      <div class="dropdown column">
+      <div class="dropdown column" :class="userDropdownClass">
         <label class="ticket-field-label">Assigned to</label>
-        <div class="dropdown-trigger">
+        <div class="dropdown-trigger" @click="toggleUserDropdown">
           <button
             class="button is-fullwidth"
             aria-haspopup="true"
@@ -94,28 +94,42 @@
           </div>
         </div>
       </div>
-      <div class="dropdown column">
+      <div class="dropdown column" :class="teamDropdownClass">
         <label class="ticket-field-label">Team</label>
-        <div class="dropdown-trigger">
-          <button class="button is-fullwidth">
+        <div class="dropdown-trigger" @click="toggleTeamDropdown">
+          <button class="button is-fullwidth is-left">
             <span>Slugbotics</span>
             <span class="icon is-small">
               <i class="bx bx-chevron-down"></i>
             </span>
           </button>
         </div>
+        <div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-item">
+              Bugslotics
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="ticket-modal-second-row columns">
-      <div class="dropdown column">
+      <div class="dropdown column" :class="tagsDropdownClass">
         <label class="ticket-field-label">Tags</label>
-        <div class="dropdown-trigger">
+        <div class="dropdown-trigger" @click="toggleTagsDropdown">
           <button class="button ticket-tags is-fullwidth">
             <span>Mechanical, Topside</span>
             <span class="icon is-small">
               <i class="bx bx-chevron-down"></i>
             </span>
           </button>
+        </div>
+        <div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-item">
+              Systems
+            </div>
+          </div>
         </div>
       </div>
       <div class="ticket-due-date column">
@@ -171,15 +185,31 @@ const ticketModalComponent = defineComponent({
     const shouldShowPencil = ref(true);
     const ticketTitle = ref("Temp Title");
     const ticketStatus = ref("In Progress");
-    const statusClass = ref("");
+    const statusDropdownClass = ref("");
+    const userDropdownClass = ref("");
+    const teamDropdownClass = ref("");
+    const tagsDropdownClass = ref("");
     const statusElement = ref<HTMLElement | null>(null);
     const isEditing = ref(false);
     const tempText = ref("");
     const toggleStatusDropdown = () => {
-      statusClass.value = statusClass.value == "is-active" ? "" : "is-active";
+      statusDropdownClass.value =
+        statusDropdownClass.value == "is-active" ? "" : "is-active";
+    };
+    const toggleUserDropdown = () => {
+      userDropdownClass.value =
+        userDropdownClass.value == "is-active" ? "" : "is-active";
+    };
+    const toggleTeamDropdown = () => {
+      teamDropdownClass.value =
+        teamDropdownClass.value == "is-active" ? "" : "is-active";
+    };
+    const toggleTagsDropdown = () => {
+      tagsDropdownClass.value =
+        tagsDropdownClass.value == "is-active" ? "" : "is-active";
     };
     const setTicketStatus = (status: string) => {
-      statusClass.value = "";
+      statusDropdownClass.value = "";
       ticketStatus.value = status;
     };
     const enableEditing = () => {
@@ -215,7 +245,10 @@ const ticketModalComponent = defineComponent({
     return {
       ticketStatus,
       computedStatusColor,
-      statusClass,
+      statusDropdownClass,
+      userDropdownClass,
+      teamDropdownClass,
+      tagsDropdownClass,
       ticketTitle,
       shouldShowPencil,
       statusElement,
@@ -224,6 +257,9 @@ const ticketModalComponent = defineComponent({
       enableEditing,
       disableEditing,
       toggleStatusDropdown,
+      toggleUserDropdown,
+      toggleTeamDropdown,
+      toggleTagsDropdown,
       setTicketStatus,
       saveChanges
     };

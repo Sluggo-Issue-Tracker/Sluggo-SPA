@@ -4,7 +4,7 @@
       {{ error || "No error to display!" }}
     </div>
     <div class="error-message" v-else>Error, something went wrong!</div>
-    <button class="error-home-button" @click="$router.push('/')">
+    <button class="button is-primary is-outlined" @click="$router.push('/')">
       Click to Return Home
     </button>
   </span>

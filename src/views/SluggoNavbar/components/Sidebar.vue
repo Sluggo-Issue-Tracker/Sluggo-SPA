@@ -1,17 +1,18 @@
 <template>
   <aside class="menu">
-    <p class="menu-label">You</p>
     <ul class="menu-list">
       <li>
         <router-link
           :class="{
             'menu-list': true,
+            iconTitle: true,
             'is-active': currentRouteName === 'Home'
           }"
           :to="{ name: 'Home' }"
           data-testid="home-button"
         >
-          Home
+          <i class="bx bx-home-alt" />
+          <span>Home</span>
         </router-link>
       </li>
     </ul>
@@ -89,4 +90,4 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped src="../styles.module.scss" lang="scss"></style>

@@ -4,7 +4,7 @@
 
 @media screen and (max-width: 1003px) {
   .sidebarMenu {
-    padding: 1rem 1rem 1rem 1rem;
+    padding: 0.5rem 0.5rem 0.5rem 0.5rem;
     top: var(--navbarHeight);
     position: fixed;
     z-index: 3;
@@ -24,7 +24,7 @@
   .sidebarMenu {
     top: var(--navbarHeight);
     position: sticky;
-    padding: 1rem 1rem 1rem 1rem;
+    padding: 0.5rem 0.5rem 0.5rem 0.5rem;
     border-right: 1px var(--borderColor) solid;
     height: calc(100vh - var(--navbarHeight));
     width: var(--navbarTitleWidth);

@@ -9,7 +9,7 @@
 
     <!-- TODO: Samuel Schmidt 5 / 21 / 2020 move this into a vue component -->
     <div class="section">
-      <TicketModal />
+      <TicketModal v-if="selected" />
     </div>
     <div class="container">
       <paginated-list-view

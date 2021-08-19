@@ -1,8 +1,9 @@
 <template>
-  <div data-testid="team-details-container">
+  <div>
     <a
       :class="{ 'is-active': isSelected, iconTitle: true }"
       :onclick="toggleOpen"
+      data-testid="team-details-container"
     >
       <i
         :class="{ 'bx bx-chevron-down': !isOpen, 'bx bx-chevron-up': isOpen }"
@@ -14,6 +15,7 @@
         <router-link
           :class="{ 'is-active': Boolean(currentSubviewSelection['tickets']) }"
           :to="{ name: 'TeamsTickets', params: { id: team.id } }"
+          data-testid="tickets-link"
         >
           Tickets
         </router-link>
@@ -22,6 +24,7 @@
         <router-link
           :class="{ 'is-active': Boolean(currentSubviewSelection['members']) }"
           :to="{ name: 'TeamsMembers', params: { id: team.id } }"
+          data-testid="members-link"
         >
           Members
         </router-link>
@@ -30,6 +33,7 @@
         <router-link
           :class="{ 'is-active': Boolean(currentSubviewSelection['admin']) }"
           :to="{ name: 'TeamsAdmin', params: { id: team.id } }"
+          data-testid="admin-link"
         >
           Admin
         </router-link>

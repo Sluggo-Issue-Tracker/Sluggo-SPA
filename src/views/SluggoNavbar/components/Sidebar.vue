@@ -9,6 +9,7 @@
             'is-active': currentRouteName === 'Home'
           }"
           :to="{ name: 'Home' }"
+          data-testid="home-button"
         >
           Home
         </router-link>
@@ -33,10 +34,10 @@
     >
       You are not a member of any teams!
     </ul>
-    <ul v-if="loadingTeams" data-testid="sidebar-loading">
+    <ul v-if="loadingTeams" data-testid="sidebar-team-loading">
       Loading teams...
     </ul>
-    <ul v-if="error">
+    <ul v-if="error" data-testid="sidebar-team-error">
       Error while loading teams!
     </ul>
   </aside>

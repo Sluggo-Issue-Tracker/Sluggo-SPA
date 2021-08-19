@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { ReadTeamRecord, UserRecord } from "@/api/types";
+import { createRouter, createWebHistory } from "vue-router";
+import RouterMockComponent from "@/views/SluggoNavbar/__mocks__/RouterMockedComponent.vue";
 
 export const mockUser: UserRecord = {
   pk: 1,
@@ -65,3 +67,29 @@ export const sampleTeamData: ReadTeamRecord[] = [
     deactivated: null
   }
 ];
+
+export const mockRouter = createRouter({
+  history: createWebHistory(),
+  routes: [
+    {
+      path: "/",
+      name: "Home",
+      component: RouterMockComponent
+    },
+    {
+      path: "/teams/:id/tickets",
+      name: "TeamsTickets",
+      component: RouterMockComponent
+    },
+    {
+      path: "/teams/:id/members",
+      name: "TeamsMembers",
+      component: RouterMockComponent
+    },
+    {
+      path: "/teams/:id/admin",
+      name: "TeamsAdmin",
+      component: RouterMockComponent
+    }
+  ]
+});

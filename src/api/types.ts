@@ -109,12 +109,11 @@ export interface NewTeamRecord {
 export interface ReadTeamRecord {
   id: number;
   name: string;
-  description: string;
   object_uuid: string;
   ticket_head: number;
   created: string;
-  activated?: string;
-  deactivated?: string;
+  activated: string | null;
+  deactivated: string | null;
 }
 
 export interface PaginatedList<T> {

@@ -1,10 +1,10 @@
 <template>
-  <div>Hello world!</div>
+  <div>{{ $router.currentRoute.value.name }}</div>
 </template>
 
 <script>
 export default {
-  name: "TeamsAdmin"
+  name: "RouterMockedComponent"
 };
 </script>
 

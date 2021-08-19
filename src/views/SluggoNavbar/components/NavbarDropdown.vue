@@ -5,7 +5,7 @@
   >
     <div class="dropdown-trigger emblemContainer" :onclick="handleToggle">
       <ProfileEmblem :name="username" />
-      <span>{{ username }}</span>
+      <span data-testid="username-span">{{ username }}</span>
     </div>
     <div :v-if="isOpen" class="dropdown-menu">
       <div class="dropdown-content">

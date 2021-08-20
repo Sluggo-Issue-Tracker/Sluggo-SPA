@@ -72,66 +72,12 @@
       </div>
     </div>
     <div class="ticket-modal-first-row columns">
-      <div class="dropdown column" :class="userDropdownClass">
-        <label class="ticket-field-label">Assigned to</label>
-        <div class="dropdown-trigger" @click="toggleUserDropdown">
-          <button
-            class="button is-fullwidth"
-            aria-haspopup="true"
-            aria-controls="dropdown-menu"
-          >
-            <span>Username</span>
-            <span class="icon is-small">
-              <i class="bx bx-chevron-down"></i>
-            </span>
-          </button>
-        </div>
-        <div class="dropdown-menu">
-          <div class="dropdown-content">
-            <div class="dropdown-item">
-              To Doooooo
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="dropdown column" :class="teamDropdownClass">
-        <label class="ticket-field-label">Team</label>
-        <div class="dropdown-trigger" @click="toggleTeamDropdown">
-          <button class="button is-fullwidth is-left">
-            <span>Slugbotics</span>
-            <span class="icon is-small">
-              <i class="bx bx-chevron-down"></i>
-            </span>
-          </button>
-        </div>
-        <div class="dropdown-menu">
-          <div class="dropdown-content">
-            <div class="dropdown-item">
-              Bugslotics
-            </div>
-          </div>
-        </div>
-      </div>
+      <Dropdown :label="userLabel" class="column" />
+      <Dropdown :label="teamLabel" class="column" />
     </div>
     <div class="ticket-modal-second-row columns">
-      <div class="dropdown column" :class="tagsDropdownClass">
-        <label class="ticket-field-label">Tags</label>
-        <div class="dropdown-trigger" @click="toggleTagsDropdown">
-          <button class="button ticket-tags is-fullwidth">
-            <span>Mechanical, Topside</span>
-            <span class="icon is-small">
-              <i class="bx bx-chevron-down"></i>
-            </span>
-          </button>
-        </div>
-        <div class="dropdown-menu">
-          <div class="dropdown-content">
-            <div class="dropdown-item">
-              Systems
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- make the dropdown a column clas -->
+      <Dropdown :label="tagsLabel" class="column" />
       <div class="ticket-due-date column">
         <label class="ticket-field-label">Due Date</label>
         <input
@@ -161,12 +107,14 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import { ReadTicketRecord } from "@/api/types";
+import Dropdown from "@/components/Dropdown/Dropdown.vue";
 import IconSluggo from "@/assets/IconSluggo";
 
 const ticketModalComponent = defineComponent({
   name: "TicketModal",
   components: {
-    IconSluggo
+    IconSluggo,
+    Dropdown
   },
   props: {
     ticketRecord: {
@@ -186,27 +134,14 @@ const ticketModalComponent = defineComponent({
     const ticketTitle = ref("Temp Title");
     const ticketStatus = ref("In Progress");
     const statusDropdownClass = ref("");
-    const userDropdownClass = ref("");
-    const teamDropdownClass = ref("");
-    const tagsDropdownClass = ref("");
-    const statusElement = ref<HTMLElement | null>(null);
     const isEditing = ref(false);
     const tempText = ref("");
+    const tagsLabel = ref("Tags");
+    const userLabel = ref("Assigned to");
+    const teamLabel = ref("Team");
     const toggleStatusDropdown = () => {
       statusDropdownClass.value =
         statusDropdownClass.value == "is-active" ? "" : "is-active";
-    };
-    const toggleUserDropdown = () => {
-      userDropdownClass.value =
-        userDropdownClass.value == "is-active" ? "" : "is-active";
-    };
-    const toggleTeamDropdown = () => {
-      teamDropdownClass.value =
-        teamDropdownClass.value == "is-active" ? "" : "is-active";
-    };
-    const toggleTagsDropdown = () => {
-      tagsDropdownClass.value =
-        tagsDropdownClass.value == "is-active" ? "" : "is-active";
     };
     const setTicketStatus = (status: string) => {
       statusDropdownClass.value = "";
@@ -216,13 +151,11 @@ const ticketModalComponent = defineComponent({
       isEditing.value = true;
       shouldShowPencil.value = false;
       tempText.value = ticketTitle.value;
-      isEditing.value = true;
     };
     const disableEditing = () => {
       isEditing.value = false;
       shouldShowPencil.value = true;
       tempText.value = "";
-      isEditing.value = false;
     };
     const saveChanges = () => {
       if (isEditing.value == true) {
@@ -246,20 +179,16 @@ const ticketModalComponent = defineComponent({
       ticketStatus,
       computedStatusColor,
       statusDropdownClass,
-      userDropdownClass,
-      teamDropdownClass,
-      tagsDropdownClass,
       ticketTitle,
+      tagsLabel,
+      userLabel,
+      teamLabel,
       shouldShowPencil,
-      statusElement,
       isEditing,
       tempText,
       enableEditing,
       disableEditing,
       toggleStatusDropdown,
-      toggleUserDropdown,
-      toggleTeamDropdown,
-      toggleTagsDropdown,
       setTicketStatus,
       saveChanges
     };

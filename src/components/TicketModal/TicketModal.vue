@@ -11,73 +11,45 @@
         class="ticket-name"
         :style="{ 'background-color': computedStatusColor }"
       >
-        <div class="editableText">
-          <div v-if="!isEditing">
-            <span class="text" @click="enableEditing">
-              {{ ticketTitle }}
-            </span>
-          </div>
-          <div v-if="isEditing" @focusout="disableEditing">
-            <input
-              v-model="tempText"
-              class="input text-box"
-              v-bind:style="{ 'background-color': computedStatusColor }"
-              v-focus
-            />
-          </div>
-        </div>
+        <EditableText
+          :color="computedStatusColor"
+          @startedEditing="shouldShowPencil = false"
+          @stoppedEditing="shouldShowPencil = true"
+        />
       </div>
       <div class="editable-icon" v-if="shouldShowPencil">
         <i class="bx bx-pencil"></i>
       </div>
-      <div class="dropdown ticket-status" :class="statusDropdownClass">
-        <div class="dropdown-trigger" @click="toggleStatusDropdown">
-          <button
-            class="button is-primary"
-            :style="{ 'background-color': computedStatusColor }"
-            aria-haspopup="true"
-            aria-controls="dropdown-menu"
-          >
-            <span>{{ ticketStatus }}</span>
-            <span class="icon is-small">
-              <i class="bx bx-chevron-down"></i>
-            </span>
-          </button>
-        </div>
-        <div class="dropdown-menu">
-          <div class="dropdown-content">
-            <div
-              class="dropdown-item"
-              v-if="ticketStatus != 'To Do'"
-              @click="setTicketStatus('To Do')"
-            >
-              To Do
-            </div>
-            <div
-              class="dropdown-item"
-              v-if="ticketStatus != 'In Progress'"
-              @click="setTicketStatus('In Progress')"
-            >
-              In Progress
-            </div>
-            <div
-              class="dropdown-item"
-              v-if="ticketStatus != 'Done'"
-              @click="setTicketStatus('Done')"
-            >
-              Done
-            </div>
-          </div>
-        </div>
-      </div>
+      <Dropdown
+        :items="testStatuses"
+        :firstItem="testStatuses[0].data"
+        :style="{ 'margin-left': 'auto' }"
+        :backgroundColor="computedStatusColor"
+        :textColor="'white'"
+        :borderStyle="'none'"
+      />
     </div>
     <div class="ticket-modal-first-row columns">
-      <Dropdown :label="userLabel" class="column" />
-      <Dropdown :label="teamLabel" class="column" />
+      <Dropdown
+        :label="userLabel"
+        class="column"
+        :items="testUsers"
+        :firstItem="testUsers[0].data"
+      />
+      <Dropdown
+        :label="teamLabel"
+        class="column"
+        :items="testTeams"
+        :firstItem="testTeams[0].data"
+      />
     </div>
     <div class="ticket-modal-second-row columns">
-      <!-- make the dropdown a column clas -->
-      <Dropdown :label="tagsLabel" class="column" />
+      <Dropdown
+        :label="tagsLabel"
+        class="column"
+        :items="testTags"
+        :firstItem="testTags[0].data"
+      />
       <div class="ticket-due-date column">
         <label class="ticket-field-label">Due Date</label>
         <input
@@ -108,13 +80,15 @@
 import { defineComponent, ref, computed } from "vue";
 import { ReadTicketRecord } from "@/api/types";
 import Dropdown from "@/components/Dropdown/Dropdown.vue";
+import EditableText from "@/components/EditableText/EditableText.vue";
 import IconSluggo from "@/assets/IconSluggo";
 
 const ticketModalComponent = defineComponent({
   name: "TicketModal",
   components: {
     IconSluggo,
-    Dropdown
+    Dropdown,
+    EditableText
   },
   props: {
     ticketRecord: {
@@ -122,23 +96,21 @@ const ticketModalComponent = defineComponent({
     }
   },
   emits: ["close"],
-  created() {
-    window.addEventListener("keydown", e => {
-      if (e.key == "Enter") {
-        this.saveChanges();
-      }
-    });
-  },
   setup: () => {
     const shouldShowPencil = ref(true);
-    const ticketTitle = ref("Temp Title");
     const ticketStatus = ref("In Progress");
     const statusDropdownClass = ref("");
-    const isEditing = ref(false);
-    const tempText = ref("");
     const tagsLabel = ref("Tags");
     const userLabel = ref("Assigned to");
     const teamLabel = ref("Team");
+    const testUsers = [{ data: "Mason" }, { data: "George" }];
+    const testTeams = [{ data: "Slugbotics" }, { data: "Bugslotics" }];
+    const testTags = [{ data: "Mechanical" }, { data: "Systems" }];
+    const testStatuses = [
+      { data: "To Do" },
+      { data: "In Progress" },
+      { data: "Done" }
+    ];
     const toggleStatusDropdown = () => {
       statusDropdownClass.value =
         statusDropdownClass.value == "is-active" ? "" : "is-active";
@@ -147,50 +119,23 @@ const ticketModalComponent = defineComponent({
       statusDropdownClass.value = "";
       ticketStatus.value = status;
     };
-    const enableEditing = () => {
-      isEditing.value = true;
-      shouldShowPencil.value = false;
-      tempText.value = ticketTitle.value;
-    };
-    const disableEditing = () => {
-      isEditing.value = false;
-      shouldShowPencil.value = true;
-      tempText.value = "";
-    };
-    const saveChanges = () => {
-      if (isEditing.value == true) {
-        isEditing.value = false;
-        ticketTitle.value = tempText.value;
-      }
-    };
     const computedStatusColor = computed(() => {
-      if (ticketStatus.value == "In Progress") {
-        return "#20A6EE";
-      } else if (ticketStatus.value == "To Do") {
-        return "#828282";
-      } else if (ticketStatus.value == "Done") {
-        return "#219653";
-      } else {
-        console.log("Ticket status error");
-        return null;
-      }
+      return "#20A6EE";
     });
     return {
       ticketStatus,
       computedStatusColor,
       statusDropdownClass,
-      ticketTitle,
       tagsLabel,
       userLabel,
       teamLabel,
       shouldShowPencil,
-      isEditing,
-      tempText,
-      enableEditing,
-      disableEditing,
+      testUsers,
+      testTeams,
+      testTags,
+      testStatuses,
       toggleStatusDropdown,
-      setTicketStatus,
-      saveChanges
+      setTicketStatus
     };
   }
 });

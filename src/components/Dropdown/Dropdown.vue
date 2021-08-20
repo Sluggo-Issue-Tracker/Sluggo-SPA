@@ -2,8 +2,15 @@
   <div class="dropdown" :class="dropdownClass">
     <label class="dropdown-label">{{ label || "" }}</label>
     <div class="dropdown-trigger" @click="toggleDropdown">
-      <button class="button ticket-tags is-fullwidth">
-        <span>Mechanical, Topside</span>
+      <button
+        class="button ticket-tags is-fullwidth"
+        :style="{
+          'background-color': backgroundColor,
+          color: textColor,
+          border: borderStyle
+        }"
+      >
+        <span>{{ firstItem || "" }}</span>
         <span class="icon is-small">
           <i class="bx bx-chevron-down"></i>
         </span>
@@ -11,8 +18,8 @@
     </div>
     <div class="dropdown-menu">
       <div class="dropdown-content">
-        <div class="dropdown-item">
-          Systems
+        <div class="dropdown-item" v-for="item in items" :key="item.data">
+          {{ item.data }}
         </div>
       </div>
     </div>
@@ -27,9 +34,25 @@ const dropdownComponent = defineComponent({
   props: {
     label: {
       type: String
+    },
+    firstItem: {
+      type: String,
+      required: true
+    },
+    items: {
+      type: Array
+    },
+    backgroundColor: {
+      type: String
+    },
+    textColor: {
+      type: String
+    },
+    borderStyle: {
+      type: String
     }
   },
-  emits: ["close"],
+  emits: ["selected"],
   setup: () => {
     const dropdownClass = ref("");
     const toggleDropdown = () => {

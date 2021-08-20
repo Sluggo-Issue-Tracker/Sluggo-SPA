@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown" :class="dropdownClass">
+  <div class="dropdown" :class="dropdownClass" @focusout="dropdownClass = ''">
     <label class="dropdown-label">{{ label || "" }}</label>
     <div class="dropdown-trigger" @click="toggleDropdown">
       <button
@@ -18,7 +18,12 @@
     </div>
     <div class="dropdown-menu">
       <div class="dropdown-content">
-        <div class="dropdown-item" v-for="item in items" :key="item.data">
+        <div
+          class="dropdown-item"
+          v-for="item in items"
+          :key="item.data"
+          @click="itemSelected(item)"
+        >
           {{ item.data }}
         </div>
       </div>
@@ -52,16 +57,21 @@ const dropdownComponent = defineComponent({
       type: String
     }
   },
-  emits: ["selected"],
-  setup: () => {
+  emits: ["itemSelected"],
+  setup: (props, context) => {
     const dropdownClass = ref("");
     const toggleDropdown = () => {
       dropdownClass.value =
         dropdownClass.value == "is-active" ? "" : "is-active";
     };
+    const itemSelected = (item: string) => {
+      dropdownClass.value = "";
+      context.emit("itemSelected", { item: item });
+    };
     return {
       toggleDropdown,
-      dropdownClass
+      dropdownClass,
+      itemSelected
     };
   }
 });

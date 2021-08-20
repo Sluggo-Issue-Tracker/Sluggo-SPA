@@ -2,17 +2,14 @@
   <div class="ticket-modal">
     <div
       class="ticket-modal-header"
-      :style="{ 'background-color': computedStatusColor }"
+      :style="{ 'background-color': statusColor }"
     >
       <div class="logo">
         <IconSluggo :height="50" :width="50" />
       </div>
-      <div
-        class="ticket-name"
-        :style="{ 'background-color': computedStatusColor }"
-      >
+      <div class="ticket-name" :style="{ 'background-color': statusColor }">
         <EditableText
-          :color="computedStatusColor"
+          :color="statusColor"
           @startedEditing="shouldShowPencil = false"
           @stoppedEditing="shouldShowPencil = true"
         />
@@ -22,9 +19,10 @@
       </div>
       <Dropdown
         :items="testStatuses"
-        :firstItem="testStatuses[0].data"
+        :firstItem="ticketStatus"
+        @itemSelected="itemSelected"
         :style="{ 'margin-left': 'auto' }"
-        :backgroundColor="computedStatusColor"
+        :backgroundColor="statusColor"
         :textColor="'white'"
         :borderStyle="'none'"
       />
@@ -34,13 +32,13 @@
         :label="userLabel"
         class="column"
         :items="testUsers"
-        :firstItem="testUsers[0].data"
+        :firstItem="ticketUser"
       />
       <Dropdown
         :label="teamLabel"
         class="column"
         :items="testTeams"
-        :firstItem="testTeams[0].data"
+        :firstItem="ticketTeam"
       />
     </div>
     <div class="ticket-modal-second-row columns">
@@ -48,7 +46,7 @@
         :label="tagsLabel"
         class="column"
         :items="testTags"
-        :firstItem="testTags[0].data"
+        :firstItem="ticketTag"
       />
       <div class="ticket-due-date column">
         <label class="ticket-field-label">Due Date</label>
@@ -77,7 +75,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref } from "vue";
 import { ReadTicketRecord } from "@/api/types";
 import Dropdown from "@/components/Dropdown/Dropdown.vue";
 import EditableText from "@/components/EditableText/EditableText.vue";
@@ -99,32 +97,28 @@ const ticketModalComponent = defineComponent({
   setup: () => {
     const shouldShowPencil = ref(true);
     const ticketStatus = ref("In Progress");
+    const statusColor = ref("#20A6EE");
     const statusDropdownClass = ref("");
     const tagsLabel = ref("Tags");
     const userLabel = ref("Assigned to");
     const teamLabel = ref("Team");
     const testUsers = [{ data: "Mason" }, { data: "George" }];
+    const ticketUser = ref("Mason");
     const testTeams = [{ data: "Slugbotics" }, { data: "Bugslotics" }];
+    const ticketTeam = ref("Slugbotics");
     const testTags = [{ data: "Mechanical" }, { data: "Systems" }];
+    const ticketTag = ref("Mechanical");
     const testStatuses = [
       { data: "To Do" },
       { data: "In Progress" },
       { data: "Done" }
     ];
-    const toggleStatusDropdown = () => {
-      statusDropdownClass.value =
-        statusDropdownClass.value == "is-active" ? "" : "is-active";
+    const itemSelected = (item: any) => {
+      console.log(item.data);
     };
-    const setTicketStatus = (status: string) => {
-      statusDropdownClass.value = "";
-      ticketStatus.value = status;
-    };
-    const computedStatusColor = computed(() => {
-      return "#20A6EE";
-    });
     return {
       ticketStatus,
-      computedStatusColor,
+      statusColor,
       statusDropdownClass,
       tagsLabel,
       userLabel,
@@ -133,9 +127,11 @@ const ticketModalComponent = defineComponent({
       testUsers,
       testTeams,
       testTags,
+      ticketUser,
+      ticketTeam,
+      ticketTag,
       testStatuses,
-      toggleStatusDropdown,
-      setTicketStatus
+      itemSelected
     };
   }
 });

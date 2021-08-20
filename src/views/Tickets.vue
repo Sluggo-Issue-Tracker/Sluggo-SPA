@@ -95,7 +95,7 @@ export default defineComponent({
       }
 
       if (listTicketResponse) {
-        ticketList.value = listTicketResponse.data;
+        ticketList.value = listTicketResponse;
       }
     };
 

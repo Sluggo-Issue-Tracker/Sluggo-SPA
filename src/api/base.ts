@@ -71,7 +71,6 @@ axiosInstance.interceptors.response.use(
     const [, refreshError] = await wrapExceptions(refreshToken);
 
     if (refreshError) {
-      console.log(refreshError.message);
       return Promise.reject(refreshError);
     }
 

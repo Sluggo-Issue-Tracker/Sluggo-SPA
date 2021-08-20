@@ -1,8 +1,11 @@
 <template>
-  <div :class="{ dropdown: true, 'is-right': true, 'is-active': isOpen }">
+  <div
+    :class="{ dropdown: true, 'is-right': true, 'is-active': isOpen }"
+    data-testid="dropdown-container"
+  >
     <div class="dropdown-trigger emblemContainer" :onclick="handleToggle">
       <ProfileEmblem :name="username" />
-      <span>{{ username }}</span>
+      <span data-testid="username-span">{{ username }}</span>
     </div>
     <div :v-if="isOpen" class="dropdown-menu">
       <div class="dropdown-content">

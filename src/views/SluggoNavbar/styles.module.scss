@@ -2,30 +2,48 @@
   display: flex;
 }
 
-.sidebarMenu {
-  padding-left: 1rem;
-  padding-right: 1rem;
-
-  @media screen and (max-width: 1003px) {
-    & {
-      position: absolute;
-      z-index: 3;
-      background: var(--primaryBackground);
-    }
+@media screen and (max-width: 1003px) {
+  .sidebarMenu {
+    padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+    top: var(--navbarHeight);
+    position: fixed;
+    z-index: 3;
+    background: var(--primaryBackground);
+    height: calc(100vh - var(--navbarHeight));
+    flex: 1;
+    min-width: 160px;
+    overflow: auto;
+    box-shadow: 0 8px 16px var(--shadowColor) ;
   }
-
-  @media screen and (min-width: 1004px) {
-    & {
-      flex: 1;
-      border-right: 1px var(--borderColor) solid;
-    }
+  .menuHidden{
+    display: none;
   }
+}
+
+@media screen and (min-width: 1004px) {
+  .sidebarMenu {
+    top: var(--navbarHeight);
+    position: sticky;
+    padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+    border-right: 1px var(--borderColor) solid;
+    height: calc(100vh - var(--navbarHeight));
+    min-width: var(--navbarTitleWidth);
+    overflow: auto;
+  }
+  .menuHidden{
+  }
+}
+
+.navbarTitle {
+  min-width: var(--navbarTitleWidth);
+  border-right: 1px var(--borderColor) solid;
 }
 
 .navbarContainer {
   position: sticky;
   top: 0;
   border-bottom: 1px var(--borderColor) solid;
+  height: var(--navbarHeight);
 }
 
 .viewContainer {
@@ -55,4 +73,14 @@
   gap: 1rem;
   cursor: pointer;
   min-width: 185px;
+}
+
+.iconTitle {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.bellContainer {
+  font-size: 30px;
 }

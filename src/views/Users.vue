@@ -76,7 +76,7 @@ export default defineComponent({
 
     const getTeamMembers = async () => {
       try {
-        const { data } = await listMembers(teamId, listPage.value);
+        const data = await listMembers(teamId, listPage.value);
         membersList.value = data;
       } catch (error) {
         console.log(error);
@@ -86,7 +86,7 @@ export default defineComponent({
     const getTeamRecord = async () => {
       const teamId = parseInt(props.teamId);
       try {
-        const { data: team } = await getTeam(teamId);
+        const team = await getTeam(teamId);
         teamRecord.value = team;
         console.log("team loaded :)");
       } catch (error) {

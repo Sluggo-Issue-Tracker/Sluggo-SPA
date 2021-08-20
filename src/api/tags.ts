@@ -1,43 +1,55 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { axiosInstance } from "./base";
 import { PaginatedList, TagRecord, WriteTagRecord } from "@/api/types";
-import { AxiosResponse } from "axios";
 
 export const createTag = async (
   record: WriteTagRecord,
   teamId: number
-): Promise<AxiosResponse<TagRecord>> =>
-  await axiosInstance.post<TagRecord>(`/api/teams/${teamId}/tags/`, record);
+): Promise<TagRecord> => {
+  const { data } = await axiosInstance.post<TagRecord>(
+    `/api/teams/${teamId}/tags/`,
+    record
+  );
+  return data;
+};
 
 export const updateTag = async (
   record: TagRecord,
   teamId: number
-): Promise<AxiosResponse<TagRecord>> => {
+): Promise<TagRecord> => {
   const updateRecord = {
     title: record.title
   };
-  return await axiosInstance.put<TagRecord>(
+  const { data } = await axiosInstance.put<TagRecord>(
     `/api/teams/${teamId}/tags/${record.id}/`,
     updateRecord
   );
+  return data;
 };
 
 export const getTag = async (
   id: number,
   teamId: number
-): Promise<AxiosResponse<TagRecord>> =>
-  await axiosInstance.get<TagRecord>(`/api/teams/${teamId}/tags/${id}]`);
+): Promise<TagRecord> => {
+  const { data } = await axiosInstance.get<TagRecord>(
+    `/api/teams/${teamId}/tags/${id}]`
+  );
+  return data;
+};
 
 export const listTags = async (
   teamId: number,
   page: number
-): Promise<AxiosResponse<PaginatedList<TagRecord>>> =>
-  await axiosInstance.get<PaginatedList<TagRecord>>(
+): Promise<PaginatedList<TagRecord>> => {
+  const { data } = await axiosInstance.get<PaginatedList<TagRecord>>(
     `/api/teams/${teamId}/tags/?page=${page}`
   );
+  return data;
+};
 
 export const deleteTag = async (
   record: TagRecord,
   teamId: number
-): Promise<AxiosResponse<void>> =>
+): Promise<void> => {
   await axiosInstance.delete<void>(`/api/teams/${teamId}/tags/${record.id}`);
+};

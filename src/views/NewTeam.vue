@@ -55,7 +55,7 @@ const newTeamComponent = defineComponent({
     const teamName = ref("");
 
     const teamSubmissionTriggered = async () => {
-      const { data: record } = await createTeam({
+      const record = await createTeam({
         name: teamName.value.toLowerCase(),
         description: "UNUSED"
       });

@@ -27,7 +27,7 @@
     padding: 0.5rem 0.5rem 0.5rem 0.5rem;
     border-right: 1px var(--borderColor) solid;
     height: calc(100vh - var(--navbarHeight));
-    width: var(--navbarTitleWidth);
+    min-width: var(--navbarTitleWidth);
     overflow: auto;
   }
   .menuHidden{

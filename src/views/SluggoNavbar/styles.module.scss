@@ -34,6 +34,11 @@
   }
 }
 
+.navbarTitle {
+  min-width: var(--navbarTitleWidth);
+  border-right: 1px var(--borderColor) solid;
+}
+
 .navbarContainer {
   position: sticky;
   top: 0;

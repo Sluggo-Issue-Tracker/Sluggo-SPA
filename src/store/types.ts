@@ -5,6 +5,5 @@ export interface RootStoreState {
   token?: string;
   team?: ReadTeamRecord;
   authUser?: UserRecord;
-  fetchingAuthUser?: Promise<AxiosResponse<UserRecord>>;
   error?: any;
 }

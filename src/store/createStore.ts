@@ -5,7 +5,6 @@ import {
   SignupDetails,
   UserRecord
 } from "@/api/types";
-import { AxiosResponse } from "axios";
 import { getTeam, getUser, login, signup } from "@/api";
 import { logoutUser } from "@/api/auth";
 import { RootStoreState } from "@/store/types";
@@ -28,12 +27,6 @@ export const createSluggoStore = () => {
       },
       setUser(state, newUser?: UserRecord) {
         state.authUser = newUser;
-      },
-      setFetchingAuthUser: (
-        state,
-        fetchingAuthUser?: Promise<AxiosResponse<UserRecord>>
-      ) => {
-        state.fetchingAuthUser = fetchingAuthUser;
       },
       setError(state, newError?: string) {
         state.error = newError;

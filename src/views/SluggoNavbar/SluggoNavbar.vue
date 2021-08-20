@@ -29,7 +29,7 @@
         id="sluggo-menu"
         :class="{ 'navbar-menu': true, 'is-active': isNavMenuOpen }"
       >
-        <div class="searchBarContainer hasDividerLeft">
+        <div class="searchBarContainer">
           <Search />
         </div>
         <div class="navbar-item hasDividerLeft">

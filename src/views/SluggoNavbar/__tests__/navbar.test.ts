@@ -16,6 +16,7 @@ const renderNavbarAndAwaitRouter = async () => {
     }
   });
 
+  // navbar readies itself async. need to await it being ready.
   await mockRouter.isReady();
   return renderResult;
 };

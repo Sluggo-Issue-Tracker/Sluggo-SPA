@@ -20,7 +20,7 @@
       <Dropdown
         :items="testStatuses"
         :firstItem="ticketStatus"
-        @itemSelected="itemSelected"
+        @itemSelected="statusSelected"
         :style="{ 'margin-left': 'auto' }"
         :backgroundColor="statusColor"
         :textColor="'white'"
@@ -33,12 +33,14 @@
         class="column"
         :items="testUsers"
         :firstItem="ticketUser"
+        @itemSelected="userSelected"
       />
       <Dropdown
         :label="teamLabel"
         class="column"
         :items="testTeams"
         :firstItem="ticketTeam"
+        @itemSelected="teamSelected"
       />
     </div>
     <div class="ticket-modal-second-row columns">
@@ -47,6 +49,7 @@
         class="column"
         :items="testTags"
         :firstItem="ticketTag"
+        @itemSelected="tagSelected"
       />
       <div class="ticket-due-date column">
         <label class="ticket-field-label">Due Date</label>
@@ -113,8 +116,17 @@ const ticketModalComponent = defineComponent({
       { data: "In Progress" },
       { data: "Done" }
     ];
-    const itemSelected = (item: any) => {
-      console.log(item.data);
+    const statusSelected = (item: string) => {
+      ticketStatus.value = item;
+    };
+    const userSelected = (item: string) => {
+      ticketUser.value = item;
+    };
+    const teamSelected = (item: string) => {
+      ticketTeam.value = item;
+    };
+    const tagSelected = (item: string) => {
+      ticketTag.value = item;
     };
     return {
       ticketStatus,
@@ -131,7 +143,10 @@ const ticketModalComponent = defineComponent({
       ticketTeam,
       ticketTag,
       testStatuses,
-      itemSelected
+      statusSelected,
+      userSelected,
+      teamSelected,
+      tagSelected
     };
   }
 });

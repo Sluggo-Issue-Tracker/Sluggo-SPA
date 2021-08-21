@@ -1,7 +1,7 @@
-import axios, {AxiosError, AxiosResponse} from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import router from "../router";
-import {SLUGGO_API_URL} from "../../constants";
-import {wrapExceptions} from "@/methods";
+import { SLUGGO_API_URL } from "../../constants";
+import { wrapExceptions } from "@/methods";
 
 // Refresh logic
 let refresher: Promise<AxiosResponse<void>> | null = null;
@@ -18,7 +18,7 @@ export const refreshToken = (): Promise<AxiosResponse<void>> => {
 
   refresher = refreshAxiosInstance.post<void>("/auth/token/refresh/");
 
-  return refresher.finally(() => refresher = null);
+  return refresher.finally(() => (refresher = null));
 };
 
 const logError = (error: AxiosError) => {
@@ -56,7 +56,14 @@ axiosInstance.interceptors.response.use(
     logError(error);
 
     // Return error if not an authentication issue.
-    if (error.response?.status !== 401) {
+    // cookies are a little weird in that they will not be included if they expire
+    // which means either the cookie will not be included or an expired token is included
+    // when a request fails due to expired token either can happen
+    if (
+      error.response?.data?.detail !==
+        "Authentication credentials were not provided." &&
+      error.response?.data?.code !== "token_not_valid"
+    ) {
       return Promise.reject(error);
     }
 
@@ -64,7 +71,6 @@ axiosInstance.interceptors.response.use(
     const [, refreshError] = await wrapExceptions(refreshToken);
 
     if (refreshError) {
-      console.log(refreshError.message);
       return Promise.reject(refreshError);
     }
 

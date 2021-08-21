@@ -4,7 +4,7 @@ import { listMembers } from "./members";
 
 import { createTag, updateTag, getTag, listTags, deleteTag } from "./tags";
 
-import { createTeam, getTeam } from "./teams";
+import { createTeam, getTeam, getUsersTeams } from "./teams";
 
 import {
   createTicket,
@@ -26,6 +26,7 @@ export {
   deleteTag,
   createTeam,
   getTeam,
+  getUsersTeams,
   createTicket,
   updateTicket,
   listTickets,

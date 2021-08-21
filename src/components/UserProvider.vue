@@ -2,7 +2,7 @@
   <div v-if="authUser">
     <slot />
   </div>
-  <div v-if="!authUser">
+  <div v-if="!authUser" data-testid="user-loading-container">
     Loading...
   </div>
 </template>

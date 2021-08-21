@@ -7,7 +7,7 @@
     >
       <!-- Left side of the navbar -->
       <div class="navbar-brand">
-        <a class="navbar-item" :onclick="handleBrandClicked">
+        <a class="navbar-item navbarTitle" :onclick="handleBrandClicked">
           <IconSluggo :height="50" :width="50" />
           <span class="title">Sluggo</span>
         </a>
@@ -29,11 +29,14 @@
         id="sluggo-menu"
         :class="{ 'navbar-menu': true, 'is-active': isNavMenuOpen }"
       >
-        <div class="searchBarContainer hasDividerLeft">
+        <div class="searchBarContainer">
           <Search />
         </div>
         <div class="navbar-item hasDividerLeft">
           <button class="button is-info">Create Ticket</button>
+        </div>
+        <div class="navbar-item hasDividerLeft">
+          <i class="bx bx-bell bellContainer" />
         </div>
         <div class="navbar-item simpleLevel hasDividerLeft">
           <NavbarDropdown :username="authUser?.username ?? ''" />
@@ -42,10 +45,8 @@
     </nav>
     <!-- Side bar menu -->
     <div class="navigationContainer">
-      <div class="sidebarMenu" v-if="isSidebarOpen">
-        <p>
-          Hello world!
-        </p>
+      <div :class="{ sidebarMenu: true, menuHidden: !isSidebarOpen }">
+        <Sidebar />
       </div>
       <div class="viewContainer">
         <router-view />
@@ -61,13 +62,15 @@ import IconSluggo from "@/assets/IconSluggo";
 import NavbarDropdown from "./components/NavbarDropdown.vue";
 import Search from "@/components/Search";
 import { UserRecord } from "@/api/types";
+import Sidebar from "@/views/SluggoNavbar/components/Sidebar.vue";
 
 const sluggoNavbarComponent = defineComponent({
   name: "SluggoNavbar",
   components: {
     IconSluggo,
     NavbarDropdown,
-    Search
+    Search,
+    Sidebar
   },
   setup: () => {
     const authUser = ref<UserRecord>(store.getters.authUser);

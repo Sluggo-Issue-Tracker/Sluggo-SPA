@@ -23,3 +23,11 @@ app.config.errorHandler = async error => {
   store.dispatch.doSetError(error);
   await router.replace("/error");
 };
+
+app.directive('focus', {
+  // When the bound element is mounted into the DOM...
+  mounted(el) {
+    // Focus the element
+    el.focus()
+  }
+})

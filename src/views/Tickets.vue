@@ -9,12 +9,12 @@
 
     <!-- TODO: Samuel Schmidt 5 / 21 / 2020 move this into a vue component -->
     <div class="section">
-      <ticket-modal
-        v-if="selected"
-        v-bind:ticketId="selected"
-        v-bind:teamId="teamId"
-        v-on:close="selectTicket()"
-      ></ticket-modal>
+      <div class="modal" :class="modalClass">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <TicketModal @close="disableModal" />
+        </div>
+      </div>
     </div>
     <div class="container">
       <paginated-list-view
@@ -49,7 +49,7 @@ import { defineComponent, ref, onMounted } from "vue";
 import router from "@/router/index";
 import { listTickets } from "@/api";
 import { generateTicketPageLink } from "@/methods/teamPage";
-import TicketModal from "@/components/TicketModal.vue";
+import TicketModal from "@/components/TicketModal/TicketModal.vue";
 import PaginatedListView from "@/components/PaginatedListView.vue";
 import TicketListEntry from "@/components/TicketListEntry.vue";
 import TicketInput from "@/components/TicketInput.vue";
@@ -79,9 +79,11 @@ export default defineComponent({
     const ticketList = ref({} as PaginatedList<ReadTicketRecord>);
     const listPage = ref(1);
     const selectedTicket = ref({});
-    const showModal = ref(false);
+    const modalClass = ref("is-active");
     const teamId = parseInt(props.teamId);
-
+    const disableModal = () => {
+      modalClass.value = "";
+    };
     const getTeamTickets = async () => {
       const [listTicketResponse, listTicketsError] = await wrapExceptions(
         listTickets,
@@ -118,7 +120,8 @@ export default defineComponent({
       listPage,
       getTeamTickets,
       selectTicket,
-      showModal,
+      modalClass,
+      disableModal,
       selectedTicket,
       changePage
     };

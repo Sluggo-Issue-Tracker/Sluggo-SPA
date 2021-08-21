@@ -1,0 +1,24 @@
+.dropdown-label {
+    display:block;
+    font-size: small;
+    margin-left: .5rem;
+    color: #767676;
+}
+
+.dropdown-item:hover {
+    cursor:pointer;
+}
+
+.dropdown-menu {
+    margin-left: .5rem;
+}
+
+.button.has-text-left {
+    justify-content: flex-start;
+
+}
+
+i {
+    margin-left: auto;
+}
+

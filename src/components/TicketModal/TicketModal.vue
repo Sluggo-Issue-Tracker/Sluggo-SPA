@@ -22,6 +22,7 @@
         :firstItem="ticketStatus"
         @itemSelected="statusSelected"
         :style="{ 'margin-left': 'auto' }"
+        :class="'is-right'"
         :backgroundColor="statusColor"
         :textColor="'white'"
         :borderStyle="'none'"
@@ -71,7 +72,7 @@
     </div>
     <div class="ticket-modal-footer">
       <button class="button is-success">Save changes</button>
-      <button class="button">Cancel</button>
+      <button class="button" @click="closeModal">Cancel</button>
       <button class="button is-danger">Delete</button>
     </div>
   </div>
@@ -80,8 +81,8 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { ReadTicketRecord } from "@/api/types";
-import Dropdown from "@/components/Dropdown/Dropdown.vue";
-import EditableText from "@/components/EditableText/EditableText.vue";
+import Dropdown from "@/components/TicketModal/components/Dropdown/Dropdown.vue";
+import EditableText from "@/components/TicketModal/components/EditableText/EditableText.vue";
 import IconSluggo from "@/assets/IconSluggo";
 
 const ticketModalComponent = defineComponent({
@@ -97,7 +98,7 @@ const ticketModalComponent = defineComponent({
     }
   },
   emits: ["close"],
-  setup: () => {
+  setup: (props, context) => {
     const shouldShowPencil = ref(true);
     const ticketStatus = ref("In Progress");
     const statusColor = ref("#20A6EE");
@@ -128,6 +129,9 @@ const ticketModalComponent = defineComponent({
     const tagSelected = (item: string) => {
       ticketTag.value = item;
     };
+    const closeModal = () => {
+      context.emit("close");
+    };
     return {
       ticketStatus,
       statusColor,
@@ -143,6 +147,7 @@ const ticketModalComponent = defineComponent({
       ticketTeam,
       ticketTag,
       testStatuses,
+      closeModal,
       statusSelected,
       userSelected,
       teamSelected,

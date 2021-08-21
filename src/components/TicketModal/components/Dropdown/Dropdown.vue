@@ -3,7 +3,7 @@
     <label class="dropdown-label">{{ label }}</label>
     <div class="dropdown-trigger" @click="toggleDropdown">
       <button
-        class="button ticket-tags is-fullwidth"
+        class="button ticket-tags is-fullwidth has-text-left"
         :style="{
           'background-color': backgroundColor,
           color: textColor,
@@ -11,9 +11,7 @@
         }"
       >
         <span>{{ firstItem || "" }}</span>
-        <span class="icon is-small">
-          <i class="bx bx-chevron-down"></i>
-        </span>
+        <i class="bx bx-chevron-down"></i>
       </button>
     </div>
     <div class="dropdown-menu">
@@ -71,7 +69,7 @@ const dropdownComponent = defineComponent({
     return {
       toggleDropdown,
       dropdownClass,
-      itemSelected,
+      itemSelected
     };
   }
 });

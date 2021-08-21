@@ -9,10 +9,16 @@
     cursor:pointer;
 }
 
-.button {
-    text-align: left;
-}
-
 .dropdown-menu {
     margin-left: .5rem;
 }
+
+.button.has-text-left {
+    justify-content: flex-start;
+
+}
+
+i {
+    margin-left: auto;
+}
+

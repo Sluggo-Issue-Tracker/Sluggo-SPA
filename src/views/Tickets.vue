@@ -8,14 +8,6 @@
     </section>
 
     <!-- TODO: Samuel Schmidt 5 / 21 / 2020 move this into a vue component -->
-    <div class="section">
-      <div class="modal" :class="modalClass">
-        <div class="modal-background"></div>
-        <div class="modal-content">
-          <TicketModal @close="disableModal" />
-        </div>
-      </div>
-    </div>
     <div class="container">
       <paginated-list-view
         :data="ticketList"
@@ -49,13 +41,11 @@ import { defineComponent, ref, onMounted } from "vue";
 import router from "@/router/index";
 import { listTickets } from "@/api";
 import { generateTicketPageLink } from "@/methods/teamPage";
-import TicketModal from "@/components/TicketModal/TicketModal.vue";
 import PaginatedListView from "@/components/PaginatedListView.vue";
 import TicketListEntry from "@/components/TicketListEntry.vue";
 import TicketInput from "@/components/TicketInput.vue";
 import { PaginatedList, ReadTicketRecord } from "@/api/types";
 import { wrapExceptions } from "@/methods";
-
 export default defineComponent({
   name: "Tickets",
   props: {
@@ -69,7 +59,6 @@ export default defineComponent({
     }
   },
   components: {
-    TicketModal,
     TicketListEntry,
     TicketInput,
     PaginatedListView
@@ -79,49 +68,37 @@ export default defineComponent({
     const ticketList = ref({} as PaginatedList<ReadTicketRecord>);
     const listPage = ref(1);
     const selectedTicket = ref({});
-    const modalClass = ref("is-active");
     const teamId = parseInt(props.teamId);
-    const disableModal = () => {
-      modalClass.value = "";
-    };
     const getTeamTickets = async () => {
       const [listTicketResponse, listTicketsError] = await wrapExceptions(
         listTickets,
         teamId,
         listPage.value
       );
-
       if (listTicketsError) {
         console.log(listTicketsError.message);
         return;
       }
-
       if (listTicketResponse) {
         ticketList.value = listTicketResponse;
       }
     };
-
     const selectTicket = async (ticket?: ReadTicketRecord) => {
       await router.replace(generateTicketPageLink(props.teamId, ticket?.id));
       await getTeamTickets();
     };
-
     const changePage = (increment: number) => {
       listPage.value += increment;
       getTeamTickets();
     };
-
     onMounted(async () => {
       await getTeamTickets();
     });
-
     return {
       ticketList,
       listPage,
       getTeamTickets,
       selectTicket,
-      modalClass,
-      disableModal,
       selectedTicket,
       changePage
     };

@@ -71,9 +71,17 @@
       </div>
     </div>
     <div class="ticket-modal-footer">
-      <button class="button is-success">Save changes</button>
+      <button class="button is-success" @click="saveChanges">
+        Save changes
+      </button>
       <button class="button" @click="closeModal">Cancel</button>
-      <button class="button is-danger">Delete</button>
+      <button class="button is-danger" @click="openWarning">Delete</button>
+    </div>
+    <div class="modal" :class="confirmModalClass">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <ConfirmDialog @close="confirmModalClass = ''" />
+      </div>
     </div>
   </div>
 </template>
@@ -83,14 +91,15 @@ import { defineComponent, ref } from "vue";
 import { ReadTicketRecord } from "@/api/types";
 import Dropdown from "@/components/TicketModal/components/Dropdown/Dropdown.vue";
 import EditableText from "@/components/TicketModal/components/EditableText/EditableText.vue";
+import ConfirmDialog from "@/components/TicketModal/components/ConfirmDialog/ConfirmDialog.vue";
 import IconSluggo from "@/assets/IconSluggo";
-
 const ticketModalComponent = defineComponent({
   name: "TicketModal",
   components: {
     IconSluggo,
     Dropdown,
-    EditableText
+    EditableText,
+    ConfirmDialog
   },
   props: {
     ticketRecord: {
@@ -99,6 +108,7 @@ const ticketModalComponent = defineComponent({
   },
   emits: ["close"],
   setup: (props, context) => {
+    const confirmModalClass = ref("");
     const shouldShowPencil = ref(true);
     const ticketStatus = ref("In Progress");
     const statusColor = ref("#20A6EE");
@@ -132,6 +142,9 @@ const ticketModalComponent = defineComponent({
     const closeModal = () => {
       context.emit("close");
     };
+    const saveChanges = () => {
+      context.emit("close");
+    };
     return {
       ticketStatus,
       statusColor,
@@ -147,7 +160,9 @@ const ticketModalComponent = defineComponent({
       ticketTeam,
       ticketTag,
       testStatuses,
+      confirmModalClass,
       closeModal,
+      saveChanges,
       statusSelected,
       userSelected,
       teamSelected,
@@ -155,8 +170,7 @@ const ticketModalComponent = defineComponent({
     };
   }
 });
-
 export default ticketModalComponent;
 </script>
 
-<style scoped src="./styles.module.scss" lang="scss"></style>
+<style scoped src="./ticket-modal-styles.module.scss" lang="scss"></style>

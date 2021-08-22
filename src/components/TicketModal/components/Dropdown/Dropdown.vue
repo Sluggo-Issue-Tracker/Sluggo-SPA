@@ -31,7 +31,6 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-
 const dropdownComponent = defineComponent({
   name: "Dropdown",
   props: {
@@ -73,8 +72,7 @@ const dropdownComponent = defineComponent({
     };
   }
 });
-
 export default dropdownComponent;
 </script>
 
-<style scoped src="./styles.module.scss" lang="scss"></style>
+<style scoped src="./dropdown-styles.module.scss" lang="scss"></style>

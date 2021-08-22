@@ -1,3 +1,4 @@
+  
 <template>
   <div>
     <nav
@@ -33,7 +34,9 @@
           <Search />
         </div>
         <div class="navbar-item hasDividerLeft">
-          <button class="button is-info">Create Ticket</button>
+          <button class="button is-info" @click="modalClass = 'is-active'">
+            Create Ticket
+          </button>
         </div>
         <div class="navbar-item hasDividerLeft">
           <i class="bx bx-bell bellContainer" />
@@ -52,22 +55,30 @@
         <router-view />
       </div>
     </div>
+    <div class="section">
+      <div class="modal" :class="modalClass">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <TicketModal @close="modalClass = ''" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
-
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import store from "@/store";
+import TicketModal from "@/components/TicketModal/TicketModal.vue";
 import IconSluggo from "@/assets/IconSluggo";
 import NavbarDropdown from "./components/NavbarDropdown.vue";
 import Search from "@/components/Search";
 import { UserRecord } from "@/api/types";
 import Sidebar from "@/views/SluggoNavbar/components/Sidebar.vue";
-
 const sluggoNavbarComponent = defineComponent({
   name: "SluggoNavbar",
   components: {
     IconSluggo,
+    TicketModal,
     NavbarDropdown,
     Search,
     Sidebar
@@ -76,17 +87,16 @@ const sluggoNavbarComponent = defineComponent({
     const authUser = ref<UserRecord>(store.getters.authUser);
     const isNavMenuOpen = ref<boolean>(false);
     const isSidebarOpen = ref<boolean>(false);
-
+    const modalClass = ref("is-active");
     const handleBurgerClicked = () => {
       isNavMenuOpen.value = !isNavMenuOpen.value;
     };
-
     const handleBrandClicked = () => {
       isSidebarOpen.value = !isSidebarOpen.value;
     };
-
     return {
       authUser,
+      modalClass,
       isNavMenuOpen,
       isSidebarOpen,
       handleBurgerClicked,
@@ -94,8 +104,6 @@ const sluggoNavbarComponent = defineComponent({
     };
   }
 });
-
 export default sluggoNavbarComponent;
 </script>
-
 <style scoped src="./styles.module.scss" lang="scss"></style>

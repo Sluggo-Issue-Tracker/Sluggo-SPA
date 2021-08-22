@@ -10,10 +10,10 @@
         <p>This action cannot be undone</p>
       </div>
       <div class="confirm-footer">
-        <button class="button is-danger">
+        <button class="button is-danger" @click="confirm">
           Delete Ticket
         </button>
-        <button class="button">Cancel</button>
+        <button class="button" @click="cancel">Cancel</button>
       </div>
     </div>
   </div>
@@ -23,16 +23,18 @@
 import { defineComponent, ref } from "vue";
 const confirmDialogComponent = defineComponent({
   name: "ConfirmDialog",
-  setup: () => {
-    const title = ref("");
-    const message = ref("Test Message");
-    const confirmText = ref("Confirm");
-    const cancelText = ref("Cancel");
+  emits: ["close", "delete"],
+  setup: (props, context) => {
+    const cancel = () => {
+      context.emit("close");
+    };
+    const confirm = () => {
+      context.emit("close");
+      context.emit("delete");
+    };
     return {
-      title,
-      message,
-      confirmText,
-      cancelText
+      cancel,
+      confirm
     };
   }
 });

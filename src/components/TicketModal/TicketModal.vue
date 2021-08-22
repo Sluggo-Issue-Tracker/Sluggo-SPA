@@ -75,12 +75,14 @@
         Save changes
       </button>
       <button class="button" @click="closeModal">Cancel</button>
-      <button class="button is-danger" @click="openWarning">Delete</button>
+      <button class="button is-danger" @click="confirmModalClass = 'is-active'">
+        Delete
+      </button>
     </div>
     <div class="modal" :class="confirmModalClass">
       <div class="modal-background"></div>
       <div class="modal-content">
-        <ConfirmDialog @close="confirmModalClass = ''" />
+        <ConfirmDialog @close="confirmModalClass = ''" @delete="closeModal" />
       </div>
     </div>
   </div>

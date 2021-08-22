@@ -87,7 +87,7 @@ const sluggoNavbarComponent = defineComponent({
     const authUser = ref<UserRecord>(store.getters.authUser);
     const isNavMenuOpen = ref<boolean>(false);
     const isSidebarOpen = ref<boolean>(false);
-    const modalClass = ref("is-active");
+    const modalClass = ref("");
     const handleBurgerClicked = () => {
       isNavMenuOpen.value = !isNavMenuOpen.value;
     };

@@ -30,14 +30,14 @@
     </div>
     <div class="ticket-modal-first-row columns">
       <Dropdown
-        :label="userLabel"
+        :label="'Assigned to'"
         class="column"
         :items="testUsers"
         :firstItem="ticketUser"
         @itemSelected="userSelected"
       />
       <Dropdown
-        :label="teamLabel"
+        :label="'Team'"
         class="column"
         :items="testTeams"
         :firstItem="ticketTeam"
@@ -46,7 +46,7 @@
     </div>
     <div class="ticket-modal-second-row columns">
       <Dropdown
-        :label="tagsLabel"
+        :label="'Tags'"
         class="column"
         :items="testTags"
         :firstItem="ticketTag"
@@ -89,7 +89,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 import { ReadTicketRecord } from "@/api/types";
 import Dropdown from "@/components/TicketModal/components/Dropdown/Dropdown.vue";
 import EditableText from "@/components/TicketModal/components/EditableText/EditableText.vue";
@@ -106,6 +106,9 @@ const ticketModalComponent = defineComponent({
   props: {
     ticketRecord: {
       type: Object as () => ReadTicketRecord
+    },
+    teamId: {
+      type: String
     }
   },
   emits: ["close"],
@@ -113,17 +116,14 @@ const ticketModalComponent = defineComponent({
     const confirmModalClass = ref("");
     const shouldShowPencil = ref(true);
     const ticketStatus = ref("In Progress");
+    const ticketUser = ref("Mason");
+    const ticketTeam = ref("Slugbotics");
+    const ticketTag = ref("Mechanical");
     const statusColor = ref("#20A6EE");
     const statusDropdownClass = ref("");
-    const tagsLabel = ref("Tags");
-    const userLabel = ref("Assigned to");
-    const teamLabel = ref("Team");
     const testUsers = [{ data: "Mason" }, { data: "George" }];
-    const ticketUser = ref("Mason");
     const testTeams = [{ data: "Slugbotics" }, { data: "Bugslotics" }];
-    const ticketTeam = ref("Slugbotics");
     const testTags = [{ data: "Mechanical" }, { data: "Systems" }];
-    const ticketTag = ref("Mechanical");
     const testStatuses = [
       { data: "To Do" },
       { data: "In Progress" },
@@ -147,13 +147,18 @@ const ticketModalComponent = defineComponent({
     const saveChanges = () => {
       context.emit("close");
     };
+    const setTicketData = () => {
+      if (props.ticketRecord) {
+        const ticket = props.ticketRecord;
+        ticketStatus.value = ticket.status?.title || "";
+        ticketUser.value = ticket.assigned_user?.username || "";
+      }
+    };
+    onMounted(setTicketData);
     return {
       ticketStatus,
       statusColor,
       statusDropdownClass,
-      tagsLabel,
-      userLabel,
-      teamLabel,
       shouldShowPencil,
       testUsers,
       testTeams,
@@ -163,6 +168,7 @@ const ticketModalComponent = defineComponent({
       ticketTag,
       testStatuses,
       confirmModalClass,
+      setTicketData,
       closeModal,
       saveChanges,
       statusSelected,

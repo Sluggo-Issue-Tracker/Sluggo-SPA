@@ -1,0 +1,26 @@
+.mainHomeContainer {
+  display: flex;
+  flex-wrap: wrap;
+  height: 100%;
+  background: var(--secondaryBackground);
+}
+
+.centerView {
+  flex: 3 3;
+  min-width: 650px;
+}
+
+.sideView {
+  flex: 1 1;
+  background: var(--secondaryBackground);
+  border-left: 1px var(--borderColor) solid;
+  min-with: 200px;
+}
+
+.homepageMessage {
+  border-bottom: 1px var(--borderColor) solid;
+  background: var(--primaryBackground);
+}
+
+.ticketsSection {
+}

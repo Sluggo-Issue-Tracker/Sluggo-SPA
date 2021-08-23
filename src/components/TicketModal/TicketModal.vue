@@ -54,11 +54,7 @@
       />
       <div class="ticket-due-date column">
         <label class="ticket-field-label">Due Date</label>
-        <input
-          class="input is-fullwidth"
-          type="date"
-          placeholder="mm / dd / yyyy"
-        />
+        <input class="input is-fullwidth" type="date" :value="ticketDueDate" />
       </div>
     </div>
     <div class="ticket-modal-third-row columns">
@@ -119,6 +115,7 @@ const ticketModalComponent = defineComponent({
     const ticketUser = ref("Mason");
     const ticketTeam = ref("Slugbotics");
     const ticketTag = ref("Mechanical");
+    const ticketDueDate = ref("2018-07-22");
     const statusColor = ref("#20A6EE");
     const statusDropdownClass = ref("");
     const testUsers = [{ data: "Mason" }, { data: "George" }];
@@ -157,6 +154,7 @@ const ticketModalComponent = defineComponent({
     onMounted(setTicketData);
     return {
       ticketStatus,
+      ticketDueDate,
       statusColor,
       statusDropdownClass,
       shouldShowPencil,

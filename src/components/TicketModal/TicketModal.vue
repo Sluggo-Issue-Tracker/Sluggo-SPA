@@ -30,14 +30,14 @@
     </div>
     <div class="ticket-modal-first-row columns">
       <Dropdown
-        :label="userLabel"
+        :label="'Assigned to'"
         class="column"
         :items="testUsers"
         :firstItem="ticketUser"
         @itemSelected="userSelected"
       />
       <Dropdown
-        :label="teamLabel"
+        :label="'Team'"
         class="column"
         :items="testTeams"
         :firstItem="ticketTeam"
@@ -46,7 +46,7 @@
     </div>
     <div class="ticket-modal-second-row columns">
       <Dropdown
-        :label="tagsLabel"
+        :label="'Tags'"
         class="column"
         :items="testTags"
         :firstItem="ticketTag"
@@ -54,11 +54,7 @@
       />
       <div class="ticket-due-date column">
         <label class="ticket-field-label">Due Date</label>
-        <input
-          class="input is-fullwidth"
-          type="date"
-          placeholder="mm / dd / yyyy"
-        />
+        <input class="input is-fullwidth" type="date" :value="ticketDueDate" />
       </div>
     </div>
     <div class="ticket-modal-third-row columns">
@@ -71,47 +67,60 @@
       </div>
     </div>
     <div class="ticket-modal-footer">
-      <button class="button is-success">Save changes</button>
+      <button class="button is-success" @click="saveChanges">
+        Save changes
+      </button>
       <button class="button" @click="closeModal">Cancel</button>
-      <button class="button is-danger">Delete</button>
+      <button class="button is-danger" @click="confirmModalClass = 'is-active'">
+        Delete
+      </button>
+    </div>
+    <div class="modal" :class="confirmModalClass">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <ConfirmDialog @close="confirmModalClass = ''" @delete="closeModal" />
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 import { ReadTicketRecord } from "@/api/types";
 import Dropdown from "@/components/TicketModal/components/Dropdown/Dropdown.vue";
 import EditableText from "@/components/TicketModal/components/EditableText/EditableText.vue";
+import ConfirmDialog from "@/components/TicketModal/components/ConfirmDialog/ConfirmDialog.vue";
 import IconSluggo from "@/assets/IconSluggo";
-
 const ticketModalComponent = defineComponent({
   name: "TicketModal",
   components: {
     IconSluggo,
     Dropdown,
-    EditableText
+    EditableText,
+    ConfirmDialog
   },
   props: {
     ticketRecord: {
       type: Object as () => ReadTicketRecord
+    },
+    teamId: {
+      type: String
     }
   },
   emits: ["close"],
   setup: (props, context) => {
+    const confirmModalClass = ref("");
     const shouldShowPencil = ref(true);
     const ticketStatus = ref("In Progress");
+    const ticketUser = ref("Mason");
+    const ticketTeam = ref("Slugbotics");
+    const ticketTag = ref("Mechanical");
+    const ticketDueDate = ref("2018-07-22");
     const statusColor = ref("#20A6EE");
     const statusDropdownClass = ref("");
-    const tagsLabel = ref("Tags");
-    const userLabel = ref("Assigned to");
-    const teamLabel = ref("Team");
     const testUsers = [{ data: "Mason" }, { data: "George" }];
-    const ticketUser = ref("Mason");
     const testTeams = [{ data: "Slugbotics" }, { data: "Bugslotics" }];
-    const ticketTeam = ref("Slugbotics");
     const testTags = [{ data: "Mechanical" }, { data: "Systems" }];
-    const ticketTag = ref("Mechanical");
     const testStatuses = [
       { data: "To Do" },
       { data: "In Progress" },
@@ -132,13 +141,22 @@ const ticketModalComponent = defineComponent({
     const closeModal = () => {
       context.emit("close");
     };
+    const saveChanges = () => {
+      context.emit("close");
+    };
+    const setTicketData = () => {
+      if (props.ticketRecord) {
+        const ticket = props.ticketRecord;
+        ticketStatus.value = ticket.status?.title || "";
+        ticketUser.value = ticket.assigned_user?.username || "";
+      }
+    };
+    onMounted(setTicketData);
     return {
       ticketStatus,
+      ticketDueDate,
       statusColor,
       statusDropdownClass,
-      tagsLabel,
-      userLabel,
-      teamLabel,
       shouldShowPencil,
       testUsers,
       testTeams,
@@ -147,7 +165,10 @@ const ticketModalComponent = defineComponent({
       ticketTeam,
       ticketTag,
       testStatuses,
+      confirmModalClass,
+      setTicketData,
       closeModal,
+      saveChanges,
       statusSelected,
       userSelected,
       teamSelected,
@@ -155,8 +176,7 @@ const ticketModalComponent = defineComponent({
     };
   }
 });
-
 export default ticketModalComponent;
 </script>
 
-<style scoped src="./styles.module.scss" lang="scss"></style>
+<style scoped src="./ticket-modal-styles.module.scss" lang="scss"></style>

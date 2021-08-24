@@ -18,7 +18,6 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-
 const editableTextComponent = defineComponent({
   name: "EditableText",
   props: {
@@ -41,7 +40,6 @@ const editableTextComponent = defineComponent({
     const isEditing = ref(false);
     const ticketTitle = ref("Temp Title");
     const tempText = ref("");
-
     const enableEditing = () => {
       isEditing.value = true;
       tempText.value = ticketTitle.value;
@@ -70,8 +68,7 @@ const editableTextComponent = defineComponent({
     };
   }
 });
-
 export default editableTextComponent;
 </script>
 
-<style scoped src="./styles.module.scss" lang="scss"></style>
+<style scoped src="./editable-text-styles.module.scss" lang="scss"></style>

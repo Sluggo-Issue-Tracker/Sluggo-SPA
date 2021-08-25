@@ -35,9 +35,6 @@
         :items="testUsers"
         :firstItem="ticketUser"
         @itemSelected="userSelected"
-        :backgroundColor="statusColor"
-        :textColor="'white'"
-        :borderStyle="'none'"
       />
       <Dropdown
         :label="'Team'"
@@ -45,9 +42,6 @@
         :items="testTeams"
         :firstItem="ticketTeam"
         @itemSelected="teamSelected"
-        :backgroundColor="statusColor"
-        :textColor="'white'"
-        :borderStyle="'none'"
       />
     </div>
     <div class="ticket-modal-second-row columns">
@@ -57,9 +51,6 @@
         :items="testTags"
         :firstItem="ticketTag"
         @itemSelected="tagSelected"
-        :backgroundColor="statusColor"
-        :textColor="'white'"
-        :borderStyle="'none'"
       />
       <div class="ticket-due-date column">
         <label class="ticket-field-label">Due Date</label>

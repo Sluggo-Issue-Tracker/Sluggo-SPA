@@ -45,13 +45,16 @@ const dropdownComponent = defineComponent({
       type: Array
     },
     backgroundColor: {
-      type: String
+      type: String,
+      default: "#FFFFFF"
     },
     textColor: {
-      type: String
+      type: String,
+      default: "black"
     },
     borderStyle: {
-      type: String
+      type: String,
+      default: ""
     }
   },
   emits: ["itemSelected"],

@@ -30,11 +30,14 @@
     </div>
     <div class="ticket-modal-first-row columns">
       <Dropdown
-        :label="'Assigned to'"
+        label="Assigned to"
         class="column"
         :items="testUsers"
         :firstItem="ticketUser"
         @itemSelected="userSelected"
+        :backgroundColor="statusColor"
+        :textColor="'white'"
+        :borderStyle="'none'"
       />
       <Dropdown
         :label="'Team'"
@@ -42,6 +45,9 @@
         :items="testTeams"
         :firstItem="ticketTeam"
         @itemSelected="teamSelected"
+        :backgroundColor="statusColor"
+        :textColor="'white'"
+        :borderStyle="'none'"
       />
     </div>
     <div class="ticket-modal-second-row columns">
@@ -51,6 +57,9 @@
         :items="testTags"
         :firstItem="ticketTag"
         @itemSelected="tagSelected"
+        :backgroundColor="statusColor"
+        :textColor="'white'"
+        :borderStyle="'none'"
       />
       <div class="ticket-due-date column">
         <label class="ticket-field-label">Due Date</label>
@@ -118,14 +127,14 @@ const ticketModalComponent = defineComponent({
     const ticketDueDate = ref("2018-07-22");
     const statusColor = ref("#20A6EE");
     const statusDropdownClass = ref("");
-    const testUsers = [{ data: "Mason" }, { data: "George" }];
-    const testTeams = [{ data: "Slugbotics" }, { data: "Bugslotics" }];
-    const testTags = [{ data: "Mechanical" }, { data: "Systems" }];
-    const testStatuses = [
+    const testUsers = ref([{ data: "Mason" }, { data: "George" }]);
+    const testTeams = ref([{ data: "Slugbotics" }, { data: "Bugslotics" }]);
+    const testTags = ref([{ data: "Mechanical" }, { data: "Systems" }]);
+    const testStatuses = ref([
       { data: "To Do" },
       { data: "In Progress" },
       { data: "Done" }
-    ];
+    ]);
     const statusSelected = (item: string) => {
       ticketStatus.value = item;
     };

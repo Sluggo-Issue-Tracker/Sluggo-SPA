@@ -16,9 +16,3 @@ describe("Sample Test", () => {
     expect(true);
   });
 });
-
-describe("Spurious test!", () => {
-  it("Fails!", () => {
-    expect(true).toBe(false);
-  });
-});

@@ -73,7 +73,11 @@
         Save changes
       </button>
       <button class="button" @click="closeModal">Cancel</button>
-      <button class="button is-danger" @click="confirmModalClass = 'is-active'">
+      <button
+        class="button is-danger"
+        @click="confirmModalClass = 'is-active'"
+        v-if="ticketRecord"
+      >
         Delete
       </button>
     </div>

@@ -34,6 +34,7 @@
         :label="'Assigned to'"
         class="column"
         :items="membersList.results"
+        :firstItem="ticketUser"
         @itemSelected="userSelected"
       />
       <Dropdown
@@ -127,7 +128,7 @@ const ticketModalComponent = defineComponent({
     const shouldShowPencil = ref(true);
     const ticketStatus = ref("In Progress");
     const ticketUser = ref("Mason");
-    const ticketTag = ref("Mechanical");
+    const ticketTag = ref(" ");
     const ticketTeam = ref("");
     const ticketTitle = ref("Title");
     const ticketDueDate = ref("2018-07-22");

@@ -19,10 +19,10 @@
         <div
           class="dropdown-item"
           v-for="item in items"
-          :key="item.data"
-          @click="itemSelected(item.data)"
+          :key="item.name"
+          @click="itemSelected(item.name)"
         >
-          {{ item.data }}
+          {{ item.name }}
         </div>
       </div>
     </div>

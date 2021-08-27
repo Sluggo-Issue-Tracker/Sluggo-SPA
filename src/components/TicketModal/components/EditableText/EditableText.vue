@@ -37,7 +37,7 @@ const editableTextComponent = defineComponent({
   },
   setup: (props, context) => {
     const isEditing = ref(false);
-    const ticketTitle = ref("Temp Title");
+    const ticketTitle = ref("Title");
     const tempText = ref("");
     const enableEditing = () => {
       isEditing.value = true;
@@ -48,13 +48,13 @@ const editableTextComponent = defineComponent({
       isEditing.value = false;
       tempText.value = "";
       context.emit("stoppedEditing");
-      context.emit("saveText");
     };
     const saveChanges = () => {
       if (isEditing.value == true) {
         isEditing.value = false;
         ticketTitle.value = tempText.value;
         context.emit("stoppedEditing");
+        context.emit("saveText", tempText.value);
       }
     };
     return {

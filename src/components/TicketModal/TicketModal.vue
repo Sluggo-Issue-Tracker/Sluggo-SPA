@@ -12,6 +12,7 @@
           :color="statusColor"
           @startedEditing="shouldShowPencil = false"
           @stoppedEditing="shouldShowPencil = true"
+          @saveText="setTitle"
         />
       </div>
       <div class="editable-icon" v-if="shouldShowPencil">
@@ -62,7 +63,7 @@
         <label class="ticket-field-label">Description</label>
         <textarea
           class="textarea has-fixed-size is-fullwidth"
-          placeholder="Description"
+          v-model="description"
         ></textarea>
       </div>
     </div>
@@ -86,7 +87,14 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
-import { ReadTicketRecord } from "@/api/types";
+import {
+  ReadTicketRecord,
+  WriteTicketRecord,
+  ReadTeamRecord
+} from "@/api/types";
+import { apiExecutor } from "@/methods";
+import { createTicket } from "@/api/tickets";
+import { getUsersTeams } from "@/api/teams";
 import Dropdown from "@/components/TicketModal/components/Dropdown/Dropdown.vue";
 import EditableText from "@/components/TicketModal/components/EditableText/EditableText.vue";
 import ConfirmDialog from "@/components/TicketModal/components/ConfirmDialog/ConfirmDialog.vue";
@@ -104,7 +112,7 @@ const ticketModalComponent = defineComponent({
       type: Object as () => ReadTicketRecord
     },
     teamId: {
-      type: String
+      type: Number
     }
   },
   emits: ["close"],
@@ -115,17 +123,30 @@ const ticketModalComponent = defineComponent({
     const ticketUser = ref("Mason");
     const ticketTeam = ref("Slugbotics");
     const ticketTag = ref("Mechanical");
+    const ticketTitle = ref("Title");
     const ticketDueDate = ref("2018-07-22");
     const statusColor = ref("#20A6EE");
     const statusDropdownClass = ref("");
-    const testUsers = ref([{ data: "Mason" }, { data: "George" }]);
-    const testTeams = ref([{ data: "Slugbotics" }, { data: "Bugslotics" }]);
-    const testTags = ref([{ data: "Mechanical" }, { data: "Systems" }]);
-    const testStatuses = ref([
-      { data: "To Do" },
-      { data: "In Progress" },
-      { data: "Done" }
-    ]);
+    const description = ref("");
+    const testUsers = [{ name: "Mason" }, { name: "George" }];
+    const testTeams = [{ name: "Slugbotics" }, { name: "Bugslotics" }];
+    const testTags = [{ name: "Mechanical" }, { name: "Systems" }];
+    const testStatuses = [
+      { name: "To Do" },
+      { name: "In Progress" },
+      { name: "Done" }
+    ];
+    const [
+      queryUsersTeams,
+      { data: teams, loading: loadingTeams, error }
+    ] = apiExecutor<ReadTeamRecord[]>(getUsersTeams);
+    const setTicketData = async () => {
+      if (props.ticketRecord) {
+        const ticket = props.ticketRecord;
+        ticketStatus.value = ticket.status?.title || "";
+        ticketUser.value = ticket.assigned_user?.username || "";
+      }
+    };
     const statusSelected = (item: string) => {
       ticketStatus.value = item;
     };
@@ -138,20 +159,30 @@ const ticketModalComponent = defineComponent({
     const tagSelected = (item: string) => {
       ticketTag.value = item;
     };
+    const setTitle = (item: string) => {
+      ticketTitle.value = item;
+    };
     const closeModal = () => {
+      description.value = "";
       context.emit("close");
     };
-    const saveChanges = () => {
-      context.emit("close");
-    };
-    const setTicketData = () => {
-      if (props.ticketRecord) {
-        const ticket = props.ticketRecord;
-        ticketStatus.value = ticket.status?.title || "";
-        ticketUser.value = ticket.assigned_user?.username || "";
+    const saveChanges = async () => {
+      const ticket: WriteTicketRecord = {
+        title: ticketTitle.value,
+        description: description.value
+      };
+      try {
+        await createTicket(ticket, 1);
+      } catch (error) {
+        alert(error);
       }
+      description.value = "";
+      context.emit("close");
     };
-    onMounted(setTicketData);
+    onMounted(() => {
+      queryUsersTeams();
+      setTicketData();
+    });
     return {
       ticketStatus,
       ticketDueDate,
@@ -165,7 +196,12 @@ const ticketModalComponent = defineComponent({
       ticketTeam,
       ticketTag,
       testStatuses,
+      description,
       confirmModalClass,
+      teams,
+      loadingTeams,
+      error,
+      setTitle,
       setTicketData,
       closeModal,
       saveChanges,

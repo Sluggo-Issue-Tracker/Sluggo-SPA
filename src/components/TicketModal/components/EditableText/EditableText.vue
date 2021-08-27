@@ -27,6 +27,13 @@ const editableTextComponent = defineComponent({
       type: String
     }
   },
+  directives: {
+    focus: {
+      mounted(el) {
+        el.focus();
+      }
+    }
+  },
   emits: ["startedEditing", "stoppedEditing", "saveText"],
   created() {
     window.addEventListener("keydown", e => {

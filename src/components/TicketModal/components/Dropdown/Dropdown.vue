@@ -10,7 +10,13 @@
           border: borderStyle
         }"
       >
-        <span>{{ firstItem || items[0].name || items[0].title || "" }}</span>
+        <span>{{
+          firstItem ||
+            items[0].name ||
+            items[0].title ||
+            items[0].owner.username ||
+            ""
+        }}</span>
         <i class="bx bx-chevron-down"></i>
       </button>
     </div>
@@ -19,10 +25,10 @@
         <div
           class="dropdown-item"
           v-for="item in items"
-          :key="item.name"
-          @click="itemSelected(item.name)"
+          :key="item.name || item.title"
+          @click="itemSelected(item.name || item.title)"
         >
-          {{ item.name }}
+          {{ item.name || item.title }}
         </div>
       </div>
     </div>

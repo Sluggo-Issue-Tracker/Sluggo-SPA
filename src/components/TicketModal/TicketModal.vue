@@ -33,12 +33,12 @@
       <Dropdown
         label="Assigned to"
         class="column"
-        :items="testUsers"
+        :items="membersList.results"
         :firstItem="ticketUser"
         @itemSelected="userSelected"
       />
       <Dropdown
-        v-if="!loadingTeams && teams && teams.length > 0"
+        v-if="teams && teams.length > 0"
         :label="'Team'"
         class="column"
         :items="teams"
@@ -93,11 +93,11 @@ import {
   WriteTicketRecord,
   ReadTeamRecord
 } from "@/api/types";
-import { apiExecutor } from "@/methods";
 import { createTicket } from "@/api/tickets";
 import { getUsersTeams } from "@/api/teams";
 import { listTags } from "@/api/tags";
-import { PaginatedList, TagRecord } from "@/api/types";
+import { listMembers } from "@/api/members";
+import { PaginatedList, TagRecord, MemberRecord } from "@/api/types";
 import Dropdown from "@/components/TicketModal/components/Dropdown/Dropdown.vue";
 import EditableText from "@/components/TicketModal/components/EditableText/EditableText.vue";
 import ConfirmDialog from "@/components/TicketModal/components/ConfirmDialog/ConfirmDialog.vue";
@@ -131,36 +131,45 @@ const ticketModalComponent = defineComponent({
     const statusColor = ref("#20A6EE");
     const statusDropdownClass = ref("");
     const tagsPage = ref(1);
+    const membersPage = ref(1);
     const description = ref("");
-    const testUsers = [{ name: "Mason" }, { name: "George" }];
-    const testTags = [{ name: "Mechanical" }, { name: "Systems" }];
     const tagsList = ref({} as PaginatedList<TagRecord>);
+    const membersList = ref({} as PaginatedList<MemberRecord>);
+    const teams = ref({} as ReadTeamRecord[]);
     const testStatuses = [
       { name: "To Do" },
       { name: "In Progress" },
       { name: "Done" }
     ];
-    const [
-      queryUsersTeams,
-      { data: teams, loading: loadingTeams, error }
-    ] = apiExecutor<ReadTeamRecord[]>(getUsersTeams);
+    const getTeams = async () => {
+      try {
+        teams.value = await getUsersTeams();
+      } catch (error) {
+        alert(error);
+      }
+    };
+    const getTags = async () => {
+      try {
+        tagsList.value = await listTags(teams.value[0].id, tagsPage.value);
+      } catch (error) {
+        alert(error);
+      }
+    };
+    const getMembers = async () => {
+      try {
+        membersList.value = await listMembers(
+          teams.value[0].id,
+          membersPage.value
+        );
+      } catch (error) {
+        alert(error);
+      }
+    };
     const setTicketData = async () => {
       if (props.ticketRecord) {
         const ticket = props.ticketRecord;
         ticketStatus.value = ticket.status?.title || "";
         ticketUser.value = ticket.assigned_user?.username || "";
-      } else if (teams.value) {
-        ticketTeam.value = teams.value[0].name;
-      }
-    };
-    const getTags = async () => {
-      if (teams.value) {
-        try {
-          tagsList.value = await listTags(teams.value[0].id, tagsPage.value);
-          console.log(tagsList.value);
-        } catch (error) {
-          alert(error);
-        }
       }
     };
     const statusSelected = (item: string) => {
@@ -169,10 +178,10 @@ const ticketModalComponent = defineComponent({
     const userSelected = (item: string) => {
       ticketUser.value = item;
     };
-    const teamSelected = (item: string) => {
+    const teamSelected = async (item: string) => {
       ticketTeam.value = item;
-      getTags();
-     // getMembers();
+      await getTags();
+      await getMembers();
     };
     const tagSelected = (item: string) => {
       ticketTag.value = item;
@@ -180,7 +189,6 @@ const ticketModalComponent = defineComponent({
     const setTitle = (item: string) => {
       ticketTitle.value = item;
     };
-
     const closeModal = () => {
       description.value = "";
       context.emit("close");
@@ -198,9 +206,10 @@ const ticketModalComponent = defineComponent({
       description.value = "";
       context.emit("close");
     };
-    onMounted(() => {
-      queryUsersTeams();
-      getTags();
+    onMounted(async () => {
+      await getTeams();
+      await getTags();
+      await getMembers();
       setTicketData();
     });
     return {
@@ -209,17 +218,14 @@ const ticketModalComponent = defineComponent({
       statusColor,
       statusDropdownClass,
       shouldShowPencil,
-      testUsers,
-      testTags,
       ticketUser,
       ticketTag,
       ticketTeam,
       testStatuses,
+      membersList,
       description,
       confirmModalClass,
       teams,
-      loadingTeams,
-      error,
       tagsList,
       setTitle,
       setTicketData,

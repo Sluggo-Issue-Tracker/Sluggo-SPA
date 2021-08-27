@@ -38,9 +38,10 @@
         @itemSelected="userSelected"
       />
       <Dropdown
+        v-if="!loadingTeams && teams && teams.length > 0"
         :label="'Team'"
         class="column"
-        :items="testTeams"
+        :items="teams"
         :firstItem="ticketTeam"
         @itemSelected="teamSelected"
       />
@@ -49,7 +50,7 @@
       <Dropdown
         :label="'Tags'"
         class="column"
-        :items="testTags"
+        :items="tagsList.results"
         :firstItem="ticketTag"
         @itemSelected="tagSelected"
       />
@@ -95,6 +96,8 @@ import {
 import { apiExecutor } from "@/methods";
 import { createTicket } from "@/api/tickets";
 import { getUsersTeams } from "@/api/teams";
+import { listTags } from "@/api/tags";
+import { PaginatedList, TagRecord } from "@/api/types";
 import Dropdown from "@/components/TicketModal/components/Dropdown/Dropdown.vue";
 import EditableText from "@/components/TicketModal/components/EditableText/EditableText.vue";
 import ConfirmDialog from "@/components/TicketModal/components/ConfirmDialog/ConfirmDialog.vue";
@@ -121,16 +124,17 @@ const ticketModalComponent = defineComponent({
     const shouldShowPencil = ref(true);
     const ticketStatus = ref("In Progress");
     const ticketUser = ref("Mason");
-    const ticketTeam = ref("Slugbotics");
     const ticketTag = ref("Mechanical");
+    const ticketTeam = ref("");
     const ticketTitle = ref("Title");
     const ticketDueDate = ref("2018-07-22");
     const statusColor = ref("#20A6EE");
     const statusDropdownClass = ref("");
+    const tagsPage = ref(1);
     const description = ref("");
     const testUsers = [{ name: "Mason" }, { name: "George" }];
-    const testTeams = [{ name: "Slugbotics" }, { name: "Bugslotics" }];
     const testTags = [{ name: "Mechanical" }, { name: "Systems" }];
+    const tagsList = ref({} as PaginatedList<TagRecord>);
     const testStatuses = [
       { name: "To Do" },
       { name: "In Progress" },
@@ -145,6 +149,18 @@ const ticketModalComponent = defineComponent({
         const ticket = props.ticketRecord;
         ticketStatus.value = ticket.status?.title || "";
         ticketUser.value = ticket.assigned_user?.username || "";
+      } else if (teams.value) {
+        ticketTeam.value = teams.value[0].name;
+      }
+    };
+    const getTags = async () => {
+      if (teams.value) {
+        try {
+          tagsList.value = await listTags(teams.value[0].id, tagsPage.value);
+          console.log(tagsList.value);
+        } catch (error) {
+          alert(error);
+        }
       }
     };
     const statusSelected = (item: string) => {
@@ -155,6 +171,8 @@ const ticketModalComponent = defineComponent({
     };
     const teamSelected = (item: string) => {
       ticketTeam.value = item;
+      getTags();
+     // getMembers();
     };
     const tagSelected = (item: string) => {
       ticketTag.value = item;
@@ -162,6 +180,7 @@ const ticketModalComponent = defineComponent({
     const setTitle = (item: string) => {
       ticketTitle.value = item;
     };
+
     const closeModal = () => {
       description.value = "";
       context.emit("close");
@@ -181,6 +200,7 @@ const ticketModalComponent = defineComponent({
     };
     onMounted(() => {
       queryUsersTeams();
+      getTags();
       setTicketData();
     });
     return {
@@ -190,17 +210,17 @@ const ticketModalComponent = defineComponent({
       statusDropdownClass,
       shouldShowPencil,
       testUsers,
-      testTeams,
       testTags,
       ticketUser,
-      ticketTeam,
       ticketTag,
+      ticketTeam,
       testStatuses,
       description,
       confirmModalClass,
       teams,
       loadingTeams,
       error,
+      tagsList,
       setTitle,
       setTicketData,
       closeModal,

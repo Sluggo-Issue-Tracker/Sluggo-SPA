@@ -10,7 +10,7 @@
           border: borderStyle
         }"
       >
-        <span>{{ firstItem || "" }}</span>
+        <span>{{ firstItem || items[0].name || items[0].title || "" }}</span>
         <i class="bx bx-chevron-down"></i>
       </button>
     </div>
@@ -38,8 +38,7 @@ const dropdownComponent = defineComponent({
       type: String
     },
     firstItem: {
-      type: String,
-      required: true
+      type: String
     },
     items: {
       type: Array

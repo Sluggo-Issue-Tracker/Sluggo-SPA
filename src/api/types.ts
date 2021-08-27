@@ -66,6 +66,7 @@ export interface WriteTicketRecord {
   status?: number;
   title: string;
   description?: string;
+  due_date?: DateTime;
 }
 
 export interface ReadTicketRecord {

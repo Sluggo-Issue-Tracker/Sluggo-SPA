@@ -14,7 +14,6 @@ app
   .mount("#app");
 
 app.config.errorHandler = async error => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
   // @ts-ignore
   if (error.response?.status === 401) {
     await router.replace("/login");
@@ -24,10 +23,10 @@ app.config.errorHandler = async error => {
   await router.replace("/error");
 };
 
-app.directive('focus', {
+app.directive("focus", {
   // When the bound element is mounted into the DOM...
   mounted(el) {
     // Focus the element
-    el.focus()
+    el.focus();
   }
-})
+});

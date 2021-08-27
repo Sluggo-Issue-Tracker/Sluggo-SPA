@@ -31,10 +31,9 @@
     </div>
     <div class="ticket-modal-first-row columns">
       <Dropdown
-        label="Assigned to"
+        :label="'Assigned to'"
         class="column"
         :items="membersList.results"
-        :firstItem="ticketUser"
         @itemSelected="userSelected"
       />
       <Dropdown

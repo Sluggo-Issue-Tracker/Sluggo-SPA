@@ -25,10 +25,10 @@
         <div
           class="dropdown-item"
           v-for="item in items"
-          :key="item.name || item.title"
-          @click="itemSelected(item.name || item.title)"
+          :key="item.name || item.title || item.owner.username"
+          @click="itemSelected(item.name || item.title || item.owner.username)"
         >
-          {{ item.name || item.title }}
+          {{ item.name || item.title || item.owner.username }}
         </div>
       </div>
     </div>

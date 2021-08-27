@@ -10,6 +10,7 @@
         v-model="tempText"
         class="input text-box"
         :style="{ 'background-color': color }"
+        v-focus
       />
     </div>
   </div>

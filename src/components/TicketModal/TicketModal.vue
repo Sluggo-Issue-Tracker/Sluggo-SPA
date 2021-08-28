@@ -38,7 +38,6 @@
         @itemSelected="userSelected"
       />
       <Dropdown
-        v-if="teams && teams.length > 0"
         :label="'Team'"
         class="column"
         :items="teams"
@@ -127,8 +126,8 @@ const ticketModalComponent = defineComponent({
     const confirmModalClass = ref("");
     const shouldShowPencil = ref(true);
     const ticketStatus = ref("In Progress");
-    const ticketUser = ref("Mason");
-    const ticketTag = ref(" ");
+    const ticketUser = ref("");
+    const ticketTag = ref("");
     const ticketTeam = ref("");
     const ticketTitle = ref("Title");
     const ticketDueDate = ref("2018-07-22");
@@ -148,6 +147,8 @@ const ticketModalComponent = defineComponent({
     const getTeams = async () => {
       try {
         teams.value = await getUsersTeams();
+        ticketTeam.value = teams.value[0].name;
+        console.log(typeof teams.value);
       } catch (error) {
         alert(error);
       }
@@ -155,6 +156,7 @@ const ticketModalComponent = defineComponent({
     const getTags = async () => {
       try {
         tagsList.value = await listTags(teams.value[0].id, tagsPage.value);
+        ticketTag.value = tagsList.value.results[0].title;
       } catch (error) {
         alert(error);
       }
@@ -165,6 +167,7 @@ const ticketModalComponent = defineComponent({
           teams.value[0].id,
           membersPage.value
         );
+        ticketUser.value = membersList.value.results[0].owner.username;
       } catch (error) {
         alert(error);
       }

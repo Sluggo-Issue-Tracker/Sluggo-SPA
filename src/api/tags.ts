@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { axiosInstance } from "./base";
 import { PaginatedList, TagRecord, WriteTagRecord } from "@/api/types";
 

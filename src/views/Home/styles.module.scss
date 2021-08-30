@@ -3,6 +3,16 @@
   flex-wrap: wrap;
   height: 100%;
   background: var(--secondaryBackground);
+
+  h1 {
+    font-weight: 600;
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-weight: 600;
+    font-size: 1rem;
+  }
 }
 
 .centerView {
@@ -14,13 +24,33 @@
   flex: 1 1;
   background: var(--secondaryBackground);
   border-left: 1px var(--borderColor) solid;
-  min-with: 200px;
+  width: 200px;
 }
 
 .homepageMessage {
   border-bottom: 1px var(--borderColor) solid;
   background: var(--primaryBackground);
+  padding: 1rem 1rem 1rem 1rem;
 }
 
 .ticketsSection {
+}
+
+.rowContainer {
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  padding: 1rem 1rem 1rem 1rem;
+
+  .cell {
+    flex: 1;
+    max-width: 12rem;
+    overflow: hidden;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
 }

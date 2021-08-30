@@ -14,6 +14,9 @@
       <section class="ticketsSection">
         <Card>
           <h3>Assigned to You</h3>
+          <div>
+            <TicketRow />
+          </div>
         </Card>
         <Card>
           <h3>Pinned Tickets</h3>
@@ -34,11 +37,13 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import Card from "@/components/Card";
+import TicketRow from "./components/TicketRow.vue";
 
 export default defineComponent({
   name: "Home",
   components: {
-    Card
+    Card,
+    TicketRow
   }
 });
 </script>

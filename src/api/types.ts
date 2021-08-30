@@ -1,4 +1,3 @@
-import { AxiosError, AxiosResponse } from "axios";
 import { DateTime } from "luxon";
 
 export interface LoginResponse {
@@ -36,12 +35,14 @@ export interface UserRecord {
 
 export interface StatusRecordInput {
   title: string;
+  color: string;
 }
 
 export interface StatusRecordOutput {
   id: number;
   object_uuid: string;
   title: string;
+  color: string;
   created: string;
   activated?: string;
   deactivated?: string;

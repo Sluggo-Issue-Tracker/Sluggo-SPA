@@ -19,7 +19,7 @@
         <i class="bx bx-pencil"></i>
       </div>
       <Dropdown
-        :items="testStatuses"
+        :items="statuses.results"
         :firstItem="ticketStatus"
         @itemSelected="statusSelected"
         :style="{ 'margin-left': 'auto' }"
@@ -33,7 +33,7 @@
       <Dropdown
         :label="'Assigned to'"
         class="column"
-        :items="membersList.results"
+        :items="members.results"
         :firstItem="ticketUser"
         @itemSelected="userSelected"
       />
@@ -49,7 +49,7 @@
       <Dropdown
         :label="'Tags'"
         class="column"
-        :items="tagsList.results"
+        :items="tags.results"
         :firstItem="ticketTag"
         @itemSelected="tagSelected"
       />
@@ -94,12 +94,14 @@ import { defineComponent, ref, onMounted } from "vue";
 import {
   ReadTicketRecord,
   WriteTicketRecord,
-  ReadTeamRecord
+  ReadTeamRecord,
+  StatusRecordOutput
 } from "@/api/types";
 import { createTicket } from "@/api/tickets";
 import { getUsersTeams } from "@/api/teams";
 import { listTags } from "@/api/tags";
 import { listMembers } from "@/api/members";
+import { listStatuses } from "@/api/statuses";
 import { PaginatedList, TagRecord, MemberRecord } from "@/api/types";
 import Dropdown from "@/components/TicketModal/components/Dropdown/Dropdown.vue";
 import EditableText from "@/components/TicketModal/components/EditableText/EditableText.vue";
@@ -129,54 +131,56 @@ const ticketModalComponent = defineComponent({
     const ticketUser = ref("");
     const ticketTag = ref("");
     const ticketTeam = ref("");
+    const ticketTeamId = ref(1);
     const ticketTitle = ref("Title");
-    const ticketDueDate = ref("2018-07-22");
-    const statusColor = ref("#20A6EE");
+    const ticketDueDate = ref("");
+    const statusColor = ref("");
     const statusDropdownClass = ref("");
     const tagsPage = ref(1);
     const membersPage = ref(1);
+    const statusesPage = ref(1);
     const description = ref("");
-    const tagsList = ref({} as PaginatedList<TagRecord>);
-    const membersList = ref({} as PaginatedList<MemberRecord>);
+    const tags = ref({} as PaginatedList<TagRecord>);
+    const members = ref({} as PaginatedList<MemberRecord>);
+    const statuses = ref({} as PaginatedList<StatusRecordOutput>);
     const teams = ref({} as ReadTeamRecord[]);
-    const testStatuses = [
-      { name: "To Do" },
-      { name: "In Progress" },
-      { name: "Done" }
-    ];
     const getTeams = async () => {
       try {
         teams.value = await getUsersTeams();
         ticketTeam.value = teams.value[0].name;
-        console.log(typeof teams.value);
       } catch (error) {
         alert(error);
       }
     };
     const getTags = async () => {
       try {
-        tagsList.value = await listTags(teams.value[0].id, tagsPage.value);
-        ticketTag.value = tagsList.value.results[0].title;
+        tags.value = await listTags(ticketTeamId.value, tagsPage.value);
+        ticketTag.value = tags.value.results[0].title;
       } catch (error) {
         alert(error);
       }
     };
     const getMembers = async () => {
       try {
-        membersList.value = await listMembers(
-          teams.value[0].id,
+        members.value = await listMembers(
+          ticketTeamId.value,
           membersPage.value
         );
-        ticketUser.value = membersList.value.results[0].owner.username;
+        ticketUser.value = members.value.results[0].owner.username;
       } catch (error) {
         alert(error);
       }
     };
-    const setTicketData = async () => {
-      if (props.ticketRecord) {
-        const ticket = props.ticketRecord;
-        ticketStatus.value = ticket.status?.title || "";
-        ticketUser.value = ticket.assigned_user?.username || "";
+    const getStatuses = async () => {
+      try {
+        statuses.value = await listStatuses(
+          ticketTeamId.value,
+          statusesPage.value
+        );
+        ticketStatus.value = statuses.value.results[0].title;
+        statusColor.value = statuses.value.results[0].color;
+      } catch (error) {
+        alert(error);
       }
     };
     const statusSelected = (item: string) => {
@@ -189,6 +193,7 @@ const ticketModalComponent = defineComponent({
       ticketTeam.value = item;
       await getTags();
       await getMembers();
+      await getStatuses();
     };
     const tagSelected = (item: string) => {
       ticketTag.value = item;
@@ -197,7 +202,6 @@ const ticketModalComponent = defineComponent({
       ticketTitle.value = item;
     };
     const closeModal = () => {
-      description.value = "";
       context.emit("close");
     };
     const saveChanges = async () => {
@@ -210,14 +214,13 @@ const ticketModalComponent = defineComponent({
       } catch (error) {
         alert(error);
       }
-      description.value = "";
       context.emit("close");
     };
     onMounted(async () => {
       await getTeams();
       await getTags();
       await getMembers();
-      setTicketData();
+      await getStatuses();
     });
     return {
       ticketStatus,
@@ -228,14 +231,13 @@ const ticketModalComponent = defineComponent({
       ticketUser,
       ticketTag,
       ticketTeam,
-      testStatuses,
-      membersList,
+      members,
       description,
       confirmModalClass,
       teams,
-      tagsList,
+      tags,
+      statuses,
       setTitle,
-      setTicketData,
       closeModal,
       saveChanges,
       statusSelected,

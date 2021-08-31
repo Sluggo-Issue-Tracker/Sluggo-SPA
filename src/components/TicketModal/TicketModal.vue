@@ -10,6 +10,7 @@
       <div class="ticket-name" :style="{ 'background-color': statusColor }">
         <EditableText
           :color="statusColor"
+          :text="'Title'"
           @startedEditing="shouldShowPencil = false"
           @stoppedEditing="setTitle"
         />
@@ -54,7 +55,11 @@
       />
       <div class="ticket-due-date column">
         <label class="ticket-field-label">Due Date</label>
-        <input class="input is-fullwidth" type="date" v-model="ticketDueDate" />
+        <input
+          class="input is-fullwidth"
+          type="date"
+          v-model="ticketObj.due_date"
+        />
       </div>
     </div>
     <div class="ticket-modal-third-row columns">
@@ -62,29 +67,15 @@
         <label class="ticket-field-label">Description</label>
         <textarea
           class="textarea has-fixed-size is-fullwidth"
-          v-model="description"
+          v-model="ticketObj.description"
         ></textarea>
       </div>
     </div>
-    <div class="ticket-modal-footer">
-      <button class="button is-success" @click="saveChanges">
-        Save changes
-      </button>
-      <button class="button" @click="closeModal">Cancel</button>
-      <button
-        class="button is-danger"
-        @click="confirmModalClass = 'is-active'"
-        v-if="ticketRecord"
-      >
-        Delete
-      </button>
-    </div>
-    <div class="modal" :class="confirmModalClass">
-      <div class="modal-background"></div>
-      <div class="modal-content">
-        <ConfirmDialog @close="confirmModalClass = ''" @delete="closeModal" />
-      </div>
-    </div>
+    <Footer
+      :shouldShowDelete="doesTicketExist"
+      @saveChanges="saveChanges"
+      @closeModal="closeModal"
+    />
   </div>
 </template>
 
@@ -104,16 +95,15 @@ import { listStatuses } from "@/api/statuses";
 import { PaginatedList, TagRecord, MemberRecord } from "@/api/types";
 import Dropdown from "@/components/TicketModal/components/Dropdown/Dropdown.vue";
 import EditableText from "@/components/TicketModal/components/EditableText/EditableText.vue";
-import ConfirmDialog from "@/components/TicketModal/components/ConfirmDialog/ConfirmDialog.vue";
+import Footer from "@/components/TicketModal/components/Footer/Footer.vue";
 import IconSluggo from "@/assets/IconSluggo";
-import { DateTime } from "luxon";
 const ticketModalComponent = defineComponent({
   name: "TicketModal",
   components: {
     IconSluggo,
     Dropdown,
     EditableText,
-    ConfirmDialog
+    Footer
   },
   props: {
     ticketRecord: {
@@ -125,27 +115,32 @@ const ticketModalComponent = defineComponent({
   },
   emits: ["close"],
   setup: (props, context) => {
-    const confirmModalClass = ref("");
+    const ticketObj = ref({} as WriteTicketRecord);
+    const doesTicketExist = ref(false);
     const shouldShowPencil = ref(true);
     const ticketStatus = ref("In Progress");
-    const ticketStatusId = ref(1);
     const ticketUser = ref("");
-    const ticketUserId = ref(1);
     const ticketTag = ref("");
     const ticketTeam = ref("");
     const ticketTeamId = ref(1);
-    const ticketTitle = ref("Title");
-    const ticketDueDate = ref("");
     const statusColor = ref("");
     const statusDropdownClass = ref("");
     const tagsPage = ref(1);
     const membersPage = ref(1);
     const statusesPage = ref(1);
-    const description = ref("");
     const tags = ref({} as PaginatedList<TagRecord>);
     const members = ref({} as PaginatedList<MemberRecord>);
     const statuses = ref({} as PaginatedList<StatusRecordOutput>);
     const teams = ref({} as ReadTeamRecord[]);
+    const initializeData = () => {
+      ticketObj.value.description = "";
+      ticketObj.value.title = "Title";
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      ticketObj.value.assigned_user = 1;
+      ticketObj.value.status = 1;
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      ticketObj.value.due_date = "";
+    };
     const getTeams = async () => {
       try {
         teams.value = await getUsersTeams();
@@ -170,7 +165,8 @@ const ticketModalComponent = defineComponent({
           membersPage.value
         );
         ticketUser.value = members.value.results[0].owner.username;
-        ticketUserId.value = members.value.results[0].id;
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        ticketObj.value.assigned_user = members.value.results[0].id;
       } catch (error) {
         alert(error);
       }
@@ -183,7 +179,7 @@ const ticketModalComponent = defineComponent({
         );
         ticketStatus.value = statuses.value.results[0].title;
         statusColor.value = statuses.value.results[0].color;
-        ticketStatusId.value = statuses.value.results[0].id;
+        ticketObj.value.status = statuses.value.results[0].id;
       } catch (error) {
         alert(error);
       }
@@ -191,25 +187,29 @@ const ticketModalComponent = defineComponent({
     const statusSelected = (display: string, item: StatusRecordOutput) => {
       ticketStatus.value = display;
       statusColor.value = item.color;
-      ticketStatusId.value = item.id;
+      ticketObj.value.status = item.id;
     };
     const userSelected = (display: string, item: MemberRecord) => {
       ticketUser.value = display;
-      ticketUserId.value = item.id;
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      ticketObj.value.assigned_user = item.id;
     };
     const teamSelected = async (display: string, item: ReadTeamRecord) => {
-      ticketTeam.value = display;
-      ticketTeamId.value = item.id;
-      ticketDueDate.value = "";
-      await getTags();
-      await getMembers();
-      await getStatuses();
+      if (ticketTeamId.value != item.id) {
+        ticketTeam.value = display;
+        ticketTeamId.value = item.id;
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        ticketObj.value.due_date = "";
+        await getTags();
+        await getMembers();
+        await getStatuses();
+      }
     };
     const tagSelected = (item: string) => {
       ticketTag.value = item;
     };
     const setTitle = (item: string) => {
-      ticketTitle.value = item;
+      ticketObj.value.title = item;
       shouldShowPencil.value = true;
     };
     const closeModal = () => {
@@ -217,30 +217,31 @@ const ticketModalComponent = defineComponent({
     };
     const saveChanges = async () => {
       const ticket: WriteTicketRecord = {
-        title: ticketTitle.value,
-        description: description.value,
+        title: ticketObj.value.title,
+        description: ticketObj.value.description,
         // eslint-disable-next-line @typescript-eslint/camelcase
-        assigned_user: ticketUserId.value,
-        status: ticketStatusId.value,
+        assigned_user: ticketObj.value.assigned_user,
+        status: ticketObj.value.status,
         // eslint-disable-next-line @typescript-eslint/camelcase
-        due_date: DateTime.fromFormat(ticketDueDate.value, "yyyy-MM-dd")
+        due_date: ticketObj.value.due_date
       };
       try {
         await createTicket(ticket, ticketTeamId.value);
       } catch (error) {
         alert(error);
       }
-      context.emit("close");
+      closeModal();
     };
     onMounted(async () => {
+      initializeData();
       await getTeams();
       await getTags();
       await getMembers();
       await getStatuses();
     });
     return {
+      ticketObj,
       ticketStatus,
-      ticketDueDate,
       statusColor,
       statusDropdownClass,
       shouldShowPencil,
@@ -248,11 +249,10 @@ const ticketModalComponent = defineComponent({
       ticketTag,
       ticketTeam,
       members,
-      description,
-      confirmModalClass,
       teams,
       tags,
       statuses,
+      doesTicketExist,
       setTitle,
       closeModal,
       saveChanges,

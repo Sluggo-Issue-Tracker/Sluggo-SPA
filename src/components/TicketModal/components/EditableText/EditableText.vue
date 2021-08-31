@@ -17,12 +17,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 const editableTextComponent = defineComponent({
   name: "EditableText",
   props: {
     text: {
-      type: String
+      type: String,
+      required: true,
+      default: ""
     },
     color: {
       type: String
@@ -45,7 +47,7 @@ const editableTextComponent = defineComponent({
   },
   setup: (props, context) => {
     const isEditing = ref(false);
-    const ticketTitle = ref("Title");
+    const ticketTitle = ref("");
     const tempText = ref("");
     const enableEditing = () => {
       isEditing.value = true;
@@ -56,12 +58,15 @@ const editableTextComponent = defineComponent({
       if (isEditing.value == true) {
         isEditing.value = false;
         ticketTitle.value = tempText.value;
-        if (!ticketTitle.value.match(/^[A-Za-z]+$/)) {
-          ticketTitle.value = "Title";
+        if (!ticketTitle.value.match(/[A-Za-z]+/)) {
+          ticketTitle.value = props.text;
         }
         context.emit("stoppedEditing", tempText.value);
       }
     };
+    onMounted(() => {
+      ticketTitle.value = props.text;
+    });
     return {
       isEditing,
       ticketTitle,

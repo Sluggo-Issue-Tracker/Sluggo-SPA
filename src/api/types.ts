@@ -42,9 +42,11 @@ export interface StatusRecordOutput {
   id: number;
   object_uuid: string;
   title: string;
+  color: string;
   created: string;
   activated?: string;
   deactivated?: string;
+  due_date?: string;
 }
 
 export interface WriteTagRecord {
@@ -90,7 +92,7 @@ export interface TicketFilterOptions {
 }
 
 export interface MemberRecord {
-  id: string;
+  id: number;
   owner: UserRecord;
   team_id: number;
   object_uuid: string;

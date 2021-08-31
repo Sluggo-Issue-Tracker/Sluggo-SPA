@@ -47,7 +47,6 @@ export interface StatusRecordOutput {
   created: string;
   activated?: string;
   deactivated?: string;
-  due_date?: string;
 }
 
 export interface WriteTagRecord {
@@ -69,6 +68,7 @@ export interface WriteTicketRecord {
   status?: number;
   title: string;
   description?: string;
+  due_date?: string;
 }
 
 export interface ReadTicketRecord {
@@ -93,7 +93,7 @@ export interface TicketFilterOptions {
 }
 
 export interface MemberRecord {
-  id: number;
+  id: string;
   owner: UserRecord;
   team_id: number;
   object_uuid: string;

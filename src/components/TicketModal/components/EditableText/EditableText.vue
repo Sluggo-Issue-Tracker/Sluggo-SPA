@@ -5,7 +5,7 @@
         {{ ticketTitle }}
       </span>
     </div>
-    <div v-if="isEditing" @focusout="disableEditing">
+    <div v-if="isEditing" @focusout="saveChanges">
       <input
         v-model="tempText"
         class="input text-box"
@@ -49,20 +49,17 @@ const editableTextComponent = defineComponent({
     const tempText = ref("");
     const enableEditing = () => {
       isEditing.value = true;
-      tempText.value = ticketTitle.value;
-      context.emit("startedEditing");
-    };
-    const disableEditing = () => {
-      isEditing.value = false;
       tempText.value = "";
-      context.emit("stoppedEditing");
+      context.emit("startedEditing");
     };
     const saveChanges = () => {
       if (isEditing.value == true) {
         isEditing.value = false;
         ticketTitle.value = tempText.value;
-        context.emit("stoppedEditing");
-        context.emit("saveText", tempText.value);
+        if (!ticketTitle.value.match(/^[A-Za-z]+$/)) {
+          ticketTitle.value = "Title";
+        }
+        context.emit("stoppedEditing", tempText.value);
       }
     };
     return {
@@ -70,7 +67,6 @@ const editableTextComponent = defineComponent({
       ticketTitle,
       tempText,
       enableEditing,
-      disableEditing,
       saveChanges
     };
   }

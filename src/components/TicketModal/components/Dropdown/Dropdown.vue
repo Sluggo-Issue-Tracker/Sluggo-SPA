@@ -20,7 +20,9 @@
           class="dropdown-item"
           v-for="item in items"
           :key="item.name || item.title || item.owner.username"
-          @click="itemSelected(item.name || item.title || item.owner.username)"
+          @click="
+            itemSelected(item.name || item.title || item.owner.username, item)
+          "
         >
           {{ item.name || item.title || item.owner.username }}
         </div>
@@ -63,9 +65,9 @@ const dropdownComponent = defineComponent({
       dropdownClass.value =
         dropdownClass.value == "is-active" ? "" : "is-active";
     };
-    const itemSelected = (item: string) => {
+    const itemSelected = (display: string, item: object) => {
       dropdownClass.value = "";
-      context.emit("itemSelected", item);
+      context.emit("itemSelected", display, item);
     };
     return {
       toggleDropdown,

@@ -11,8 +11,7 @@
         <EditableText
           :color="statusColor"
           @startedEditing="shouldShowPencil = false"
-          @stoppedEditing="shouldShowPencil = true"
-          @saveText="setTitle"
+          @stoppedEditing="setTitle"
         />
       </div>
       <div class="editable-icon" v-if="shouldShowPencil">
@@ -55,7 +54,7 @@
       />
       <div class="ticket-due-date column">
         <label class="ticket-field-label">Due Date</label>
-        <input class="input is-fullwidth" type="date" :value="ticketDueDate" />
+        <input class="input is-fullwidth" type="date" v-model="ticketDueDate" />
       </div>
     </div>
     <div class="ticket-modal-third-row columns">
@@ -107,6 +106,7 @@ import Dropdown from "@/components/TicketModal/components/Dropdown/Dropdown.vue"
 import EditableText from "@/components/TicketModal/components/EditableText/EditableText.vue";
 import ConfirmDialog from "@/components/TicketModal/components/ConfirmDialog/ConfirmDialog.vue";
 import IconSluggo from "@/assets/IconSluggo";
+import { DateTime } from "luxon";
 const ticketModalComponent = defineComponent({
   name: "TicketModal",
   components: {
@@ -128,7 +128,9 @@ const ticketModalComponent = defineComponent({
     const confirmModalClass = ref("");
     const shouldShowPencil = ref(true);
     const ticketStatus = ref("In Progress");
+    const ticketStatusId = ref(1);
     const ticketUser = ref("");
+    const ticketUserId = ref(1);
     const ticketTag = ref("");
     const ticketTeam = ref("");
     const ticketTeamId = ref(1);
@@ -148,6 +150,7 @@ const ticketModalComponent = defineComponent({
       try {
         teams.value = await getUsersTeams();
         ticketTeam.value = teams.value[0].name;
+        ticketTeamId.value = teams.value[0].id;
       } catch (error) {
         alert(error);
       }
@@ -167,6 +170,7 @@ const ticketModalComponent = defineComponent({
           membersPage.value
         );
         ticketUser.value = members.value.results[0].owner.username;
+        ticketUserId.value = members.value.results[0].id;
       } catch (error) {
         alert(error);
       }
@@ -179,18 +183,24 @@ const ticketModalComponent = defineComponent({
         );
         ticketStatus.value = statuses.value.results[0].title;
         statusColor.value = statuses.value.results[0].color;
+        ticketStatusId.value = statuses.value.results[0].id;
       } catch (error) {
         alert(error);
       }
     };
-    const statusSelected = (item: string) => {
-      ticketStatus.value = item;
+    const statusSelected = (display: string, item: StatusRecordOutput) => {
+      ticketStatus.value = display;
+      statusColor.value = item.color;
+      ticketStatusId.value = item.id;
     };
-    const userSelected = (item: string) => {
-      ticketUser.value = item;
+    const userSelected = (display: string, item: MemberRecord) => {
+      ticketUser.value = display;
+      ticketUserId.value = item.id;
     };
-    const teamSelected = async (item: string) => {
-      ticketTeam.value = item;
+    const teamSelected = async (display: string, item: ReadTeamRecord) => {
+      ticketTeam.value = display;
+      ticketTeamId.value = item.id;
+      ticketDueDate.value = "";
       await getTags();
       await getMembers();
       await getStatuses();
@@ -200,6 +210,7 @@ const ticketModalComponent = defineComponent({
     };
     const setTitle = (item: string) => {
       ticketTitle.value = item;
+      shouldShowPencil.value = true;
     };
     const closeModal = () => {
       context.emit("close");
@@ -207,10 +218,15 @@ const ticketModalComponent = defineComponent({
     const saveChanges = async () => {
       const ticket: WriteTicketRecord = {
         title: ticketTitle.value,
-        description: description.value
+        description: description.value,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        assigned_user: ticketUserId.value,
+        status: ticketStatusId.value,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        due_date: DateTime.fromFormat(ticketDueDate.value, "yyyy-MM-dd")
       };
       try {
-        await createTicket(ticket, 1);
+        await createTicket(ticket, ticketTeamId.value);
       } catch (error) {
         alert(error);
       }

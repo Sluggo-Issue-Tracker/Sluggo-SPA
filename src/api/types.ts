@@ -92,7 +92,7 @@ export interface TicketFilterOptions {
 }
 
 export interface MemberRecord {
-  id: string;
+  id: number;
   owner: UserRecord;
   team_id: number;
   object_uuid: string;

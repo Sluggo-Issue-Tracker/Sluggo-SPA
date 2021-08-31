@@ -36,6 +36,7 @@ export interface UserRecord {
 
 export interface StatusRecordInput {
   title: string;
+  color: string;
 }
 
 export interface StatusRecordOutput {

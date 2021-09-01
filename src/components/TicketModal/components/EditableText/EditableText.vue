@@ -61,7 +61,7 @@ const editableTextComponent = defineComponent({
         if (!ticketTitle.value.match(/[A-Za-z]+/)) {
           ticketTitle.value = props.text;
         }
-        context.emit("stoppedEditing", tempText.value);
+        context.emit("stoppedEditing", ticketTitle.value);
       }
     };
     onMounted(() => {

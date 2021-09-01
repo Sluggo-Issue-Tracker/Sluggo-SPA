@@ -31,6 +31,7 @@
     </div>
     <div class="ticket-modal-first-row columns">
       <Dropdown
+        data-testid="users-dropdown"
         :label="'Assigned to'"
         class="column"
         :items="members.results"
@@ -119,10 +120,11 @@ const ticketModalComponent = defineComponent({
     const doesTicketExist = ref(false);
     const shouldShowPencil = ref(true);
     const ticketStatus = ref("In Progress");
-    const ticketUser = ref("");
-    const ticketTag = ref("");
+    const ticketUser = ref("None");
+    const ticketTag = ref("None");
+    const ticketTagId = ref([-1]);
     const ticketTeam = ref("");
-    const ticketTeamId = ref(1);
+    const ticketTeamId = ref(-1);
     const statusColor = ref("");
     const statusDropdownClass = ref("");
     const tagsPage = ref(1);
@@ -136,7 +138,7 @@ const ticketModalComponent = defineComponent({
       ticketObj.value.description = "";
       ticketObj.value.title = "Title";
       // eslint-disable-next-line @typescript-eslint/camelcase
-      ticketObj.value.assigned_user = 1;
+      ticketObj.value.assigned_user = -1;
       ticketObj.value.status = 1;
       // eslint-disable-next-line @typescript-eslint/camelcase
       ticketObj.value.due_date = "";
@@ -153,7 +155,8 @@ const ticketModalComponent = defineComponent({
     const getTags = async () => {
       try {
         tags.value = await listTags(ticketTeamId.value, tagsPage.value);
-        ticketTag.value = tags.value.results[0].title;
+        ticketTag.value = "None";
+        ticketTagId.value = [-1];
       } catch (error) {
         alert(error);
       }
@@ -164,9 +167,9 @@ const ticketModalComponent = defineComponent({
           ticketTeamId.value,
           membersPage.value
         );
-        ticketUser.value = members.value.results[0].owner.username;
+        ticketUser.value = "None";
         // eslint-disable-next-line @typescript-eslint/camelcase
-        ticketObj.value.assigned_user = members.value.results[0].id;
+        ticketObj.value.assigned_user = -1;
       } catch (error) {
         alert(error);
       }
@@ -199,14 +202,15 @@ const ticketModalComponent = defineComponent({
         ticketTeam.value = display;
         ticketTeamId.value = item.id;
         // eslint-disable-next-line @typescript-eslint/camelcase
-        ticketObj.value.due_date = "";
         await getTags();
         await getMembers();
         await getStatuses();
       }
     };
-    const tagSelected = (item: string) => {
-      ticketTag.value = item;
+    const tagSelected = (display: string, item: TagRecord) => {
+      ticketTag.value = display;
+      ticketTagId.value[0] = item.id;
+      console.log(ticketTagId.value[0]);
     };
     const setTitle = (item: string) => {
       ticketObj.value.title = item;
@@ -218,13 +222,23 @@ const ticketModalComponent = defineComponent({
     const saveChanges = async () => {
       const ticket: WriteTicketRecord = {
         title: ticketObj.value.title,
-        description: ticketObj.value.description,
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        assigned_user: ticketObj.value.assigned_user,
-        status: ticketObj.value.status,
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        due_date: ticketObj.value.due_date
+        status: ticketObj.value.status
       };
+      if (ticketObj.value.due_date) {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        ticket.due_date = ticketObj.value.due_date;
+      }
+      if (ticketObj.value.assigned_user != -1) {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        ticket.assigned_user = ticketObj.value.assigned_user;
+      }
+      if (ticketObj.value.description != "") {
+        ticket.description = ticketObj.value.description;
+      }
+      if (ticketTagId.value[0] != -1) {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        ticket.tag_list = ticketTagId.value;
+      }
       try {
         await createTicket(ticket, ticketTeamId.value);
       } catch (error) {

@@ -48,7 +48,7 @@ export const listStatuses = async (
   return data;
 };
 
-export const deleteTag = async (
+export const deleteStatus = async (
   record: StatusRecordOutput,
   teamId: number
 ): Promise<void> => {

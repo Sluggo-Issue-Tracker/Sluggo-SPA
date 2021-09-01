@@ -2,15 +2,15 @@
   <div class="ticket-modal">
     <div
       class="ticket-modal-header"
-      :style="{ 'background-color': statusColor }"
+      :style="{ 'background-color': selectedStatus.color }"
     >
       <div class="logo">
         <IconSluggo :height="50" :width="50" />
       </div>
-      <div class="ticket-name" :style="{ 'background-color': statusColor }">
+      <div class="ticket-name" :style="{ 'background-color': selectedStatus.color }">
         <EditableText
           data-testid="ticket-title-text"
-          :color="statusColor"
+          :color="selectedStatus.color"
           :text="'Title'"
           @startedEditing="shouldShowPencil = false"
           @stoppedEditing="setTitle"
@@ -21,12 +21,12 @@
       </div>
       <Dropdown
         data-testid="statuses-dropdown"
-        :items="statuses.results"
-        :firstItem="ticketStatus"
+        :items="statuses"
+        :firstItem="selectedStatus.title"
         @itemSelected="statusSelected"
         :style="{ 'margin-left': 'auto' }"
         :class="'is-right'"
-        :backgroundColor="statusColor"
+        :backgroundColor="selectedStatus.color"
         :textColor="'white'"
         :borderStyle="'none'"
       />
@@ -37,15 +37,15 @@
         :label="'Assigned to'"
         class="column"
         :items="members.results"
-        :firstItem="ticketUser"
+        :firstItem="selectedUser"
         @itemSelected="userSelected"
       />
       <Dropdown
         data-testid="teams-dropdown"
         :label="'Team'"
         class="column"
-        :items="teamsArray"
-        :firstItem="ticketTeam"
+        :items="teams"
+        :firstItem="selectedTeam.name"
         @itemSelected="teamSelected"
       />
     </div>
@@ -54,8 +54,8 @@
         data-testid="tags-dropdown"
         :label="'Tags'"
         class="column"
-        :items="tags.results"
-        :firstItem="ticketTag"
+        :items="tags"
+        :firstItem="selectedTag.title"
         @itemSelected="tagSelected"
       />
       <div class="ticket-due-date column">
@@ -122,49 +122,46 @@ const ticketModalComponent = defineComponent({
   },
   emits: ["close"],
   setup: (props, context) => {
+    const teams = ref(Array<ReadTeamRecord>());
+    const selectedTeam = ref({} as ReadTeamRecord);
+    const tags = ref(Array<TagRecord>());
+    const selectedTag = ref({} as TagRecord);
+    const selectedTagId = ref([-1]);
+    const members = ref({} as PaginatedList<MemberRecord>);
+    const selectedUser = ref("None");
+    const membersPage = ref(1);
+    const statuses = ref(Array<StatusRecordOutput>());
+    const selectedStatus = ref({} as StatusRecordOutput);
     const ticketObj = ref({} as WriteTicketRecord);
     const doesTicketExist = ref(false);
     const shouldShowPencil = ref(true);
-    const ticketStatus = ref("In Progress");
-    const ticketUser = ref("None");
-    const ticketTag = ref("None");
-    const ticketTagId = ref([-1]);
-    const ticketTeam = ref("");
-    const ticketTeamId = ref(-1);
-    const statusColor = ref("");
-    const statusDropdownClass = ref("");
-    const tagsPage = ref(1);
-    const membersPage = ref(1);
-    const statusesPage = ref(1);
-    const tags = ref({} as PaginatedList<TagRecord>);
-    const members = ref({} as PaginatedList<MemberRecord>);
-    const statuses = ref({} as PaginatedList<StatusRecordOutput>);
-    const teams = ref({} as ReadTeamRecord[]);
-    const teamsArray = ref(Array<ReadTeamRecord>());
+  
     const initializeData = () => {
+      if (props.ticketRecord) {
+        doesTicketExist.value = true;
+      }
+      selectedStatus.value.id = -1;
       ticketObj.value.description = "";
       ticketObj.value.title = "Title";
       // eslint-disable-next-line @typescript-eslint/camelcase
       ticketObj.value.assigned_user = -1;
-      ticketObj.value.status = 1;
       // eslint-disable-next-line @typescript-eslint/camelcase
       ticketObj.value.due_date = "";
     };
     const getTeams = async () => {
       try {
-        teams.value = await getUsersTeams();
-        teamsArray.value = Object.values(teams.value);
-        ticketTeam.value = teams.value[0].name;
-        ticketTeamId.value = teams.value[0].id;
+        teams.value = Object.values(await getUsersTeams());
+        selectedTeam.value.name = teams.value[0].name;
+        selectedTeam.value.id = teams.value[0].id;
       } catch (error) {
         alert(error);
       }
     };
     const getTags = async () => {
       try {
-        tags.value = await listTags(ticketTeamId.value, tagsPage.value);
-        ticketTag.value = "None";
-        ticketTagId.value = [-1];
+        tags.value = Object.values(await listTags(selectedTeam.value.id));
+        selectedTag.value.title = "None";
+        selectedTagId.value = [-1];
       } catch (error) {
         alert(error);
       }
@@ -172,10 +169,10 @@ const ticketModalComponent = defineComponent({
     const getMembers = async () => {
       try {
         members.value = await listMembers(
-          ticketTeamId.value,
+          selectedTeam.value.id,
           membersPage.value
         );
-        ticketUser.value = "None";
+        selectedUser.value = "None";
         // eslint-disable-next-line @typescript-eslint/camelcase
         ticketObj.value.assigned_user = -1;
       } catch (error) {
@@ -184,40 +181,36 @@ const ticketModalComponent = defineComponent({
     };
     const getStatuses = async () => {
       try {
-        statuses.value = await listStatuses(
-          ticketTeamId.value,
-          statusesPage.value
-        );
-        ticketStatus.value = statuses.value.results[0].title;
-        statusColor.value = statuses.value.results[0].color;
-        ticketObj.value.status = statuses.value.results[0].id;
+        statuses.value = Object.values(await listStatuses(selectedTeam.value.id));
+        selectedStatus.value.title = statuses.value[0].title;
+        selectedStatus.value.color = statuses.value[0].color;
+        selectedStatus.value.id = statuses.value[0].id;
       } catch (error) {
         alert(error);
       }
     };
     const statusSelected = (display: string, item: StatusRecordOutput) => {
-      ticketStatus.value = display;
-      statusColor.value = item.color;
-      ticketObj.value.status = item.id;
+      selectedStatus.value.title = display;
+      selectedStatus.value.color = item.color;
+      selectedStatus.value.id = item.id;
     };
     const userSelected = (display: string, item: MemberRecord) => {
-      ticketUser.value = display;
+      selectedUser.value = display;
       // eslint-disable-next-line @typescript-eslint/camelcase
       ticketObj.value.assigned_user = item.id;
     };
     const teamSelected = async (display: string, item: ReadTeamRecord) => {
-      if (ticketTeamId.value !== item.id) {
-        ticketTeam.value = display;
-        ticketTeamId.value = item.id;
+      if (selectedTeam.value.id !== item.id) {
+        selectedTeam.value.name = display;
+        selectedTeam.value.id = item.id;
         await getTags();
         await getMembers();
         await getStatuses();
       }
     };
     const tagSelected = (display: string, item: TagRecord) => {
-      ticketTag.value = display;
-      ticketTagId.value[0] = item.id;
-      console.log(ticketTagId.value[0]);
+      selectedTag.value.title = display;
+      selectedTagId.value[0] = item.id;
     };
     const setTitle = (item: string) => {
       ticketObj.value.title = item;
@@ -229,7 +222,7 @@ const ticketModalComponent = defineComponent({
     const saveChanges = async () => {
       const ticket: WriteTicketRecord = {
         title: ticketObj.value.title,
-        status: ticketObj.value.status
+        status: selectedStatus.value.id
       };
       // eslint-disable-next-line @typescript-eslint/camelcase
       if (ticketObj.value.due_date) {
@@ -244,12 +237,12 @@ const ticketModalComponent = defineComponent({
       if (ticketObj.value.description !== "") {
         ticket.description = ticketObj.value.description;
       }
-      if (ticketTagId.value[0] !== -1) {
+      if (selectedTagId.value[0] !== -1) {
         // eslint-disable-next-line @typescript-eslint/camelcase
-        ticket.tag_list = ticketTagId.value;
+        ticket.tag_list = selectedTagId.value;
       }
       try {
-        await createTicket(ticket, ticketTeamId.value);
+        await createTicket(ticket, selectedTeam.value.id);
       } catch (error) {
         alert(error);
       }
@@ -264,16 +257,13 @@ const ticketModalComponent = defineComponent({
     });
     return {
       ticketObj,
-      ticketStatus,
-      statusColor,
-      statusDropdownClass,
+      selectedStatus,
       shouldShowPencil,
-      ticketUser,
-      ticketTag,
-      ticketTeam,
+      selectedUser,
+      selectedTag,
+      selectedTeam,
       members,
       teams,
-      teamsArray,
       tags,
       statuses,
       doesTicketExist,

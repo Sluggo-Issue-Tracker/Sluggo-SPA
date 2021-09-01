@@ -40,10 +40,9 @@ export const getStatus = async (
 
 export const listStatuses = async (
   teamId: number,
-  page: number
-): Promise<PaginatedList<StatusRecordOutput>> => {
-  const { data } = await axiosInstance.get<PaginatedList<StatusRecordOutput>>(
-    `/api/teams/${teamId}/statuses/?page=${page}`
+): Promise<StatusRecordOutput[]> => {
+  const { data } = await axiosInstance.get<StatusRecordOutput[]>(
+    `/api/teams/${teamId}/statuses`
   );
   return data;
 };

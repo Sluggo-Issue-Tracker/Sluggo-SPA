@@ -10,7 +10,8 @@
           border: borderStyle
         }"
       >
-        <span>{{ firstItem }}</span>
+        <span v-if="hasItems()">{{ firstItem }}</span>
+        <span class="no-items-text" v-else>No options</span>
         <i class="bx bx-chevron-down" v-if="hasItems()"></i>
       </button>
     </div>

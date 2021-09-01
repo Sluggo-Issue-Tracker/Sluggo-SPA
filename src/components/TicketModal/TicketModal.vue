@@ -9,6 +9,7 @@
       </div>
       <div class="ticket-name" :style="{ 'background-color': statusColor }">
         <EditableText
+          data-testid="ticket-title-text"
           :color="statusColor"
           :text="'Title'"
           @startedEditing="shouldShowPencil = false"
@@ -19,6 +20,7 @@
         <i class="bx bx-pencil"></i>
       </div>
       <Dropdown
+        data-testid="statuses-dropdown"
         :items="statuses.results"
         :firstItem="ticketStatus"
         @itemSelected="statusSelected"
@@ -39,15 +41,17 @@
         @itemSelected="userSelected"
       />
       <Dropdown
+        data-testid="teams-dropdown"
         :label="'Team'"
         class="column"
-        :items="teams"
+        :items="teamsArray"
         :firstItem="ticketTeam"
         @itemSelected="teamSelected"
       />
     </div>
     <div class="ticket-modal-second-row columns">
       <Dropdown
+        data-testid="tags-dropdown"
         :label="'Tags'"
         class="column"
         :items="tags.results"
@@ -57,6 +61,7 @@
       <div class="ticket-due-date column">
         <label class="ticket-field-label">Due Date</label>
         <input
+          data-testid="ticket-due-date"
           class="input is-fullwidth"
           type="date"
           v-model="ticketObj.due_date"
@@ -67,6 +72,7 @@
       <div class="ticket-description column">
         <label class="ticket-field-label">Description</label>
         <textarea
+          data-testid="ticket-description"
           class="textarea has-fixed-size is-fullwidth"
           v-model="ticketObj.description"
         ></textarea>
@@ -134,6 +140,7 @@ const ticketModalComponent = defineComponent({
     const members = ref({} as PaginatedList<MemberRecord>);
     const statuses = ref({} as PaginatedList<StatusRecordOutput>);
     const teams = ref({} as ReadTeamRecord[]);
+    const teamsArray = ref(Array<ReadTeamRecord>());
     const initializeData = () => {
       ticketObj.value.description = "";
       ticketObj.value.title = "Title";
@@ -146,6 +153,7 @@ const ticketModalComponent = defineComponent({
     const getTeams = async () => {
       try {
         teams.value = await getUsersTeams();
+        teamsArray.value = Object.values(teams.value);
         ticketTeam.value = teams.value[0].name;
         ticketTeamId.value = teams.value[0].id;
       } catch (error) {
@@ -198,10 +206,9 @@ const ticketModalComponent = defineComponent({
       ticketObj.value.assigned_user = item.id;
     };
     const teamSelected = async (display: string, item: ReadTeamRecord) => {
-      if (ticketTeamId.value != item.id) {
+      if (ticketTeamId.value !== item.id) {
         ticketTeam.value = display;
         ticketTeamId.value = item.id;
-        // eslint-disable-next-line @typescript-eslint/camelcase
         await getTags();
         await getMembers();
         await getStatuses();
@@ -224,18 +231,20 @@ const ticketModalComponent = defineComponent({
         title: ticketObj.value.title,
         status: ticketObj.value.status
       };
+      // eslint-disable-next-line @typescript-eslint/camelcase
       if (ticketObj.value.due_date) {
         // eslint-disable-next-line @typescript-eslint/camelcase
         ticket.due_date = ticketObj.value.due_date;
       }
-      if (ticketObj.value.assigned_user != -1) {
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      if (ticketObj.value.assigned_user !== -1) {
         // eslint-disable-next-line @typescript-eslint/camelcase
         ticket.assigned_user = ticketObj.value.assigned_user;
       }
-      if (ticketObj.value.description != "") {
+      if (ticketObj.value.description !== "") {
         ticket.description = ticketObj.value.description;
       }
-      if (ticketTagId.value[0] != -1) {
+      if (ticketTagId.value[0] !== -1) {
         // eslint-disable-next-line @typescript-eslint/camelcase
         ticket.tag_list = ticketTagId.value;
       }
@@ -264,6 +273,7 @@ const ticketModalComponent = defineComponent({
       ticketTeam,
       members,
       teams,
+      teamsArray,
       tags,
       statuses,
       doesTicketExist,

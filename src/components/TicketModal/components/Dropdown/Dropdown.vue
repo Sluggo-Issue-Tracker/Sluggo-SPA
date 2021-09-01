@@ -11,7 +11,7 @@
         }"
       >
         <span>{{ firstItem }}</span>
-        <i class="bx bx-chevron-down"></i>
+        <i class="bx bx-chevron-down" v-if="hasItems()"></i>
       </button>
     </div>
     <div class="dropdown-menu">
@@ -44,7 +44,7 @@ const dropdownComponent = defineComponent({
       default: ""
     },
     items: {
-      type: [Array, Object]
+      type: [Array]
     },
     backgroundColor: {
       type: String,
@@ -62,9 +62,19 @@ const dropdownComponent = defineComponent({
   emits: ["itemSelected"],
   setup: (props, context) => {
     const dropdownClass = ref("");
+    const hasItems = () => {
+      if (props.items) {
+        if (props.items.length > 0) {
+          return true;
+        }
+      }
+      return false;
+    };
     const toggleDropdown = () => {
-      dropdownClass.value =
-        dropdownClass.value == "is-active" ? "" : "is-active";
+      if (hasItems()) {
+        dropdownClass.value =
+          dropdownClass.value === "is-active" ? "" : "is-active";
+      }
     };
     const itemSelected = (display: string, item: object) => {
       dropdownClass.value = "";
@@ -73,7 +83,8 @@ const dropdownComponent = defineComponent({
     return {
       toggleDropdown,
       dropdownClass,
-      itemSelected
+      itemSelected,
+      hasItems
     };
   }
 });

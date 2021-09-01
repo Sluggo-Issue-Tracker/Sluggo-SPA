@@ -7,7 +7,10 @@
       <div class="logo">
         <IconSluggo :height="50" :width="50" />
       </div>
-      <div class="ticket-name" :style="{ 'background-color': selectedStatus.color }">
+      <div
+        class="ticket-name"
+        :style="{ 'background-color': selectedStatus.color }"
+      >
         <EditableText
           data-testid="ticket-title-text"
           :color="selectedStatus.color"
@@ -135,7 +138,7 @@ const ticketModalComponent = defineComponent({
     const ticketObj = ref({} as WriteTicketRecord);
     const doesTicketExist = ref(false);
     const shouldShowPencil = ref(true);
-  
+
     const initializeData = () => {
       if (props.ticketRecord) {
         doesTicketExist.value = true;
@@ -181,7 +184,9 @@ const ticketModalComponent = defineComponent({
     };
     const getStatuses = async () => {
       try {
-        statuses.value = Object.values(await listStatuses(selectedTeam.value.id));
+        statuses.value = Object.values(
+          await listStatuses(selectedTeam.value.id)
+        );
         selectedStatus.value.title = statuses.value[0].title;
         selectedStatus.value.color = statuses.value[0].color;
         selectedStatus.value.id = statuses.value[0].id;

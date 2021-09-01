@@ -40,7 +40,7 @@ const editableTextComponent = defineComponent({
   emits: ["startedEditing", "stoppedEditing", "saveText"],
   created() {
     window.addEventListener("keydown", e => {
-      if (e.key == "Enter") {
+      if (e.key === "Enter") {
         this.saveChanges();
       }
     });
@@ -55,7 +55,7 @@ const editableTextComponent = defineComponent({
       context.emit("startedEditing");
     };
     const saveChanges = () => {
-      if (isEditing.value == true) {
+      if (isEditing.value === true) {
         isEditing.value = false;
         ticketTitle.value = tempText.value;
         if (!ticketTitle.value.match(/[A-Za-z]+/)) {

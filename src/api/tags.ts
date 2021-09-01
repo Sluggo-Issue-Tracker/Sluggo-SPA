@@ -36,9 +36,7 @@ export const getTag = async (
   return data;
 };
 
-export const listTags = async (
-  teamId: number,
-): Promise<TagRecord[]> => {
+export const listTags = async (teamId: number): Promise<TagRecord[]> => {
   const { data } = await axiosInstance.get<TagRecord[]>(
     `/api/teams/${teamId}/tags`
   );

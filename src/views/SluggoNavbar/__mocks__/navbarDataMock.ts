@@ -4,7 +4,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import RouterMockComponent from "@/views/SluggoNavbar/__mocks__/RouterMockedComponent.vue";
 
 export const mockUser: UserRecord = {
-  pk: 1,
+  pk: "1",
   email: "fake@fake.com",
   first_name: "fake",
   last_name: "user",

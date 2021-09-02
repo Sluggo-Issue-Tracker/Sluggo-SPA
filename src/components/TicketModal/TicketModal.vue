@@ -66,7 +66,7 @@
         <input
           data-testid="ticket-due-date"
           class="input is-fullwidth"
-          type="date"
+          type="datetime-local"
           v-model="ticketObj.due_date"
         />
       </div>
@@ -226,7 +226,7 @@ const ticketModalComponent = defineComponent({
         status: selectedStatus.value.id
       };
       if (ticketObj.value.due_date) {
-        ticket.due_date = ticketObj.value.due_date;
+        ticket.due_date = ticketObj.value.due_date.replace(/T/, " ");
       }
       if (ticketObj.value.assigned_user !== "-1") {
         ticket.assigned_user = ticketObj.value.assigned_user;

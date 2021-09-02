@@ -5,6 +5,7 @@ import Help from "@/views/Help.vue";
 import Auth from "@/views/Auth.vue";
 import NewTeam from "@/views/NewTeam.vue";
 import Error from "@/views/Error";
+import Settings from "@/views/Settings/Settings.vue";
 import UserProvidedNavbar from "@/views/SluggoNavbar";
 import UserProvidedRouter from "@/components/UserProvidedRouter.vue";
 import TeamsTickets from "@/views/TeamsTickets";
@@ -64,6 +65,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/error",
     name: "Error",
     component: Error
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: Settings
   }
 ];
 

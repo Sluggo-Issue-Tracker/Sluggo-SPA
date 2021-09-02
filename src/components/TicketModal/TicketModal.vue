@@ -39,8 +39,8 @@
         data-testid="users-dropdown"
         :label="'Assigned to'"
         class="column"
-        :items="members.results"
-        :firstItem="selectedUser"
+        :items="members"
+        :firstItem="selectedUser.username"
         @itemSelected="userSelected"
       />
       <Dropdown
@@ -100,9 +100,9 @@ import {
 import { createTicket } from "@/api/tickets";
 import { getUsersTeams } from "@/api/teams";
 import { listTags } from "@/api/tags";
-import { listMembers } from "@/api/members";
+import { listMembersDepaginated } from "@/api/members";
 import { listStatuses } from "@/api/statuses";
-import { PaginatedList, TagRecord, MemberRecord } from "@/api/types";
+import { TagRecord, MemberRecord, UserRecord } from "@/api/types";
 import Dropdown from "@/components/TicketModal/components/Dropdown/Dropdown.vue";
 import EditableText from "@/components/TicketModal/components/EditableText/EditableText.vue";
 import Footer from "@/components/TicketModal/components/Footer/Footer.vue";
@@ -130,9 +130,8 @@ const ticketModalComponent = defineComponent({
     const tags = ref(Array<TagRecord>());
     const selectedTag = ref({} as TagRecord);
     const selectedTagId = ref([-1]);
-    const members = ref({} as PaginatedList<MemberRecord>);
-    const selectedUser = ref("None");
-    const membersPage = ref(1);
+    const members = ref(Array<MemberRecord>());
+    const selectedUser = ref({} as UserRecord);
     const statuses = ref(Array<StatusRecordOutput>());
     const selectedStatus = ref({} as StatusRecordOutput);
     const ticketObj = ref({} as WriteTicketRecord);
@@ -146,7 +145,6 @@ const ticketModalComponent = defineComponent({
       selectedStatus.value.id = -1;
       ticketObj.value.description = "";
       ticketObj.value.title = "Title";
-      ticketObj.value.assigned_user = "-1";
       ticketObj.value.due_date = "";
     };
     const getTeams = async () => {
@@ -169,12 +167,9 @@ const ticketModalComponent = defineComponent({
     };
     const getMembers = async () => {
       try {
-        members.value = await listMembers(
-          selectedTeam.value.id,
-          membersPage.value
-        );
-        selectedUser.value = "None";
-        ticketObj.value.assigned_user = "-1";
+        members.value = await listMembersDepaginated(selectedTeam.value.id, 1);
+        selectedUser.value.username = "None";
+        selectedUser.value.pk = "-1";
       } catch (error) {
         alert(error);
       }
@@ -197,8 +192,8 @@ const ticketModalComponent = defineComponent({
       selectedStatus.value.id = item.id;
     };
     const userSelected = (display: string, item: MemberRecord) => {
-      selectedUser.value = display;
-      ticketObj.value.assigned_user = item.id;
+      selectedUser.value.username = display;
+      selectedUser.value.pk = item.id;
     };
     const teamSelected = async (display: string, item: ReadTeamRecord) => {
       if (selectedTeam.value.id !== item.id) {
@@ -228,8 +223,8 @@ const ticketModalComponent = defineComponent({
       if (ticketObj.value.due_date) {
         ticket.due_date = ticketObj.value.due_date.replace(/T/, " ");
       }
-      if (ticketObj.value.assigned_user !== "-1") {
-        ticket.assigned_user = ticketObj.value.assigned_user;
+      if (selectedUser.value.pk !== "-1") {
+        ticket.assigned_user = selectedUser.value.pk;
       }
       if (ticketObj.value.description !== "") {
         ticket.description = ticketObj.value.description;

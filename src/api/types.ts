@@ -4,7 +4,7 @@ export interface LoginResponse {
   access_token: string;
   refresh_token: string;
   user: {
-    pk: number;
+    pk: string;
     username: string;
     email: string;
     first_name: string;
@@ -26,7 +26,7 @@ export interface SignupDetails {
 }
 
 export interface UserRecord {
-  pk: number;
+  pk: string;
   email: string;
   first_name: string;
   last_name: string;
@@ -63,7 +63,7 @@ export interface TagRecord {
 
 export interface WriteTicketRecord {
   tag_list?: Array<number>;
-  assigned_user?: number;
+  assigned_user?: string;
   status?: number;
   title: string;
   description?: string;
@@ -92,7 +92,7 @@ export interface TicketFilterOptions {
 }
 
 export interface MemberRecord {
-  id: number;
+  id: string;
   owner: UserRecord;
   team_id: number;
   object_uuid: string;

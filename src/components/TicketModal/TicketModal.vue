@@ -146,9 +146,7 @@ const ticketModalComponent = defineComponent({
       selectedStatus.value.id = -1;
       ticketObj.value.description = "";
       ticketObj.value.title = "Title";
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      ticketObj.value.assigned_user = -1;
-      // eslint-disable-next-line @typescript-eslint/camelcase
+      ticketObj.value.assigned_user = "-1";
       ticketObj.value.due_date = "";
     };
     const getTeams = async () => {
@@ -176,8 +174,7 @@ const ticketModalComponent = defineComponent({
           membersPage.value
         );
         selectedUser.value = "None";
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        ticketObj.value.assigned_user = -1;
+        ticketObj.value.assigned_user = "-1";
       } catch (error) {
         alert(error);
       }
@@ -201,7 +198,6 @@ const ticketModalComponent = defineComponent({
     };
     const userSelected = (display: string, item: MemberRecord) => {
       selectedUser.value = display;
-      // eslint-disable-next-line @typescript-eslint/camelcase
       ticketObj.value.assigned_user = item.id;
     };
     const teamSelected = async (display: string, item: ReadTeamRecord) => {
@@ -229,21 +225,16 @@ const ticketModalComponent = defineComponent({
         title: ticketObj.value.title,
         status: selectedStatus.value.id
       };
-      // eslint-disable-next-line @typescript-eslint/camelcase
       if (ticketObj.value.due_date) {
-        // eslint-disable-next-line @typescript-eslint/camelcase
         ticket.due_date = ticketObj.value.due_date;
       }
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      if (ticketObj.value.assigned_user !== -1) {
-        // eslint-disable-next-line @typescript-eslint/camelcase
+      if (ticketObj.value.assigned_user !== "-1") {
         ticket.assigned_user = ticketObj.value.assigned_user;
       }
       if (ticketObj.value.description !== "") {
         ticket.description = ticketObj.value.description;
       }
       if (selectedTagId.value[0] !== -1) {
-        // eslint-disable-next-line @typescript-eslint/camelcase
         ticket.tag_list = selectedTagId.value;
       }
       try {

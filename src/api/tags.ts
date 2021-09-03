@@ -1,5 +1,5 @@
 import { axiosInstance } from "./base";
-import { PaginatedList, TagRecord, WriteTagRecord } from "@/api/types";
+import { TagRecord, WriteTagRecord } from "@/api/types";
 
 export const createTag = async (
   record: WriteTagRecord,

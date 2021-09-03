@@ -2,7 +2,7 @@
   <div class="editableText">
     <div v-if="!isEditing">
       <span class="text" @click="enableEditing">
-        {{ ticketTitle }}
+        {{ title }}
       </span>
     </div>
     <div v-if="isEditing" @focusout="saveChanges">
@@ -47,7 +47,7 @@ const editableTextComponent = defineComponent({
   },
   setup: (props, context) => {
     const isEditing = ref(false);
-    const ticketTitle = ref("");
+    const title = ref("");
     const tempText = ref("");
     const enableEditing = () => {
       isEditing.value = true;
@@ -57,19 +57,19 @@ const editableTextComponent = defineComponent({
     const saveChanges = () => {
       if (isEditing.value === true) {
         isEditing.value = false;
-        ticketTitle.value = tempText.value;
-        if (!ticketTitle.value.match(/[A-Za-z]+/)) {
-          ticketTitle.value = props.text;
+        title.value = tempText.value;
+        if (!title.value.match(/[A-Za-z]+/)) {
+          title.value = props.text;
         }
-        context.emit("stoppedEditing", ticketTitle.value);
+        context.emit("stoppedEditing", title.value);
       }
     };
     onMounted(() => {
-      ticketTitle.value = props.text;
+      title.value = props.text;
     });
     return {
       isEditing,
-      ticketTitle,
+      title,
       tempText,
       enableEditing,
       saveChanges

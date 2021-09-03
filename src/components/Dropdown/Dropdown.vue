@@ -20,12 +20,12 @@
         <div
           class="dropdown-item"
           v-for="item in items"
-          :key="item.name || item.title || item.owner.username"
+          :key="item[stringPropSpecifier] || item.owner.username"
           @click="
-            itemSelected(item.name || item.title || item.owner.username, item)
+            itemSelected(item[stringPropSpecifier] || item.owner.username, item)
           "
         >
-          {{ item.name || item.title || item.owner.username }}
+          {{ item[stringPropSpecifier] || item.owner.username }}
         </div>
       </div>
     </div>
@@ -38,7 +38,8 @@ const dropdownComponent = defineComponent({
   name: "Dropdown",
   props: {
     label: {
-      type: String
+      type: String,
+      default: ""
     },
     firstItem: {
       type: String,
@@ -56,6 +57,10 @@ const dropdownComponent = defineComponent({
       default: "black"
     },
     borderStyle: {
+      type: String,
+      default: ""
+    },
+    stringPropSpecifier: {
       type: String,
       default: ""
     }

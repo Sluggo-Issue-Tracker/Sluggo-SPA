@@ -13,7 +13,7 @@ export const listMembers = async (
 
 export const listMembersDepaginated = async (
   teamId: number,
-  page: number
+  page = 1
 ): Promise<MemberRecord[]> => {
   const { data } = await axiosInstance.get<PaginatedList<MemberRecord>>(
     `/api/teams/${teamId}/members/?page=${page}`

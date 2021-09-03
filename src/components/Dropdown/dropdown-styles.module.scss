@@ -22,6 +22,11 @@
     opacity: 0.5;
 }
 
+.dropdown-content {
+    max-height: 10em;
+    overflow: auto;
+  }
+
 i {
     margin-left: auto;
 }

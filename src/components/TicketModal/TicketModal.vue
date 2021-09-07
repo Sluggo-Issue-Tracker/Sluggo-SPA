@@ -69,8 +69,16 @@
         <input
           data-testid="ticket-due-date"
           class="input is-fullwidth"
-          type="datetime-local"
+          type="date"
           v-model="ticketObj.due_date"
+        />
+      </div>
+      <div class="ticket-time column">
+        <label class="ticket-field-label">Time</label>
+        <input
+          data-testid="ticket-due-date"
+          class="input is-fullwidth"
+          type="time"
         />
       </div>
     </div>
@@ -121,9 +129,6 @@ const ticketModalComponent = defineComponent({
   props: {
     ticketRecord: {
       type: Object as () => ReadTicketRecord
-    },
-    teamId: {
-      type: Number
     }
   },
   emits: ["close"],
@@ -146,7 +151,6 @@ const ticketModalComponent = defineComponent({
       if (props.ticketRecord) {
         doesTicketExist.value = true;
       }
-      selectedStatus.value.id = -1;
       ticketObj.value.description = "";
       ticketObj.value.title = "Title";
       ticketObj.value.due_date = "";
@@ -160,51 +164,50 @@ const ticketModalComponent = defineComponent({
         alert(error);
       }
     };
-    const getTags = async () => {
+    const setTags = (tagResults: TagRecord[]) => {
+      tags.value = tagResults;
+      selectedTag.value.title = "None";
+      selectedTagId.value = [-1];
+    };
+    const setMembers = (memberResults: MemberRecord[]) => {
+      members.value = memberResults;
+      selectedUser.value.username = "None";
+      selectedMember.value.id = "-1";
+    };
+    const setStatuses = (statusResults: StatusRecordOutput[]) => {
+      statuses.value = statusResults;
+      selectedStatus.value = statusResults[0];
+    };
+    const getTeamData = async () => {
       try {
-        tags.value = Object.values(await listTags(selectedTeam.value.id));
-        selectedTag.value.title = "None";
-        selectedTagId.value = [-1];
+        await Promise.all([
+          listTags(selectedTeam.value.id),
+          listMembersDepaginated(selectedTeam.value.id),
+          listStatuses(selectedTeam.value.id)
+        ]).then(results => {
+          setTags(Object.values(results[0]));
+          setMembers(results[1]);
+          setStatuses(Object.values(results[2]));
+        });
       } catch (error) {
         alert(error);
       }
     };
-    const getMembers = async () => {
-      try {
-        members.value = await listMembersDepaginated(selectedTeam.value.id);
-        selectedUser.value.username = "None";
-        selectedMember.value.id = "-1";
-      } catch (error) {
-        alert(error);
-      }
-    };
-    const getStatuses = async () => {
-      try {
-        statuses.value = Object.values(
-          await listStatuses(selectedTeam.value.id)
-        );
-        selectedStatus.value = statuses.value[0];
-      } catch (error) {
-        alert(error);
-      }
-    };
-    const statusSelected = (display: string, item: StatusRecordOutput) => {
+    const statusSelected = (item: StatusRecordOutput) => {
       selectedStatus.value = item;
     };
-    const userSelected = (display: string, item: MemberRecord) => {
-      selectedUser.value.username = display;
+    const userSelected = (item: MemberRecord) => {
+      selectedUser.value.username = item.owner.username;
       selectedMember.value.id = item.id;
     };
-    const teamSelected = async (display: string, item: ReadTeamRecord) => {
+    const teamSelected = async (item: ReadTeamRecord) => {
       if (selectedTeam.value.id !== item.id) {
         selectedTeam.value = item;
-        await getTags();
-        await getMembers();
-        await getStatuses();
+        await getTeamData();
       }
     };
-    const tagSelected = (display: string, item: TagRecord) => {
-      selectedTag.value.title = display;
+    const tagSelected = (item: TagRecord) => {
+      selectedTag.value.title = item.title;
       selectedTagId.value[0] = item.id;
     };
     const setTitle = (item: string) => {
@@ -223,7 +226,7 @@ const ticketModalComponent = defineComponent({
         ticket.due_date = ticketObj.value.due_date.replace(/T/, " ");
       }
       if (selectedMember.value.id !== "-1") {
-        ticket.assigned_user = selectedMember.value.id;
+        ticket.assigned_user = selectedMember.value;
       }
       if (ticketObj.value.description !== "") {
         ticket.description = ticketObj.value.description;
@@ -241,9 +244,7 @@ const ticketModalComponent = defineComponent({
     onMounted(async () => {
       initializeData();
       await getTeams();
-      await getTags();
-      await getMembers();
-      await getStatuses();
+      await getTeamData();
     });
     return {
       ticketObj,

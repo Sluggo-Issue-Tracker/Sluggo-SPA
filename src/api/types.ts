@@ -63,7 +63,7 @@ export interface TagRecord {
 
 export interface WriteTicketRecord {
   tag_list?: Array<number>;
-  assigned_user?: string;
+  assigned_user?: MemberRecord;
   status?: number;
   title: string;
   description?: string;
@@ -76,7 +76,7 @@ export interface ReadTicketRecord {
   tag_list: Array<TagRecord>;
   owner: UserRecord;
   object_uuid: number;
-  assigned_user?: UserRecord;
+  assigned_user?: MemberRecord;
   status?: StatusRecordOutput;
   title: string;
   description?: string;

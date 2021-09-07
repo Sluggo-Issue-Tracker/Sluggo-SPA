@@ -18,7 +18,7 @@ export default defineComponent({
   name: "Error",
   setup() {
     const error = store.getters.error.message;
-    const isInDevMode = process.env.NODE_ENV === "development" ? true : false;
+    const isInDevMode = process.env.NODE_ENV === "development";
     return {
       isInDevMode,
       error

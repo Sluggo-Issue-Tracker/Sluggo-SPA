@@ -183,27 +183,21 @@ const ticketModalComponent = defineComponent({
         statuses.value = Object.values(
           await listStatuses(selectedTeam.value.id)
         );
-        selectedStatus.value.title = statuses.value[0].title;
-        selectedStatus.value.color = statuses.value[0].color;
-        selectedStatus.value.id = statuses.value[0].id;
+        selectedStatus.value = statuses.value[0];
       } catch (error) {
         alert(error);
       }
     };
     const statusSelected = (display: string, item: StatusRecordOutput) => {
-      selectedStatus.value.title = display;
-      selectedStatus.value.color = item.color;
-      selectedStatus.value.id = item.id;
+      selectedStatus.value = item;
     };
     const userSelected = (display: string, item: MemberRecord) => {
       selectedUser.value.username = display;
-      selectedUser.value.pk = item.id;
       selectedMember.value.id = item.id;
     };
     const teamSelected = async (display: string, item: ReadTeamRecord) => {
       if (selectedTeam.value.id !== item.id) {
-        selectedTeam.value.name = display;
-        selectedTeam.value.id = item.id;
+        selectedTeam.value = item;
         await getTags();
         await getMembers();
         await getStatuses();

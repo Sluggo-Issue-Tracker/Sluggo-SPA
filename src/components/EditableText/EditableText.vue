@@ -51,7 +51,6 @@ const editableTextComponent = defineComponent({
     const tempText = ref("");
     const enableEditing = () => {
       isEditing.value = true;
-      tempText.value = "";
       context.emit("startedEditing");
     };
     const saveChanges = () => {

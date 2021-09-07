@@ -4,7 +4,7 @@ export interface LoginResponse {
   access_token: string;
   refresh_token: string;
   user: {
-    pk: string;
+    pk: number;
     username: string;
     email: string;
     first_name: string;
@@ -26,7 +26,7 @@ export interface SignupDetails {
 }
 
 export interface UserRecord {
-  pk: string;
+  pk: number;
   email: string;
   first_name: string;
   last_name: string;

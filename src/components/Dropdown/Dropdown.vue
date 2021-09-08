@@ -10,8 +10,9 @@
           border: borderStyle
         }"
       >
-        <span>{{ firstItem || "" }}</span>
-        <i class="bx bx-chevron-down"></i>
+        <span v-if="hasItems()">{{ firstItem }}</span>
+        <span class="no-items-text" v-else>No options</span>
+        <i class="bx bx-chevron-down" v-if="hasItems()"></i>
       </button>
     </div>
     <div class="dropdown-menu">
@@ -19,10 +20,10 @@
         <div
           class="dropdown-item"
           v-for="item in items"
-          :key="item.data"
-          @click="itemSelected(item.data)"
+          :key="item[stringPropSpecifier] || item.owner.username"
+          @click="itemSelected(item)"
         >
-          {{ item.data }}
+          {{ item[stringPropSpecifier] || item.owner.username }}
         </div>
       </div>
     </div>
@@ -35,14 +36,15 @@ const dropdownComponent = defineComponent({
   name: "Dropdown",
   props: {
     label: {
-      type: String
+      type: String,
+      default: ""
     },
     firstItem: {
       type: String,
-      required: true
+      default: ""
     },
     items: {
-      type: Array
+      type: [Array]
     },
     backgroundColor: {
       type: String,
@@ -55,23 +57,38 @@ const dropdownComponent = defineComponent({
     borderStyle: {
       type: String,
       default: ""
+    },
+    stringPropSpecifier: {
+      type: String,
+      default: ""
     }
   },
   emits: ["itemSelected"],
   setup: (props, context) => {
     const dropdownClass = ref("");
-    const toggleDropdown = () => {
-      dropdownClass.value =
-        dropdownClass.value == "is-active" ? "" : "is-active";
+    const hasItems = () => {
+      if (props.items) {
+        if (props.items.length > 0) {
+          return true;
+        }
+      }
+      return false;
     };
-    const itemSelected = (item: string) => {
+    const toggleDropdown = () => {
+      if (hasItems()) {
+        dropdownClass.value =
+          dropdownClass.value === "is-active" ? "" : "is-active";
+      }
+    };
+    const itemSelected = (item: object) => {
       dropdownClass.value = "";
       context.emit("itemSelected", item);
     };
     return {
       toggleDropdown,
       dropdownClass,
-      itemSelected
+      itemSelected,
+      hasItems
     };
   }
 });

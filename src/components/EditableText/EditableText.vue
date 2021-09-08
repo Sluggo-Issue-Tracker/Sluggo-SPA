@@ -2,26 +2,29 @@
   <div class="editableText">
     <div v-if="!isEditing">
       <span class="text" @click="enableEditing">
-        {{ ticketTitle }}
+        {{ title }}
       </span>
     </div>
-    <div v-if="isEditing" @focusout="disableEditing">
+    <div v-if="isEditing" @focusout="saveChanges">
       <input
         v-model="tempText"
         class="input text-box"
         :style="{ 'background-color': color }"
+        v-focus
       />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 const editableTextComponent = defineComponent({
   name: "EditableText",
   props: {
     text: {
-      type: String
+      type: String,
+      required: true,
+      default: ""
     },
     color: {
       type: String
@@ -37,39 +40,37 @@ const editableTextComponent = defineComponent({
   emits: ["startedEditing", "stoppedEditing", "saveText"],
   created() {
     window.addEventListener("keydown", e => {
-      if (e.key == "Enter") {
+      if (e.key === "Enter") {
         this.saveChanges();
       }
     });
   },
   setup: (props, context) => {
     const isEditing = ref(false);
-    const ticketTitle = ref("Temp Title");
+    const title = ref("");
     const tempText = ref("");
     const enableEditing = () => {
       isEditing.value = true;
-      tempText.value = ticketTitle.value;
       context.emit("startedEditing");
     };
-    const disableEditing = () => {
-      isEditing.value = false;
-      tempText.value = "";
-      context.emit("stoppedEditing");
-      context.emit("saveText");
-    };
     const saveChanges = () => {
-      if (isEditing.value == true) {
+      if (isEditing.value === true) {
         isEditing.value = false;
-        ticketTitle.value = tempText.value;
-        context.emit("stoppedEditing");
+        title.value = tempText.value;
+        if (!title.value.match(/[A-Za-z]+/)) {
+          title.value = props.text;
+        }
+        context.emit("stoppedEditing", title.value);
       }
     };
+    onMounted(() => {
+      title.value = props.text;
+    });
     return {
       isEditing,
-      ticketTitle,
+      title,
       tempText,
       enableEditing,
-      disableEditing,
       saveChanges
     };
   }

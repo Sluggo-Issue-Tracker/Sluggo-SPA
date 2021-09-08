@@ -1,5 +1,5 @@
 import { axiosInstance } from "./base";
-import { PaginatedList, TagRecord, WriteTagRecord } from "@/api/types";
+import { TagRecord, WriteTagRecord } from "@/api/types";
 
 export const createTag = async (
   record: WriteTagRecord,
@@ -36,12 +36,9 @@ export const getTag = async (
   return data;
 };
 
-export const listTags = async (
-  teamId: number,
-  page: number
-): Promise<PaginatedList<TagRecord>> => {
-  const { data } = await axiosInstance.get<PaginatedList<TagRecord>>(
-    `/api/teams/${teamId}/tags/?page=${page}`
+export const listTags = async (teamId: number): Promise<TagRecord[]> => {
+  const { data } = await axiosInstance.get<TagRecord[]>(
+    `/api/teams/${teamId}/tags`
   );
   return data;
 };

@@ -58,7 +58,10 @@
       <div class="modal" :class="modalClass">
         <div class="modal-background"></div>
         <div class="modal-content">
-          <TicketModal @close="modalClass = ''" />
+          <TicketModal
+            @close="modalClass = ''"
+            v-if="modalClass == 'is-active'"
+          />
         </div>
       </div>
     </div>

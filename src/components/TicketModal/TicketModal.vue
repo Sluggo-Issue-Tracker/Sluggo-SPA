@@ -73,14 +73,6 @@
           v-model="ticketObj.due_date"
         />
       </div>
-      <div class="ticket-time column">
-        <label class="ticket-field-label">Time</label>
-        <input
-          data-testid="ticket-due-date"
-          class="input is-fullwidth"
-          type="time"
-        />
-      </div>
     </div>
     <div class="ticket-modal-third-row columns">
       <div class="ticket-description column">
@@ -114,6 +106,7 @@ import { listTags } from "@/api/tags";
 import { listMembersDepaginated } from "@/api/members";
 import { listStatuses } from "@/api/statuses";
 import { TagRecord, MemberRecord, UserRecord } from "@/api/types";
+import { DateTime } from "luxon";
 import Dropdown from "@/components/Dropdown/Dropdown.vue";
 import EditableText from "@/components/EditableText/EditableText.vue";
 import Footer from "@/components/TicketModal/components/Footer/Footer.vue";
@@ -180,15 +173,14 @@ const ticketModalComponent = defineComponent({
     };
     const getTeamData = async () => {
       try {
-        await Promise.all([
+        const results = await Promise.all([
           listTags(selectedTeam.value.id),
           listMembersDepaginated(selectedTeam.value.id),
           listStatuses(selectedTeam.value.id)
-        ]).then(results => {
-          setTags(Object.values(results[0]));
-          setMembers(results[1]);
-          setStatuses(Object.values(results[2]));
-        });
+        ]);
+        setTags(Object.values(results[0]));
+        setMembers(results[1]);
+        setStatuses(Object.values(results[2]));
       } catch (error) {
         alert(error);
       }
@@ -197,8 +189,9 @@ const ticketModalComponent = defineComponent({
       selectedStatus.value = item;
     };
     const userSelected = (item: MemberRecord) => {
-      selectedUser.value.username = item.owner.username;
-      selectedMember.value.id = item.id;
+      selectedUser.value = item.owner;
+      selectedMember.value = item;
+      console.log(selectedMember.value);
     };
     const teamSelected = async (item: ReadTeamRecord) => {
       if (selectedTeam.value.id !== item.id) {
@@ -207,7 +200,7 @@ const ticketModalComponent = defineComponent({
       }
     };
     const tagSelected = (item: TagRecord) => {
-      selectedTag.value.title = item.title;
+      selectedTag.value = item;
       selectedTagId.value[0] = item.id;
     };
     const setTitle = (item: string) => {
@@ -223,10 +216,15 @@ const ticketModalComponent = defineComponent({
         status: selectedStatus.value.id
       };
       if (ticketObj.value.due_date) {
-        ticket.due_date = ticketObj.value.due_date.replace(/T/, " ");
+        ticket.due_date = DateTime.fromFormat(
+          ticketObj.value.due_date,
+          "yyyy-mm-dd"
+        )
+          .toUTC(0)
+          .toISO();
       }
       if (selectedMember.value.id !== "-1") {
-        ticket.assigned_user = selectedMember.value;
+        ticket.assigned_user = selectedMember.value.id;
       }
       if (ticketObj.value.description !== "") {
         ticket.description = ticketObj.value.description;

@@ -86,7 +86,7 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const tagsList = ref({} as PaginatedList<TagRecord>);
+    const tagsList = ref({} as TagRecord[]);
     const listPage = ref(1);
     const newTag = ref({} as WriteTagRecord);
     const isValidTag = ref(true);

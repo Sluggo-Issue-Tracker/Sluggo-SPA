@@ -63,7 +63,7 @@ export interface TagRecord {
 
 export interface WriteTicketRecord {
   tag_list?: Array<number>;
-  assigned_user?: MemberRecord;
+  assigned_user?: string;
   status?: number;
   title: string;
   description?: string;

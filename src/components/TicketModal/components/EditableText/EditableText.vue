@@ -10,7 +10,6 @@
         v-model="tempText"
         class="input text-box"
         :style="{ 'background-color': color }"
-        v-focus
       />
     </div>
   </div>
@@ -18,7 +17,6 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-
 const editableTextComponent = defineComponent({
   name: "EditableText",
   props: {
@@ -27,6 +25,13 @@ const editableTextComponent = defineComponent({
     },
     color: {
       type: String
+    }
+  },
+  directives: {
+    focus: {
+      mounted(el) {
+        el.focus();
+      }
     }
   },
   emits: ["startedEditing", "stoppedEditing", "saveText"],
@@ -41,7 +46,6 @@ const editableTextComponent = defineComponent({
     const isEditing = ref(false);
     const ticketTitle = ref("Temp Title");
     const tempText = ref("");
-
     const enableEditing = () => {
       isEditing.value = true;
       tempText.value = ticketTitle.value;
@@ -70,8 +74,7 @@ const editableTextComponent = defineComponent({
     };
   }
 });
-
 export default editableTextComponent;
 </script>
 
-<style scoped src="./styles.module.scss" lang="scss"></style>
+<style scoped src="./editable-text-styles.module.scss" lang="scss"></style>

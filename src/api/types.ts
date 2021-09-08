@@ -36,12 +36,14 @@ export interface UserRecord {
 
 export interface StatusRecordInput {
   title: string;
+  color: string;
 }
 
 export interface StatusRecordOutput {
   id: number;
   object_uuid: string;
   title: string;
+  color: string;
   created: string;
   activated?: string;
   deactivated?: string;
@@ -66,6 +68,7 @@ export interface WriteTicketRecord {
   status?: number;
   title: string;
   description?: string;
+  due_date?: string;
 }
 
 export interface ReadTicketRecord {

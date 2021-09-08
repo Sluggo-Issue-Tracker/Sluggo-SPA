@@ -1,5 +1,4 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import router from "../router";
 import { SLUGGO_API_URL } from "../../constants";
 import { wrapExceptions } from "@/methods";
 

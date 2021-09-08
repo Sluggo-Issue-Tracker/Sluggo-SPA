@@ -31,7 +31,6 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-
 const dropdownComponent = defineComponent({
   name: "Dropdown",
   props: {
@@ -46,13 +45,16 @@ const dropdownComponent = defineComponent({
       type: Array
     },
     backgroundColor: {
-      type: String
+      type: String,
+      default: "#FFFFFF"
     },
     textColor: {
-      type: String
+      type: String,
+      default: "black"
     },
     borderStyle: {
-      type: String
+      type: String,
+      default: ""
     }
   },
   emits: ["itemSelected"],
@@ -73,8 +75,7 @@ const dropdownComponent = defineComponent({
     };
   }
 });
-
 export default dropdownComponent;
 </script>
 
-<style scoped src="./styles.module.scss" lang="scss"></style>
+<style scoped src="./dropdown-styles.module.scss" lang="scss"></style>

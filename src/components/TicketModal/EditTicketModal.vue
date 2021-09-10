@@ -14,7 +14,7 @@
         <EditableText
           data-testid="ticket-title-text"
           :color="selectedStatus.color"
-          :text="'Title'"
+          :text="ticketObj.title"
           @startedEditing="shouldShowPencil = false"
           @stoppedEditing="setTitle"
         />
@@ -48,10 +48,7 @@
         data-testid="teams-dropdown"
         :label="'Team'"
         class="column"
-        :items="teams"
         :firstItem="selectedTeam.name"
-        :stringPropSpecifier="'name'"
-        @itemSelected="teamSelected"
       />
     </div>
     <div class="ticket-modal-second-row columns">
@@ -80,12 +77,12 @@
         <textarea
           data-testid="ticket-description"
           class="textarea has-fixed-size is-fullwidth"
-          v-model="ticketDescription"
+          v-model="ticketObj.description"
         ></textarea>
       </div>
     </div>
     <Footer
-      :shouldShowDelete="false"
+      :shouldShowDelete="true"
       @saveChanges="saveChanges"
       @closeModal="closeModal"
     />
@@ -95,12 +92,13 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
 import {
+  ReadTicketRecord,
   WriteTicketRecord,
   ReadTeamRecord,
   StatusRecordOutput
 } from "@/api/types";
-import { createTicket } from "@/api/tickets";
-import { getUsersTeams } from "@/api/teams";
+import { updateTicket } from "@/api/tickets";
+import { getTeam } from "@/api/teams";
 import { listTags } from "@/api/tags";
 import { listMembersDepaginated } from "@/api/members";
 import { listStatuses } from "@/api/statuses";
@@ -110,7 +108,7 @@ import Dropdown from "@/components/Dropdown/Dropdown.vue";
 import EditableText from "@/components/EditableText/EditableText.vue";
 import Footer from "@/components/TicketModal/components/Footer/Footer.vue";
 import IconSluggo from "@/assets/IconSluggo";
-const ticketModalComponent = defineComponent({
+const editTicketModalComponent = defineComponent({
   name: "TicketModal",
   components: {
     IconSluggo,
@@ -118,9 +116,18 @@ const ticketModalComponent = defineComponent({
     EditableText,
     Footer
   },
+  props: {
+    ticketRecord: {
+      type: Object as () => ReadTicketRecord,
+      required: true
+    },
+    teamId: {
+      type: Number,
+      required: true
+    }
+  },
   emits: ["close"],
   setup: (props, context) => {
-    const teams = ref(Array<ReadTeamRecord>());
     const selectedTeam = ref({} as ReadTeamRecord);
     const tags = ref(Array<TagRecord>());
     const selectedTag = ref({} as TagRecord);
@@ -131,22 +138,19 @@ const ticketModalComponent = defineComponent({
     const statuses = ref(Array<StatusRecordOutput>());
     const selectedStatus = ref({} as StatusRecordOutput);
     const selectedDueDate = ref("");
-    const ticketTitle = ref("");
-    const ticketDescription = ref("");
+    const ticketObj = ref({} as WriteTicketRecord);
+    const doesTicketExist = ref(false);
     const shouldShowPencil = ref(true);
 
     const initializeData = () => {
-      ticketDescription.value = "";
-      ticketTitle.value = "Title";
-    };
-    const getTeams = async () => {
-      try {
-        teams.value = Object.values(await getUsersTeams());
-        selectedTeam.value.name = teams.value[0].name;
-        selectedTeam.value.id = teams.value[0].id;
-      } catch (error) {
-        alert(error);
-      }
+      ticketObj.value.title = props.ticketRecord.title;
+      ticketObj.value.description = props.ticketRecord.description
+        ? props.ticketRecord.description
+        : "";
+      ticketObj.value.due_date = props.ticketRecord.due_date
+        ? props.ticketRecord.due_date
+        : DateTime.now();
+      selectedTeam.value.id = props.teamId;
     };
     const setTags = (tagResults: TagRecord[]) => {
       tags.value = tagResults;
@@ -155,23 +159,32 @@ const ticketModalComponent = defineComponent({
     };
     const setMembers = (memberResults: MemberRecord[]) => {
       members.value = memberResults;
-      selectedUser.value.username = "None";
-      selectedMember.value.id = "-1";
+      selectedUser.value.username = props.ticketRecord.assigned_user?.owner
+        .username
+        ? props.ticketRecord.assigned_user.owner.username
+        : "None";
+      selectedMember.value.id = props.ticketRecord.assigned_user?.id
+        ? props.ticketRecord.assigned_user.id
+        : "-1";
     };
     const setStatuses = (statusResults: StatusRecordOutput[]) => {
       statuses.value = statusResults;
-      selectedStatus.value = statusResults[0];
+      selectedStatus.value = props.ticketRecord.status
+        ? props.ticketRecord.status
+        : statusResults[0];
     };
     const getTeamData = async () => {
       try {
         const results = await Promise.all([
           listTags(selectedTeam.value.id),
           listMembersDepaginated(selectedTeam.value.id),
-          listStatuses(selectedTeam.value.id)
+          listStatuses(selectedTeam.value.id),
+          getTeam(selectedTeam.value.id)
         ]);
         setTags(Object.values(results[0]));
         setMembers(results[1]);
         setStatuses(Object.values(results[2]));
+        selectedTeam.value = results[3];
       } catch (error) {
         alert(error);
       }
@@ -183,45 +196,46 @@ const ticketModalComponent = defineComponent({
       selectedUser.value = item.owner;
       selectedMember.value = item;
     };
-    const teamSelected = async (item: ReadTeamRecord) => {
-      if (selectedTeam.value.id !== item.id) {
-        selectedTeam.value = item;
-        await getTeamData();
-      }
-    };
     const tagSelected = (item: TagRecord) => {
       selectedTag.value = item;
       selectedTagId.value[0] = item.id;
     };
     const setTitle = (item: string) => {
-      ticketTitle.value = item;
+      ticketObj.value.title = item;
       shouldShowPencil.value = true;
     };
     const closeModal = () => {
       context.emit("close");
     };
     const saveChanges = async () => {
-      const ticket: WriteTicketRecord = {
-        title: ticketTitle.value,
-        status: selectedStatus.value.id
+      const ticket: ReadTicketRecord = {
+        id: props.ticketRecord.id,
+        owner: props.ticketRecord.owner,
+        object_uuid: props.ticketRecord.object_uuid,
+        ticket_number: props.ticketRecord.ticket_number,
+        created: props.ticketRecord.created,
+        title: ticketObj.value.title,
+        status: selectedStatus.value,
+        tag_list: props.ticketRecord.tag_list
       };
-      if (selectedDueDate.value) {
+      if (ticketObj.value.due_date) {
         ticket.due_date = DateTime.fromFormat(
           selectedDueDate.value,
           "yyyy-mm-dd"
         );
       }
       if (selectedMember.value.id !== "-1") {
-        ticket.assigned_user = selectedMember.value.id;
+        ticket.assigned_user = selectedMember.value;
       }
-      if (ticketDescription.value !== "") {
-        ticket.description = ticketDescription.value;
+      if (ticketObj.value.description !== "") {
+        ticket.description = ticketObj.value.description;
       }
-      if (selectedTagId.value[0] !== -1) {
+      /*if (selectedTagId.value[0] !== -1) {
         ticket.tag_list = selectedTagId.value;
       }
+      */
       try {
-        await createTicket(ticket, selectedTeam.value.id);
+        await updateTicket(ticket, props.teamId);
       } catch (error) {
         alert(error);
       }
@@ -229,12 +243,10 @@ const ticketModalComponent = defineComponent({
     };
     onMounted(async () => {
       initializeData();
-      await getTeams();
       await getTeamData();
     });
     return {
-      ticketTitle,
-      ticketDescription,
+      ticketObj,
       selectedStatus,
       shouldShowPencil,
       selectedUser,
@@ -242,20 +254,19 @@ const ticketModalComponent = defineComponent({
       selectedTeam,
       selectedDueDate,
       members,
-      teams,
       tags,
       statuses,
+      doesTicketExist,
       setTitle,
       closeModal,
       saveChanges,
       statusSelected,
       userSelected,
-      teamSelected,
       tagSelected
     };
   }
 });
-export default ticketModalComponent;
+export default editTicketModalComponent;
 </script>
 
 <style scoped src="./ticket-modal-styles.module.scss" lang="scss"></style>

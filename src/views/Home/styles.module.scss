@@ -45,14 +45,27 @@
   padding: 1rem 1rem 1rem 1rem;
 
   .cell {
-    flex: 1;
-    max-width: 12rem;
-    overflow: auto;
+    flex: 5 0;
     color: white;
-    display: flex;
-    align-items: center;
     gap: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
   }
+
+  .iconCell {
+    @extend .cell;
+    flex: 1 0 1rem;
+  }
+
+  .titleCell {
+    @extend .cell;
+    max-width: none;
+    color: white;
+    flex: 5 0 15rem;
+  }
+
+
 }
 
 .dataContainer {

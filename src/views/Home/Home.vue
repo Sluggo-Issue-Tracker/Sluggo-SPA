@@ -14,12 +14,11 @@
       <section class="ticketsSection">
         <Card>
           <h3>Assigned to You</h3>
-          <div>
-            <TicketRow />
-          </div>
+          <TicketTable :query-state="usersAssignedState" />
         </Card>
         <Card>
           <h3>Pinned Tickets</h3>
+          <TicketTable :query-state="usersPinnedState" />
         </Card>
       </section>
     </div>
@@ -35,15 +34,36 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, onMounted } from "vue";
 import Card from "@/components/Card";
-import TicketRow from "./components/TicketRow.vue";
+import TicketTable from "./components/TicketTable.vue";
+import { apiExecutor } from "@/methods";
+import { getUsersPinnedTickets, getUsersAssignedTickets } from "@/api";
 
 export default defineComponent({
   name: "Home",
   components: {
     Card,
-    TicketRow
+    TicketTable
+  },
+  setup: () => {
+    const [queryUsersPinned, usersPinnedState] = apiExecutor(
+      getUsersPinnedTickets
+    );
+
+    const [queryUsersAssigned, usersAssignedState] = apiExecutor(
+      getUsersAssignedTickets
+    );
+
+    onMounted(() => {
+      queryUsersPinned();
+      queryUsersAssigned();
+    });
+
+    return {
+      usersPinnedState,
+      usersAssignedState
+    };
   }
 });
 </script>

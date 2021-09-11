@@ -76,3 +76,17 @@ export const deleteTicket = async (
 ): Promise<void> => {
   await axiosInstance.delete<void>(`/api/teams/${teamId}/tickets/${record.id}`);
 };
+
+export const getUsersAssignedTickets = async (): Promise<ReadTicketRecord[]> => {
+  const { data } = await axiosInstance.get<ReadTicketRecord[]>(
+    "/api/user/assigned-tickets/"
+  );
+  return data;
+};
+
+export const getUsersPinnedTickets = async (): Promise<ReadTicketRecord[]> => {
+  const { data } = await axiosInstance.get<ReadTicketRecord[]>(
+    "/api/user/pinned-tickets/"
+  );
+  return data;
+};

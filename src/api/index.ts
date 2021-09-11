@@ -11,7 +11,9 @@ import {
   updateTicket,
   listTickets,
   getTicket,
-  deleteTicket
+  deleteTicket,
+  getUsersAssignedTickets,
+  getUsersPinnedTickets
 } from "./tickets";
 
 export {
@@ -31,5 +33,7 @@ export {
   updateTicket,
   listTickets,
   getTicket,
-  deleteTicket
+  deleteTicket,
+  getUsersAssignedTickets,
+  getUsersPinnedTickets
 };

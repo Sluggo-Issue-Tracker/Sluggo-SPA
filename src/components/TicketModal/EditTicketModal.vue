@@ -13,8 +13,9 @@
       >
         <EditableText
           data-testid="ticket-title-text"
+          v-if="titleFetched"
           :color="selectedStatus.color"
-          :text="ticketObj.title"
+          :text="ticket.title"
           @startedEditing="shouldShowPencil = false"
           @stoppedEditing="setTitle"
         />
@@ -77,7 +78,7 @@
         <textarea
           data-testid="ticket-description"
           class="textarea has-fixed-size is-fullwidth"
-          v-model="ticketObj.description"
+          v-model="ticket.description"
         ></textarea>
       </div>
     </div>
@@ -93,11 +94,10 @@
 import { defineComponent, ref, onMounted } from "vue";
 import {
   ReadTicketRecord,
-  WriteTicketRecord,
   ReadTeamRecord,
   StatusRecordOutput
 } from "@/api/types";
-import { updateTicket } from "@/api/tickets";
+import { getTicket, updateTicket } from "@/api/tickets";
 import { getTeam } from "@/api/teams";
 import { listTags } from "@/api/tags";
 import { listMembersDepaginated } from "@/api/members";
@@ -117,8 +117,8 @@ const editTicketModalComponent = defineComponent({
     Footer
   },
   props: {
-    ticketRecord: {
-      type: Object as () => ReadTicketRecord,
+    ticketId: {
+      type: Number,
       required: true
     },
     teamId: {
@@ -138,20 +138,10 @@ const editTicketModalComponent = defineComponent({
     const statuses = ref(Array<StatusRecordOutput>());
     const selectedStatus = ref({} as StatusRecordOutput);
     const selectedDueDate = ref("");
-    const ticketObj = ref({} as WriteTicketRecord);
-    const doesTicketExist = ref(false);
+    const ticket = ref({} as ReadTicketRecord);
     const shouldShowPencil = ref(true);
+    const titleFetched = ref(false);
 
-    const initializeData = () => {
-      ticketObj.value.title = props.ticketRecord.title;
-      ticketObj.value.description = props.ticketRecord.description
-        ? props.ticketRecord.description
-        : "";
-      ticketObj.value.due_date = props.ticketRecord.due_date
-        ? props.ticketRecord.due_date
-        : DateTime.now();
-      selectedTeam.value.id = props.teamId;
-    };
     const setTags = (tagResults: TagRecord[]) => {
       tags.value = tagResults;
       selectedTag.value.title = "None";
@@ -159,27 +149,33 @@ const editTicketModalComponent = defineComponent({
     };
     const setMembers = (memberResults: MemberRecord[]) => {
       members.value = memberResults;
-      selectedUser.value.username = props.ticketRecord.assigned_user?.owner
-        .username
-        ? props.ticketRecord.assigned_user.owner.username
+      selectedUser.value.username = ticket.value.assigned_user?.owner.username
+        ? ticket.value.assigned_user.owner.username
         : "None";
-      selectedMember.value.id = props.ticketRecord.assigned_user?.id
-        ? props.ticketRecord.assigned_user.id
+      selectedMember.value.id = ticket.value.assigned_user?.id
+        ? ticket.value.assigned_user.id
         : "-1";
     };
     const setStatuses = (statusResults: StatusRecordOutput[]) => {
       statuses.value = statusResults;
-      selectedStatus.value = props.ticketRecord.status
-        ? props.ticketRecord.status
+      selectedStatus.value = ticket.value.status
+        ? ticket.value.status
         : statusResults[0];
+    };
+    const getTicketData = async () => {
+      try {
+        ticket.value = await getTicket(props.ticketId, props.teamId);
+      } catch (error) {
+        alert(error);
+      }
     };
     const getTeamData = async () => {
       try {
         const results = await Promise.all([
-          listTags(selectedTeam.value.id),
-          listMembersDepaginated(selectedTeam.value.id),
-          listStatuses(selectedTeam.value.id),
-          getTeam(selectedTeam.value.id)
+          listTags(props.teamId),
+          listMembersDepaginated(props.teamId),
+          listStatuses(props.teamId),
+          getTeam(props.teamId)
         ]);
         setTags(Object.values(results[0]));
         setMembers(results[1]);
@@ -201,52 +197,53 @@ const editTicketModalComponent = defineComponent({
       selectedTagId.value[0] = item.id;
     };
     const setTitle = (item: string) => {
-      ticketObj.value.title = item;
+      ticket.value.title = item;
       shouldShowPencil.value = true;
     };
     const closeModal = () => {
       context.emit("close");
     };
     const saveChanges = async () => {
-      const ticket: ReadTicketRecord = {
-        id: props.ticketRecord.id,
-        owner: props.ticketRecord.owner,
-        object_uuid: props.ticketRecord.object_uuid,
-        ticket_number: props.ticketRecord.ticket_number,
-        created: props.ticketRecord.created,
-        title: ticketObj.value.title,
+      const editedTicket: ReadTicketRecord = {
+        id: ticket.value.id,
+        owner: ticket.value.owner,
+        object_uuid: ticket.value.object_uuid,
+        ticket_number: ticket.value.ticket_number,
+        created: ticket.value.created,
+        title: ticket.value.title,
         status: selectedStatus.value,
-        tag_list: props.ticketRecord.tag_list
+        tag_list: ticket.value.tag_list
       };
-      if (ticketObj.value.due_date) {
-        ticket.due_date = DateTime.fromFormat(
+      if (ticket.value.due_date) {
+        editedTicket.due_date = DateTime.fromFormat(
           selectedDueDate.value,
           "yyyy-mm-dd"
         );
       }
       if (selectedMember.value.id !== "-1") {
-        ticket.assigned_user = selectedMember.value;
+        editedTicket.assigned_user = selectedMember.value;
       }
-      if (ticketObj.value.description !== "") {
-        ticket.description = ticketObj.value.description;
+      if (ticket.value.description !== "") {
+        editedTicket.description = ticket.value.description;
       }
       /*if (selectedTagId.value[0] !== -1) {
         ticket.tag_list = selectedTagId.value;
       }
       */
       try {
-        await updateTicket(ticket, props.teamId);
+        await updateTicket(editedTicket, props.teamId);
       } catch (error) {
         alert(error);
       }
       closeModal();
     };
     onMounted(async () => {
-      initializeData();
+      await getTicketData();
       await getTeamData();
+      titleFetched.value = true;
     });
     return {
-      ticketObj,
+      ticket,
       selectedStatus,
       shouldShowPencil,
       selectedUser,
@@ -256,7 +253,7 @@ const editTicketModalComponent = defineComponent({
       members,
       tags,
       statuses,
-      doesTicketExist,
+      titleFetched,
       setTitle,
       closeModal,
       saveChanges,

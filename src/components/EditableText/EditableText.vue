@@ -23,8 +23,7 @@ const editableTextComponent = defineComponent({
   props: {
     text: {
       type: String,
-      required: true,
-      default: ""
+      required: true
     },
     color: {
       type: String
@@ -56,9 +55,8 @@ const editableTextComponent = defineComponent({
     const saveChanges = () => {
       if (isEditing.value === true) {
         isEditing.value = false;
-        title.value = tempText.value;
-        if (!title.value.match(/[A-Za-z]+/)) {
-          title.value = props.text;
+        if (props.text.match(/[A-Za-z]+/)) {
+          title.value = tempText.value;
         }
         context.emit("stoppedEditing", title.value);
       }

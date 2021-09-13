@@ -12,7 +12,7 @@
         :style="{ 'background-color': selectedStatus.color }"
       >
         <EditableText
-          data-testid="ticket-title-text"
+          data-testid="ticket-title-input"
           :color="selectedStatus.color"
           :text="ticket.title"
           @startedEditing="shouldShowPencil = false"

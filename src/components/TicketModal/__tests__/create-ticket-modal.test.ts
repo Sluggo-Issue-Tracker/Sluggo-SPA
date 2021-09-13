@@ -1,10 +1,10 @@
 import "@testing-library/jest-dom";
-import TicketModal from "@/components/TicketModal/TicketModal.vue";
+import CreateTicketModal from "@/components/TicketModal/CreateTicketModal.vue";
 import { render } from "@testing-library/vue";
 
-describe("<TicketModal>", () => {
+describe("<CreateTicketModal>", () => {
   it("has all fields", () => {
-    const { getByTestId } = render(TicketModal);
+    const { getByTestId } = render(CreateTicketModal);
 
     expect(getByTestId("ticket-title-text")).toBeDefined();
     expect(getByTestId("statuses-dropdown")).toBeDefined();

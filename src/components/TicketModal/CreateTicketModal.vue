@@ -131,14 +131,10 @@ const createTicketModalComponent = defineComponent({
     const statuses = ref(Array<StatusRecordOutput>());
     const selectedStatus = ref({} as StatusRecordOutput);
     const selectedDueDate = ref("");
-    const ticketTitle = ref("");
+    const ticketTitle = ref("Title");
     const ticketDescription = ref("");
     const shouldShowPencil = ref(true);
 
-    const initializeData = () => {
-      ticketDescription.value = "";
-      ticketTitle.value = "Title";
-    };
     const getTeams = async () => {
       try {
         teams.value = Object.values(await getUsersTeams());
@@ -230,7 +226,6 @@ const createTicketModalComponent = defineComponent({
       closeModal();
     };
     onMounted(async () => {
-      initializeData();
       await getTeams();
       await getTeamData();
     });

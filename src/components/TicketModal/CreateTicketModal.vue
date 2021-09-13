@@ -110,8 +110,8 @@ import Dropdown from "@/components/Dropdown/Dropdown.vue";
 import EditableText from "@/components/EditableText/EditableText.vue";
 import Footer from "@/components/TicketModal/components/Footer/Footer.vue";
 import IconSluggo from "@/assets/IconSluggo";
-const ticketModalComponent = defineComponent({
-  name: "TicketModal",
+const createTicketModalComponent = defineComponent({
+  name: "CreateTicketModal",
   components: {
     IconSluggo,
     Dropdown,
@@ -208,8 +208,10 @@ const ticketModalComponent = defineComponent({
       if (selectedDueDate.value) {
         ticket.due_date = DateTime.fromFormat(
           selectedDueDate.value,
-          "yyyy-mm-dd"
-        );
+          "yyyy-MM-dd"
+        )
+          .toUTC(0)
+          .toISO();
       }
       if (selectedMember.value.id !== "-1") {
         ticket.assigned_user = selectedMember.value.id;
@@ -255,7 +257,7 @@ const ticketModalComponent = defineComponent({
     };
   }
 });
-export default ticketModalComponent;
+export default createTicketModalComponent;
 </script>
 
 <style scoped src="./ticket-modal-styles.module.scss" lang="scss"></style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="ticket-modal">
+  <div class="ticket-modal" v-if="dataFetched">
     <div
       class="ticket-modal-header"
       :style="{ 'background-color': selectedStatus.color }"
@@ -13,7 +13,6 @@
       >
         <EditableText
           data-testid="ticket-title-text"
-          v-if="titleFetched"
           :color="selectedStatus.color"
           :text="ticket.title"
           @startedEditing="shouldShowPencil = false"
@@ -134,13 +133,12 @@ const editTicketModalComponent = defineComponent({
     const selectedTagId = ref([-1]);
     const members = ref(Array<MemberRecord>());
     const selectedUser = ref({} as UserRecord);
-    const selectedMember = ref({} as MemberRecord);
     const statuses = ref(Array<StatusRecordOutput>());
     const selectedStatus = ref({} as StatusRecordOutput);
     const selectedDueDate = ref("");
     const ticket = ref({} as ReadTicketRecord);
     const shouldShowPencil = ref(true);
-    const titleFetched = ref(false);
+    const dataFetched = ref(false);
 
     const setTags = (tagResults: TagRecord[]) => {
       tags.value = tagResults;
@@ -152,15 +150,17 @@ const editTicketModalComponent = defineComponent({
       selectedUser.value.username = ticket.value.assigned_user?.owner.username
         ? ticket.value.assigned_user.owner.username
         : "None";
-      selectedMember.value.id = ticket.value.assigned_user?.id
-        ? ticket.value.assigned_user.id
-        : "-1";
     };
     const setStatuses = (statusResults: StatusRecordOutput[]) => {
       statuses.value = statusResults;
       selectedStatus.value = ticket.value.status
         ? ticket.value.status
         : statusResults[0];
+    };
+    const setDueDate = () => {
+      if (ticket.value.due_date) {
+        selectedDueDate.value = ticket.value.due_date.slice(0, 10);
+      }
     };
     const getTicketData = async () => {
       try {
@@ -186,11 +186,12 @@ const editTicketModalComponent = defineComponent({
       }
     };
     const statusSelected = (item: StatusRecordOutput) => {
+      ticket.value.status = item;
       selectedStatus.value = item;
     };
     const userSelected = (item: MemberRecord) => {
+      ticket.value.assigned_user = item;
       selectedUser.value = item.owner;
-      selectedMember.value = item;
     };
     const tagSelected = (item: TagRecord) => {
       selectedTag.value = item;
@@ -204,34 +205,16 @@ const editTicketModalComponent = defineComponent({
       context.emit("close");
     };
     const saveChanges = async () => {
-      const editedTicket: ReadTicketRecord = {
-        id: ticket.value.id,
-        owner: ticket.value.owner,
-        object_uuid: ticket.value.object_uuid,
-        ticket_number: ticket.value.ticket_number,
-        created: ticket.value.created,
-        title: ticket.value.title,
-        status: selectedStatus.value,
-        tag_list: ticket.value.tag_list
-      };
-      if (ticket.value.due_date) {
-        editedTicket.due_date = DateTime.fromFormat(
+      if (selectedDueDate.value) {
+        ticket.value.due_date = DateTime.fromFormat(
           selectedDueDate.value,
-          "yyyy-mm-dd"
-        );
+          "yyyy-MM-dd"
+        )
+          .toUTC(0)
+          .toISO();
       }
-      if (selectedMember.value.id !== "-1") {
-        editedTicket.assigned_user = selectedMember.value;
-      }
-      if (ticket.value.description !== "") {
-        editedTicket.description = ticket.value.description;
-      }
-      /*if (selectedTagId.value[0] !== -1) {
-        ticket.tag_list = selectedTagId.value;
-      }
-      */
       try {
-        await updateTicket(editedTicket, props.teamId);
+        await updateTicket(ticket.value, props.teamId);
       } catch (error) {
         alert(error);
       }
@@ -240,7 +223,8 @@ const editTicketModalComponent = defineComponent({
     onMounted(async () => {
       await getTicketData();
       await getTeamData();
-      titleFetched.value = true;
+      setDueDate();
+      dataFetched.value = true;
     });
     return {
       ticket,
@@ -253,7 +237,7 @@ const editTicketModalComponent = defineComponent({
       members,
       tags,
       statuses,
-      titleFetched,
+      dataFetched,
       setTitle,
       closeModal,
       saveChanges,

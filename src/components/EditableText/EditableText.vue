@@ -55,7 +55,7 @@ const editableTextComponent = defineComponent({
     const saveChanges = () => {
       if (isEditing.value === true) {
         isEditing.value = false;
-        if (props.text.match(/[A-Za-z]+/)) {
+        if (tempText.value.match(/[A-Za-z]+/)) {
           title.value = tempText.value;
         }
         context.emit("stoppedEditing", title.value);

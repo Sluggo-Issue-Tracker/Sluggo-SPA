@@ -9,6 +9,11 @@
     <div v-else-if="data" class="dataContainer">
       <TicketRow v-for="ticket in data" :key="ticket.id" :ticket="ticket" />
     </div>
+    <PaginationControls
+      :current-page="page"
+      :total-pages="200"
+      @updatePage="handlePageUpdate"
+    />
   </div>
 </template>
 
@@ -18,11 +23,13 @@ import { ReadTicketRecord } from "@/api/types";
 import { AxiosError } from "axios";
 import { QueryState } from "@/methods/wrapExceptions";
 import TicketRow from "./TicketRow.vue";
+import PaginationControls from "@/components/PaginationControls";
 
 export default defineComponent({
   name: "TicketTable",
   components: {
-    TicketRow
+    TicketRow,
+    PaginationControls
   },
   props: {
     queryState: {
@@ -39,11 +46,17 @@ export default defineComponent({
     const loading = ref(props.queryState.loading);
     const data = ref(props.queryState.data);
     const error = ref(props.queryState.error);
+    const page = ref(1);
+    const handlePageUpdate = (newPageNumber: number) => {
+      page.value = newPageNumber;
+    };
 
     return {
       loading,
       data,
-      error
+      error,
+      handlePageUpdate,
+      page
     };
   }
 });

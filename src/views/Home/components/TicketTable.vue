@@ -9,10 +9,14 @@
     <div v-else-if="data" class="dataContainer">
       <TicketRow v-for="ticket in data" :key="ticket.id" :ticket="ticket" />
       <PaginationControls
+        v-if="totalPages !== 1"
         :current-page="page"
         :total-pages="totalPages"
         @updatePage="handlePageUpdate"
       />
+    </div>
+    <div v-if="!loading && !error && !data">
+      You have no tickets
     </div>
   </div>
 </template>
@@ -48,7 +52,8 @@ export default defineComponent({
     const loading = ref(props.queryState.loading);
     const data = computed(() => {
       if (props.queryState.data.value) {
-        return props.queryState.data.value.slice(page.value - 1, pageSize);
+        const idx = (page.value - 1) * pageSize;
+        return props.queryState.data.value.slice(idx, idx + pageSize);
       }
       return undefined;
     });

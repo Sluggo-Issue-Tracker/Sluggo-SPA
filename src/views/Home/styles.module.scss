@@ -46,7 +46,6 @@
 
   .cell {
     flex: 5 0;
-    color: white;
     gap: 0.5rem;
     display: flex;
     flex-wrap: wrap;
@@ -61,10 +60,8 @@
   .titleCell {
     @extend .cell;
     max-width: none;
-    color: white;
     flex: 5 0 15rem;
   }
-
 
 }
 

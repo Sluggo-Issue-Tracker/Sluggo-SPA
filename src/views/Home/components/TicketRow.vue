@@ -1,7 +1,7 @@
 <template>
   <div
     class="rowContainer"
-    :style="{ backgroundColor: ticket.status?.color ?? '#EEEEEE' }"
+    :style="{ backgroundColor: statusColor, color: textColor }"
   >
     <div class="iconCell">{{ ticket.status?.title ?? "No Status" }}</div>
     <div class="titleCell">
@@ -20,11 +20,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType, ref } from "vue";
 import ProfileEmblem from "@/components/ProfileEmblem";
 import Tag from "@/components/Tag";
 import { ReadTicketRecord } from "@/api/types";
-import { DateTime } from "luxon";
+import { textColorFromBackground } from "@/methods";
 
 export default defineComponent({
   name: "TicketRow",
@@ -34,6 +34,16 @@ export default defineComponent({
       type: Object as PropType<ReadTicketRecord>,
       required: true
     }
+  },
+  setup: props => {
+    const statusColor = ref(props.ticket.status?.color ?? "#EEEEEEFF");
+    const textColor = computed(() =>
+      textColorFromBackground(statusColor.value)
+    );
+    return {
+      textColor,
+      statusColor
+    };
   }
 });
 </script>

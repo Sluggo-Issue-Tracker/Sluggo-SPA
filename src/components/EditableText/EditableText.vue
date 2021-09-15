@@ -53,13 +53,11 @@ const editableTextComponent = defineComponent({
       context.emit("startedEditing");
     };
     const saveChanges = () => {
-      if (isEditing.value === true) {
-        isEditing.value = false;
-        if (tempText.value.match(/[A-Za-z]+/)) {
-          title.value = tempText.value;
-        }
-        context.emit("stoppedEditing", title.value);
+      isEditing.value = false;
+      if (tempText.value.match(/[A-Za-z]+/)) {
+        title.value = tempText.value;
       }
+      context.emit("stoppedEditing", title.value);
     };
     onMounted(() => {
       title.value = props.text;

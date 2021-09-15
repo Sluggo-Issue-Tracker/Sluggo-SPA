@@ -58,7 +58,7 @@
       <div class="modal" :class="modalClass">
         <div class="modal-background"></div>
         <div class="modal-content">
-          <CreateTicketModal
+          <TicketModal
             @close="modalClass = ''"
             v-if="modalClass == 'is-active'"
           />
@@ -70,7 +70,7 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import store from "@/store";
-import CreateTicketModal from "@/components/TicketModal/CreateTicketModal.vue";
+import TicketModal from "@/components/TicketModal/TicketModal.vue";
 import IconSluggo from "@/assets/IconSluggo";
 import NavbarDropdown from "./components/NavbarDropdown.vue";
 import Search from "@/components/Search";
@@ -80,7 +80,7 @@ const sluggoNavbarComponent = defineComponent({
   name: "SluggoNavbar",
   components: {
     IconSluggo,
-    CreateTicketModal,
+    TicketModal,
     NavbarDropdown,
     Search,
     Sidebar

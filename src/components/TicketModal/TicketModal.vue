@@ -1,20 +1,20 @@
 <template>
-  <div class="ticket-modal">
+  <div class="ticket-modal" v-if="dataFetched">
     <div
       class="ticket-modal-header"
-      :style="{ 'background-color': selectedStatus.color }"
+      :style="{ 'background-color': ticket.status.color }"
     >
       <div class="logo">
         <IconSluggo :height="50" :width="50" />
       </div>
       <div
         class="ticket-name"
-        :style="{ 'background-color': selectedStatus.color }"
+        :style="{ 'background-color': ticket.status.color }"
       >
         <EditableText
-          data-testid="ticket-title-text"
-          :color="selectedStatus.color"
-          :text="'Title'"
+          data-testid="ticket-title-input"
+          :color="ticket.status.color"
+          :text="ticket.title"
           @startedEditing="shouldShowPencil = false"
           @stoppedEditing="setTitle"
         />
@@ -25,12 +25,12 @@
       <Dropdown
         data-testid="statuses-dropdown"
         :items="statuses"
-        :firstItem="selectedStatus.title"
+        :firstItem="ticket.status.title"
         :stringPropSpecifier="'title'"
         @itemSelected="statusSelected"
         :style="{ 'margin-left': 'auto' }"
         :class="'is-right'"
-        :backgroundColor="selectedStatus.color"
+        :backgroundColor="ticket.status.color"
         :textColor="'white'"
         :borderStyle="'none'"
       />
@@ -80,12 +80,12 @@
         <textarea
           data-testid="ticket-description"
           class="textarea has-fixed-size is-fullwidth"
-          v-model="ticketDescription"
+          v-model="ticket.description"
         ></textarea>
       </div>
     </div>
     <Footer
-      :shouldShowDelete="false"
+      :shouldShowDelete="shouldShowDelete"
       @saveChanges="saveChanges"
       @closeModal="closeModal"
     />
@@ -96,11 +96,12 @@
 import { defineComponent, ref, onMounted } from "vue";
 import {
   WriteTicketRecord,
+  ReadTicketRecord,
   ReadTeamRecord,
   StatusRecordOutput
 } from "@/api/types";
-import { createTicket } from "@/api/tickets";
-import { getUsersTeams } from "@/api/teams";
+import { getTicket, updateTicket, createTicket } from "@/api/tickets";
+import { getTeam, getUsersTeams } from "@/api/teams";
 import { listTags } from "@/api/tags";
 import { listMembersDepaginated } from "@/api/members";
 import { listStatuses } from "@/api/statuses";
@@ -110,13 +111,21 @@ import Dropdown from "@/components/Dropdown/Dropdown.vue";
 import EditableText from "@/components/EditableText/EditableText.vue";
 import Footer from "@/components/TicketModal/components/Footer/Footer.vue";
 import IconSluggo from "@/assets/IconSluggo";
-const createTicketModalComponent = defineComponent({
-  name: "CreateTicketModal",
+const ticketModalComponent = defineComponent({
+  name: "TicketModal",
   components: {
     IconSluggo,
     Dropdown,
     EditableText,
     Footer
+  },
+  props: {
+    ticketId: {
+      type: Number
+    },
+    teamId: {
+      type: Number
+    }
   },
   emits: ["close"],
   setup: (props, context) => {
@@ -127,13 +136,13 @@ const createTicketModalComponent = defineComponent({
     const selectedTagId = ref([-1]);
     const members = ref(Array<MemberRecord>());
     const selectedUser = ref({} as UserRecord);
-    const selectedMember = ref({} as MemberRecord);
     const statuses = ref(Array<StatusRecordOutput>());
     const selectedStatus = ref({} as StatusRecordOutput);
     const selectedDueDate = ref("");
-    const ticketTitle = ref("Title");
-    const ticketDescription = ref("");
+    const ticket = ref({} as ReadTicketRecord);
     const shouldShowPencil = ref(true);
+    const dataFetched = ref(false);
+    const shouldShowDelete = ref(false);
 
     const getTeams = async () => {
       try {
@@ -151,33 +160,52 @@ const createTicketModalComponent = defineComponent({
     };
     const setMembers = (memberResults: MemberRecord[]) => {
       members.value = memberResults;
-      selectedUser.value.username = "None";
-      selectedMember.value.id = "-1";
+      selectedUser.value.username = ticket.value.assigned_user?.owner.username
+        ? ticket.value.assigned_user.owner.username
+        : "None";
     };
     const setStatuses = (statusResults: StatusRecordOutput[]) => {
       statuses.value = statusResults;
-      selectedStatus.value = statusResults[0];
+      ticket.value.status = ticket.value.status
+        ? ticket.value.status
+        : statusResults[0];
+    };
+    const setDueDate = () => {
+      if (ticket.value.due_date) {
+        selectedDueDate.value = ticket.value.due_date.slice(0, 10);
+      }
+    };
+    const getTicketData = async () => {
+      try {
+        if (props.ticketId && props.teamId) {
+          ticket.value = await getTicket(props.ticketId, props.teamId);
+        }
+      } catch (error) {
+        alert(error);
+      }
     };
     const getTeamData = async () => {
       try {
         const results = await Promise.all([
-          listTags(selectedTeam.value.id),
-          listMembersDepaginated(selectedTeam.value.id),
-          listStatuses(selectedTeam.value.id)
+          listTags(props.teamId || selectedTeam.value.id),
+          listMembersDepaginated(props.teamId || selectedTeam.value.id),
+          listStatuses(props.teamId || selectedTeam.value.id),
+          getTeam(props.teamId || selectedTeam.value.id)
         ]);
         setTags(Object.values(results[0]));
         setMembers(results[1]);
         setStatuses(Object.values(results[2]));
+        selectedTeam.value = results[3];
       } catch (error) {
         alert(error);
       }
     };
     const statusSelected = (item: StatusRecordOutput) => {
-      selectedStatus.value = item;
+      ticket.value.status = item;
     };
     const userSelected = (item: MemberRecord) => {
+      ticket.value.assigned_user = item;
       selectedUser.value = item.owner;
-      selectedMember.value = item;
     };
     const teamSelected = async (item: ReadTeamRecord) => {
       if (selectedTeam.value.id !== item.id) {
@@ -190,69 +218,76 @@ const createTicketModalComponent = defineComponent({
       selectedTagId.value[0] = item.id;
     };
     const setTitle = (item: string) => {
-      ticketTitle.value = item;
+      ticket.value.title = item;
       shouldShowPencil.value = true;
     };
     const closeModal = () => {
       context.emit("close");
     };
     const saveChanges = async () => {
-      const ticket: WriteTicketRecord = {
-        title: ticketTitle.value,
-        status: selectedStatus.value.id
-      };
       if (selectedDueDate.value) {
-        ticket.due_date = DateTime.fromFormat(
+        ticket.value.due_date = DateTime.fromFormat(
           selectedDueDate.value,
           "yyyy-MM-dd"
         )
           .toUTC(0)
           .toISO();
       }
-      if (selectedMember.value.id !== "-1") {
-        ticket.assigned_user = selectedMember.value.id;
-      }
-      if (ticketDescription.value !== "") {
-        ticket.description = ticketDescription.value;
-      }
-      if (selectedTagId.value[0] !== -1) {
-        ticket.tag_list = selectedTagId.value;
-      }
       try {
-        await createTicket(ticket, selectedTeam.value.id);
+        if (props.ticketId && props.teamId) {
+          await updateTicket(ticket.value, props.teamId);
+        } else {
+          const newTicket: WriteTicketRecord = {
+            title: ticket.value.title,
+            status: ticket.value.status?.id,
+            due_date: ticket.value.due_date,
+            description: ticket.value.description,
+            assigned_user: ticket.value.assigned_user?.id
+          };
+          await createTicket(newTicket, selectedTeam.value.id);
+        }
       } catch (error) {
         alert(error);
       }
       closeModal();
     };
     onMounted(async () => {
-      await getTeams();
+      if (props.teamId && props.ticketId) {
+        shouldShowDelete.value = true;
+        await getTicketData();
+        setDueDate();
+      } else {
+        await getTeams();
+        setTitle("Title");
+      }
       await getTeamData();
+      dataFetched.value = true;
     });
     return {
-      ticketTitle,
-      ticketDescription,
+      ticket,
       selectedStatus,
       shouldShowPencil,
+      shouldShowDelete,
       selectedUser,
       selectedTag,
       selectedTeam,
       selectedDueDate,
       members,
-      teams,
       tags,
+      teams,
       statuses,
+      dataFetched,
       setTitle,
       closeModal,
       saveChanges,
       statusSelected,
       userSelected,
-      teamSelected,
-      tagSelected
+      tagSelected,
+      teamSelected
     };
   }
 });
-export default createTicketModalComponent;
+export default ticketModalComponent;
 </script>
 
 <style scoped src="./ticket-modal-styles.module.scss" lang="scss"></style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="ticket-modal" v-if="dataFetched">
+  <div data-testid="ticket-modal" class="ticket-modal" v-if="dataFetched">
     <div
       class="ticket-modal-header"
       :style="{ 'background-color': ticket.status.color }"

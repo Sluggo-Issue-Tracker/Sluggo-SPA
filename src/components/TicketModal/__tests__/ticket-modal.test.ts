@@ -74,13 +74,13 @@ describe("<TicketModal> when creating ticket", () => {
   it("shows no user", async () => {
     const { getByTestId } = await renderCreateModal();
 
-    expect(getByTestId("users-dropdown")).toHaveTextContent("None");
+    expect(getByTestId("users-dropdown")).toHaveTextContent("Assigned toNone");
   });
 
-  it("shows first team from API response", async () => {
+  it("shows team", async () => {
     const { getByTestId } = await renderCreateModal();
 
-    expect(getByTestId("teams-dropdown")).toHaveTextContent("team1");
+    expect(getByTestId("teams-dropdown")).toHaveTextContent("TeamSlugbotics");
   });
 
   it("has no due date", async () => {
@@ -132,13 +132,15 @@ describe("<TicketModal> when updating ticket", () => {
   it("shows assigned user", async () => {
     const { getByTestId } = await renderEditModal();
 
-    expect(getByTestId("users-dropdown")).toHaveTextContent("Cruz123");
+    expect(getByTestId("users-dropdown")).toHaveTextContent(
+      "Assigned toCruz123"
+    );
   });
 
   it("shows ticket team", async () => {
     const { getByTestId } = await renderEditModal();
 
-    expect(getByTestId("teams-dropdown")).toHaveTextContent("Slugbotics");
+    expect(getByTestId("teams-dropdown")).toHaveTextContent("TeamSlugbotics");
   });
 
   it("shows formatted due date", async () => {

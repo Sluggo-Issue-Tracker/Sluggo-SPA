@@ -34,14 +34,14 @@
 }
 
 .rowContainer {
-  border-radius: 0.5rem;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   gap: 0.5rem;
   justify-content: space-between;
   padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-  background-color: var(--secondaryBackground);
+  background-color: var(--primaryBackground);
+  border-bottom: 1px solid var(--borderColor);
 
   &:hover {
     background-color: var(--hoverColor);
@@ -74,7 +74,6 @@
     border-radius: 5px;
     padding: 0.25rem 0.25rem 0.25rem 0.25rem;
   }
-
 }
 
 .dataContainer {
@@ -82,5 +81,14 @@
   margin-bottom: 0.25rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+}
+
+.ticketsContainer {
+  margin-bottom: 0.25rem;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }

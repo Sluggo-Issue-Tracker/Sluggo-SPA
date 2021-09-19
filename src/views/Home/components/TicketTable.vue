@@ -1,13 +1,15 @@
 <template>
   <div>
-    <div v-if="loading">
-      <Loader />
+    <div v-if="loading" class="loadingContainer">
+      <Loader :width="50" :height="50" />
     </div>
     <div v-else-if="error">
       Error while loading tickets
     </div>
     <div v-else-if="data && data.length !== 0" class="dataContainer">
-      <TicketRow v-for="ticket in data" :key="ticket.id" :ticket="ticket" />
+      <div class="ticketsContainer">
+        <TicketRow v-for="ticket in data" :key="ticket.id" :ticket="ticket" />
+      </div>
       <PaginationControls
         v-if="totalPages !== 1"
         :current-page="page"

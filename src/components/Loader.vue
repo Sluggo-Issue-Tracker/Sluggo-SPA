@@ -1,21 +1,43 @@
 <template>
-  <div class="loader" />
+  <div
+    :style="{
+      width: `${width}px`,
+      height: `${height}px`,
+      border: `${borderWidth}px solid #f3f3f3`,
+      'border-top': `${borderWidth}px solid #3498db`
+    }"
+    class="loader"
+  />
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 
 export default defineComponent({
-  name: "Loader"
+  name: "Loader",
+  props: {
+    width: {
+      type: Number,
+      optional: true,
+      default: 120
+    },
+    height: {
+      type: Number,
+      optional: true,
+      default: 120
+    }
+  },
+  setup: props => {
+    const borderWidth = computed(() => props.width / 7.5);
+    return {
+      borderWidth
+    };
+  }
 });
 </script>
 
 <style scoped>
 .loader {
-  border: 16px solid #f3f3f3; /* Light grey */
-  border-top: 16px solid #3498db; /* Blue */
   border-radius: 50%;
-  width: 120px;
-  height: 120px;
   animation: spin 2s linear infinite;
 }
 

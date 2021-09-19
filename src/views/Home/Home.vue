@@ -23,9 +23,7 @@
       </section>
     </div>
     <div class="sideView">
-      <Card>
-        <h3>Quick Add</h3>
-      </Card>
+      <TicketInput />
       <Card>
         <h3>Recent Updates</h3>
       </Card>
@@ -37,6 +35,7 @@
 import { defineComponent, onMounted } from "vue";
 import Card from "@/components/Card";
 import TicketTable from "./components/TicketTable.vue";
+import TicketInput from "./components/TicketInput.vue";
 import { apiExecutor } from "@/methods";
 import { getUsersPinnedTickets, getUsersAssignedTickets } from "@/api";
 
@@ -44,7 +43,8 @@ export default defineComponent({
   name: "Home",
   components: {
     Card,
-    TicketTable
+    TicketTable,
+    TicketInput
   },
   setup: () => {
     const [queryUsersPinned, usersPinnedState] = apiExecutor(

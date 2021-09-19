@@ -1,34 +1,30 @@
 <template>
-  <div
-    class="rowContainer"
-    :style="{ backgroundColor: statusColor, color: textColor }"
-  >
-    <div class="iconCell">{{ ticket.status?.title ?? "No Status" }}</div>
+  <div class="rowContainer">
     <div class="titleCell">
       {{ ticket.title }}
     </div>
-    <div class="cell tagContainer">
-      <Tag v-for="tag in ticket.tag_list" :tag="tag" :key="tag.object_uuid" />
+    <div class="textCell">
+      <span
+        class="statusContainer"
+        :style="{ backgroundColor: statusColor, color: textColor }"
+        >{{ ticket.status?.title ?? "No Status" }}</span
+      >
     </div>
-    <div class="iconCell">
-      <ProfileEmblem
-        :name="ticket.assigned_user?.owner.username ?? 'Unassigned'"
-      />
-      <span>{{ ticket.assigned_user?.owner.username ?? "Unassigned" }}</span>
-    </div>
+    <ProfileEmblem
+      :name="ticket.assigned_user?.owner.username ?? 'Unassigned'"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from "vue";
 import ProfileEmblem from "@/components/ProfileEmblem";
-import Tag from "@/components/Tag";
 import { ReadTicketRecord } from "@/api/types";
 import { textColorFromBackground } from "@/methods";
 
 export default defineComponent({
   name: "TicketRow",
-  components: { ProfileEmblem, Tag },
+  components: { ProfileEmblem },
   props: {
     ticket: {
       type: Object as PropType<ReadTicketRecord>,

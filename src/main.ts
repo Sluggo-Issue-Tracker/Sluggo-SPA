@@ -3,14 +3,16 @@ import store from "@/store";
 import App from "./App.vue";
 import router from "./router";
 import "boxicons/css/boxicons.min.css";
-
-require("@/assets/common.scss");
+import Oruga from "@oruga-ui/oruga-next";
+import "@oruga-ui/oruga-next/dist/oruga.css";
+import "@/assets/common.scss";
 
 const app = createApp(App);
 
 app
   .use(store.original)
   .use(router)
+  .use(Oruga)
   .mount("#app");
 
 app.config.errorHandler = async error => {

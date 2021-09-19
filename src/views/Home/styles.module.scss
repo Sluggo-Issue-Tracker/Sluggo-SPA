@@ -33,34 +33,46 @@
   padding: 1rem 1rem 1rem 1rem;
 }
 
-.ticketsSection {
-}
-
 .rowContainer {
   border-radius: 0.5rem;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
+  gap: 0.5rem;
   justify-content: space-between;
-  padding: 1rem 1rem 1rem 1rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  background-color: var(--secondaryBackground);
+
+  &:hover {
+    background-color: var(--hoverColor);
+    cursor: pointer;
+  }
 
   .cell {
-    flex: 5 0;
     gap: 0.5rem;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
   }
 
-  .iconCell {
+  .textCell {
     @extend .cell;
     flex: 1 0 1rem;
+  }
+
+  .iconCell {
+    flex: 1;
   }
 
   .titleCell {
     @extend .cell;
     max-width: none;
     flex: 5 0 15rem;
+  }
+
+  .statusContainer {
+    border-radius: 5px;
+    padding: 0.25rem 0.25rem 0.25rem 0.25rem;
   }
 
 }

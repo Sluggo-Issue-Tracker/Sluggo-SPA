@@ -6,7 +6,7 @@
     <div v-else-if="error">
       Error while loading tickets
     </div>
-    <div v-else-if="data" class="dataContainer">
+    <div v-else-if="data && data.length !== 0" class="dataContainer">
       <TicketRow v-for="ticket in data" :key="ticket.id" :ticket="ticket" />
       <PaginationControls
         v-if="totalPages !== 1"
@@ -15,7 +15,7 @@
         @updatePage="handlePageUpdate"
       />
     </div>
-    <div v-if="!loading && !error && !data">
+    <div v-if="!loading && !error && (!data || data.length === 0)">
       You have no tickets
     </div>
   </div>

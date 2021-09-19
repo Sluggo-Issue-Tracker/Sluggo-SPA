@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="loading">
-      Loading...
+      <Loader />
     </div>
     <div v-else-if="error">
       Error while loading tickets
@@ -26,6 +26,7 @@ import { computed, defineComponent, PropType, ref } from "vue";
 import { ReadTicketRecord } from "@/api/types";
 import { AxiosError } from "axios";
 import { QueryState } from "@/methods/wrapExceptions";
+import Loader from "@/components/Loader.vue";
 import TicketRow from "./TicketRow.vue";
 import PaginationControls from "@/components/PaginationControls";
 
@@ -33,7 +34,8 @@ export default defineComponent({
   name: "TicketTable",
   components: {
     TicketRow,
-    PaginationControls
+    PaginationControls,
+    Loader
   },
   props: {
     queryState: {

@@ -83,6 +83,7 @@ export interface ReadTicketRecord {
   created: string;
   activated?: string;
   deactivated?: string;
+  due_date?: string;
 }
 
 export interface TicketFilterOptions {

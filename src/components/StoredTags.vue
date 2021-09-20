@@ -73,7 +73,7 @@
 import { defineComponent, ref, onMounted } from "vue";
 import TagEntry from "@/components/TagEntry.vue";
 import { createTag, listTags } from "@/api/tags";
-import { PaginatedList, TagRecord, WriteTagRecord } from "@/api/types";
+import { TagRecord, WriteTagRecord } from "@/api/types";
 import { wrapExceptions } from "@/methods";
 
 export default defineComponent({

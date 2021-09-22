@@ -1,34 +1,27 @@
-.error-page {
-    font-size: 1rem;
-    display: flex;
-}
 
 .pset {
     font-size: 4rem;
-    margin-right: 84rem;
-    display: flex;
+    margin-left: 0rem;
+    padding-left: 5rem;
+    background-color: #3e8ed0; 
+    border-radius: 1rem;   
+    color: #FFFFFF;
 }
 
-.firstRow {
-    display: flex;
-    gap: .5rem;
-    margin-right: 40rem;
-
+.navbar-start {
+    color: #3e8ed0;
 }
 
-.secondRow {
-    display: flex;
-    gap: 10rem;
-
-}
-
-.emailtitle {
-    display: flex;
-    margin-right: 82rem;
+.rightSide {
+    margin-left: 5rem;
 }
 
 .email {
     font-size: 2rem;
+}
+
+.control1{
+    color: #FFFFFF;
 }
 
 .name {
@@ -37,15 +30,24 @@
 }
 
 .pronouns {
-    width: 600px;
-    height: 150px;
+    width: 50rem;
 }
 
 .bio {
     width: 600px;
-    height: 300px;
 }
 
 .updateprofilebutton {
-    margin-left: -100rem;
+    color :  #3e8ed0;
+}
+
+.logo {
+    margin-left: 15rem;
+
+}
+
+.navBar{
+    background-color: #3e8ed0; 
+    border-radius: 1rem;   
+    color: #FFFFFF;
 }

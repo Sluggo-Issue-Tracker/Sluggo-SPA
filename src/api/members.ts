@@ -26,18 +26,10 @@ export const listMembersDepaginated = async (
 };
 
 export const updateMember = async (
-  bio: string,
-  pronouns: string,
-  id: string,
-  teamId: number
+  MemberChanges: MemberRecord
 ): Promise<MemberRecord> => {
-  const updateMember = {
-    bio: bio,
-    pronouns: pronouns,
-    role: "AP"
-  }
-  const {data} = await axiosInstance.put<MemberRecord>(
-    `/api/teams/${teamId}/tags/${id}/`,
+  const { data } = await axiosInstance.put<MemberRecord>(
+    `/api/teams/${MemberChanges.team_id}/members/${MemberChanges.id}/`,
     updateMember
   );
   return data;

@@ -99,6 +99,7 @@ export interface MemberRecord {
   created: DateTime;
   activated: DateTime;
   deactivated: DateTime;
+  pronouns?: string;
 }
 
 export interface NewTeamRecord {

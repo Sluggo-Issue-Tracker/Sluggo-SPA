@@ -61,6 +61,7 @@ export default defineComponent({
       }
       return undefined;
     });
+
     const error = ref(props.queryState.error);
 
     const totalPages = computed(() => {
@@ -69,6 +70,7 @@ export default defineComponent({
       }
       return 1;
     });
+
     const handlePageUpdate = (newPageNumber: number) => {
       page.value = newPageNumber;
     };

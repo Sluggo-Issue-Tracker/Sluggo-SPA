@@ -8,12 +8,11 @@
       <o-field label="Team">
         <o-select
           placeholder="Select a team"
-          icon-right=""
           class="select"
           :expanded="true"
-          :v-model="selectedTeam"
+          v-model="selectedTeam"
         >
-          <option v-for="team in teamsData" :key="team.id">{{
+          <option v-for="team in teamsData" :key="team.id" :value="team">{{
             team.name
           }}</option>
         </o-select>
@@ -49,7 +48,7 @@ export default defineComponent({
   },
   setup: () => {
     const ticketTitle = ref("");
-    const selectedTeam = ref<string | null>(null);
+    const selectedTeam = ref<ReadTeamRecord | null>(null);
     const teamErrorMessage = ref<string>("");
     const createTicketSuccess = ref<boolean>(false);
 
@@ -63,17 +62,18 @@ export default defineComponent({
     });
 
     const onCreate = async () => {
+      console.log(selectedTeam.value);
       if (!selectedTeam.value) {
         teamErrorMessage.value = "You must select a team.";
+        console.log("must select a team");
         return;
       }
 
       if (!teamsData.value) {
+        console.log("must specify a value");
         return;
       }
-      const selectedTeamObj = teamsData.value.find(
-        team => team.name === selectedTeam.value
-      );
+      const selectedTeamObj = selectedTeam.value;
 
       const [data, error] = await wrapExceptions(
         createTicket,

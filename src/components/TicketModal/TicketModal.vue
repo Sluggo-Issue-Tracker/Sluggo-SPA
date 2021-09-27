@@ -39,12 +39,7 @@
       <Tags :tags="tags" @removeTag="removeTag" />
     </div>
     <div class="ticket-tags-selector column">
-      <div class="select">
-        <select>
-          <option>Select dropdown</option>
-          <option>With options</option>
-        </select>
-      </div>
+      <TagSelect :tags="tagOptions" @addTag="addTag" />
     </div>
     <div class="ticket-modal-first-row columns">
       <Dropdown
@@ -112,6 +107,7 @@ import { DateTime } from "luxon";
 import Dropdown from "@/components/Dropdown/Dropdown.vue";
 import EditableText from "@/components/EditableText/EditableText.vue";
 import Footer from "@/components/TicketModal/components/Footer/Footer.vue";
+import TagSelect from "@/components/TicketModal/components/TagSelect/TagSelect.vue";
 import Tags from "@/components/TicketModal/components/Tags/Tags.vue";
 import IconSluggo from "@/assets/IconSluggo";
 const ticketModalComponent = defineComponent({
@@ -121,7 +117,8 @@ const ticketModalComponent = defineComponent({
     Dropdown,
     EditableText,
     Footer,
-    Tags
+    Tags,
+    TagSelect
   },
   props: {
     ticketId: {
@@ -136,8 +133,7 @@ const ticketModalComponent = defineComponent({
     const teams = ref(Array<ReadTeamRecord>());
     const selectedTeam = ref({} as ReadTeamRecord);
     const tags = ref(Array<TagRecord>());
-    const selectedTag = ref({} as TagRecord);
-    const selectedTagId = ref([-1]);
+    const tagOptions = ref(Array<TagRecord>());
     const members = ref(Array<MemberRecord>());
     const selectedUser = ref({} as UserRecord);
     const statuses = ref(Array<StatusRecordOutput>());
@@ -159,13 +155,13 @@ const ticketModalComponent = defineComponent({
     };
     const setTags = (tagResults: TagRecord[]) => {
       tags.value = tagResults;
-      selectedTag.value.title = "None";
-      selectedTagId.value = [-1];
+      tagOptions.value = [...tagResults];
     };
     const removeTag = (index: number) => {
-      console.log(index);
       tags.value.splice(index, 1);
-      console.log(tags.value);
+    };
+    const addTag = (tag: TagRecord) => {
+      tags.value.push(tag);
     };
     const setMembers = (memberResults: MemberRecord[]) => {
       members.value = memberResults;
@@ -222,10 +218,6 @@ const ticketModalComponent = defineComponent({
         await getTeamData();
       }
     };
-    const tagSelected = (item: TagRecord) => {
-      selectedTag.value = item;
-      selectedTagId.value[0] = item.id;
-    };
     const setTitle = (item: string) => {
       ticket.value.title = item;
       shouldShowPencil.value = true;
@@ -278,7 +270,7 @@ const ticketModalComponent = defineComponent({
       shouldShowPencil,
       shouldShowDelete,
       selectedUser,
-      selectedTag,
+      tagOptions,
       selectedTeam,
       selectedDueDate,
       members,
@@ -287,6 +279,7 @@ const ticketModalComponent = defineComponent({
       statuses,
       dataFetched,
       removeTag,
+      addTag,
       setTitle,
       closeModal,
       saveChanges,

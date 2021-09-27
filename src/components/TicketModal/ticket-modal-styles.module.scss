@@ -1,6 +1,6 @@
 .ticket-modal {
     border: .1rem solid grey;
-    width: 40rem;
+    width: 50rem;
     background-color: white;
     margin-left: auto;
     margin-right: auto;
@@ -36,7 +36,6 @@
 
 .ticket-modal-second-row {
     display:flex;
-    justify-content: space-between;
     margin-left: .1rem;
     margin-right: .1rem;
 }
@@ -56,3 +55,6 @@
     padding-bottom: 0;
     padding-top: 1.2rem;
 }
+
+
+

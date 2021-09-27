@@ -35,6 +35,17 @@
         :borderStyle="'none'"
       />
     </div>
+    <div class="ticket-tags column">
+      <Tags :tags="tags" @removeTag="removeTag" />
+    </div>
+    <div class="ticket-tags-selector column">
+      <div class="select">
+        <select>
+          <option>Select dropdown</option>
+          <option>With options</option>
+        </select>
+      </div>
+    </div>
     <div class="ticket-modal-first-row columns">
       <Dropdown
         data-testid="users-dropdown"
@@ -55,15 +66,6 @@
       />
     </div>
     <div class="ticket-modal-second-row columns">
-      <Dropdown
-        data-testid="tags-dropdown"
-        :label="'Tags'"
-        class="column"
-        :items="tags"
-        :firstItem="selectedTag.title"
-        :stringPropSpecifier="'title'"
-        @itemSelected="tagSelected"
-      />
       <div class="ticket-due-date column">
         <label class="ticket-field-label">Due Date</label>
         <input
@@ -110,6 +112,7 @@ import { DateTime } from "luxon";
 import Dropdown from "@/components/Dropdown/Dropdown.vue";
 import EditableText from "@/components/EditableText/EditableText.vue";
 import Footer from "@/components/TicketModal/components/Footer/Footer.vue";
+import Tags from "@/components/TicketModal/components/Tags/Tags.vue";
 import IconSluggo from "@/assets/IconSluggo";
 const ticketModalComponent = defineComponent({
   name: "TicketModal",
@@ -117,7 +120,8 @@ const ticketModalComponent = defineComponent({
     IconSluggo,
     Dropdown,
     EditableText,
-    Footer
+    Footer,
+    Tags
   },
   props: {
     ticketId: {
@@ -157,6 +161,11 @@ const ticketModalComponent = defineComponent({
       tags.value = tagResults;
       selectedTag.value.title = "None";
       selectedTagId.value = [-1];
+    };
+    const removeTag = (index: number) => {
+      console.log(index);
+      tags.value.splice(index, 1);
+      console.log(tags.value);
     };
     const setMembers = (memberResults: MemberRecord[]) => {
       members.value = memberResults;
@@ -277,12 +286,12 @@ const ticketModalComponent = defineComponent({
       teams,
       statuses,
       dataFetched,
+      removeTag,
       setTitle,
       closeModal,
       saveChanges,
       statusSelected,
       userSelected,
-      tagSelected,
       teamSelected
     };
   }

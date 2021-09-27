@@ -20,10 +20,10 @@
         <div
           class="dropdown-item"
           v-for="item in items"
-          :key="item[stringPropSpecifier] || item.owner.username"
+          :key="item.owner?.username ?? item[stringPropSpecifier]"
           @click="itemSelected(item)"
         >
-          {{ item[stringPropSpecifier] || item.owner.username }}
+          {{ item.owner?.username ?? item[stringPropSpecifier] }}
         </div>
       </div>
     </div>

@@ -63,13 +63,13 @@ export const mockTeam: ReadTeamRecord = {
 export const mockTags: TagRecord[] = [
   {
     id: 10,
-    object_uuid: 354,
+    object_uuid: "a96b191e-15dd-11ec-9c2b-0242ac130003",
     title: "Test Tag 1",
     created: "2021-08-16T02:03:20+0000"
   },
   {
     id: 11,
-    object_uuid: 367,
+    object_uuid: "a96b191e-15dd-11ec-9c2b-0242ac130003",
     title: "Test Tag 2",
     created: "2021-08-16T02:03:20+0000"
   }
@@ -159,8 +159,7 @@ export const mockTicket: ReadTicketRecord = {
   id: 14,
   ticket_number: 1,
   tag_list: mockTags,
-  owner: mockUsers[1],
-  object_uuid: 369,
+  object_uuid: "a96b191e-15dd-11ec-9c2b-0242ac130003",
   assigned_user: mockMembers[1],
   status: mockStatuses[1],
   title: "Test Title 1",

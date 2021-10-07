@@ -1,0 +1,94 @@
+.mainHomeContainer {
+  display: flex;
+  flex-wrap: wrap;
+  height: 100%;
+  background: var(--secondaryBackground);
+
+  h1 {
+    font-weight: 600;
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+}
+
+.centerView {
+  flex: 3 3;
+  min-width: 650px;
+}
+
+.sideView {
+  flex: 1 1;
+  background: var(--secondaryBackground);
+  border-left: 1px var(--borderColor) solid;
+  width: 200px;
+}
+
+.homepageMessage {
+  border-bottom: 1px var(--borderColor) solid;
+  background: var(--primaryBackground);
+  padding: 1rem 1rem 1rem 1rem;
+}
+
+.rowContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  justify-content: space-between;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  background-color: var(--primaryBackground);
+  border-bottom: 1px solid var(--borderColor);
+
+  &:hover {
+    background-color: var(--hoverColor);
+    cursor: pointer;
+  }
+
+  .cell {
+    gap: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .textCell {
+    @extend .cell;
+    flex: 1 0 1rem;
+  }
+
+  .iconCell {
+    flex: 1;
+  }
+
+  .titleCell {
+    @extend .cell;
+    max-width: none;
+    flex: 5 0 15rem;
+  }
+
+  .statusContainer {
+    border-radius: 5px;
+    padding: 0.25rem 0.25rem 0.25rem 0.25rem;
+  }
+}
+
+.dataContainer {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.ticketsContainer {
+  margin-bottom: 0.25rem;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}

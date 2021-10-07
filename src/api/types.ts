@@ -54,7 +54,7 @@ export interface WriteTagRecord {
 
 export interface TagRecord {
   id: number;
-  object_uuid: number;
+  object_uuid: string;
   title: string;
   created: string;
   activated?: string;
@@ -74,8 +74,7 @@ export interface ReadTicketRecord {
   id: number;
   ticket_number: number;
   tag_list: Array<TagRecord>;
-  owner: UserRecord;
-  object_uuid: number;
+  object_uuid: string;
   assigned_user?: MemberRecord;
   status?: StatusRecordOutput;
   title: string;

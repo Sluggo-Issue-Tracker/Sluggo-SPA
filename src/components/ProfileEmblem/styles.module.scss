@@ -18,6 +18,9 @@
   width: var(--avatarSize);
   height: var(--avatarSize);
   border-radius: 50%;
+  border-width: 0.5px;
+  border-style: solid;
+  border-color: var(--textColor);
   background-color: var(--secondaryBackground);
   line-height: var(--avatarSize)px;
   text-transform: uppercase;

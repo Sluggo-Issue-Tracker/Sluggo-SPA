@@ -26,7 +26,7 @@ export const updateTicket = async (
 
   const updateRecord: WriteTicketRecord = {
     tag_list: tag_list?.map(elem => elem.id),
-    assigned_user: assigned_user?.pk,
+    assigned_user: assigned_user?.id,
     status: status?.id,
     ...rest
   };

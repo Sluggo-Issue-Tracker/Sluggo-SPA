@@ -1,4 +1,3 @@
-import { AxiosError, AxiosResponse } from "axios";
 import { DateTime } from "luxon";
 
 export interface LoginResponse {
@@ -64,7 +63,7 @@ export interface TagRecord {
 
 export interface WriteTicketRecord {
   tag_list?: Array<number>;
-  assigned_user?: number;
+  assigned_user?: string;
   status?: number;
   title: string;
   description?: string;
@@ -76,13 +75,14 @@ export interface ReadTicketRecord {
   ticket_number: number;
   tag_list: Array<TagRecord>;
   object_uuid: string;
-  assigned_user?: UserRecord;
+  assigned_user?: MemberRecord;
   status?: StatusRecordOutput;
   title: string;
   description?: string;
   created: string;
   activated?: string;
   deactivated?: string;
+  due_date?: string;
 }
 
 export interface TicketFilterOptions {

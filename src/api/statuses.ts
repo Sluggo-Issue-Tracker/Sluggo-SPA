@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { axiosInstance } from "./base";
-import { PaginatedList, StatusRecordInput, StatusRecordOutput } from "@/api/types";
+import { StatusRecordInput, StatusRecordOutput } from "@/api/types";
 
 export const createStatus = async (
   record: StatusRecordInput,
@@ -39,11 +39,10 @@ export const getStatus = async (
 };
 
 export const listStatuses = async (
-  teamId: number,
-  page: number
-): Promise<PaginatedList<StatusRecordOutput>> => {
-  const { data } = await axiosInstance.get<PaginatedList<StatusRecordOutput>>(
-    `/api/teams/${teamId}/statuses/?page=${page}`
+  teamId: number
+): Promise<StatusRecordOutput[]> => {
+  const { data } = await axiosInstance.get<StatusRecordOutput[]>(
+    `/api/teams/${teamId}/statuses`
   );
   return data;
 };
@@ -52,5 +51,7 @@ export const deleteStatus = async (
   record: StatusRecordOutput,
   teamId: number
 ): Promise<void> => {
-  await axiosInstance.delete<void>(`/api/teams/${teamId}/statuses/${record.id}`);
+  await axiosInstance.delete<void>(
+    `/api/teams/${teamId}/statuses/${record.id}`
+  );
 };

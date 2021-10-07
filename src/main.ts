@@ -82,3 +82,4 @@ app.config.errorHandler = async error => {
   store.dispatch.doSetError(error);
   await router.replace("/error");
 };
+

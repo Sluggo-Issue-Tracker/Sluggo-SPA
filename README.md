@@ -1,4 +1,4 @@
-# sluggo-spa
+# Sluggo-SPA
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 The single-page-application frontend for Sluggo written in Vue.js and
@@ -56,7 +56,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 * node v14.17.5
 * [Sluggo-API](https://github.com/Sluggo-Issue-Tracker/Sluggo-API)
 * [Boxicons](https://boxicons.com/) (icon pack)
-* [Bulma](https://bulma.io/) (Css framework)
+* [Bulma](https://bulma.io/) (CSS framework)
 * [Vue v3](https://v3.vuejs.org/guide/introduction.html)
 
 ## License 

@@ -1,10 +1,11 @@
 import { NewTeamRecord, ReadTeamRecord } from "@/api/types";
 import { axiosInstance } from "@/api/base";
+import { SLUGGO_API_URL } from "../../constants";
 
 export const createTeam = async ({
   name
 }: NewTeamRecord): Promise<ReadTeamRecord> => {
-  const { data } = await axiosInstance.post<ReadTeamRecord>("/api/teams", {
+  const { data } = await axiosInstance.post<ReadTeamRecord>("/api/teams/", {
     name,
     description: "UNUSED"
   });
@@ -12,13 +13,17 @@ export const createTeam = async ({
 };
 
 export const getTeam = async (teamId: number): Promise<ReadTeamRecord> => {
+  console.log("getting team!");
+  console.log(SLUGGO_API_URL);
   const { data } = await axiosInstance.get<ReadTeamRecord>(
-    `/api/teams/${teamId}`
+    `/api/teams/${teamId}/`
   );
   return data;
 };
 
 export const getUsersTeams = async (): Promise<ReadTeamRecord[]> => {
-  const { data } = await axiosInstance.get<ReadTeamRecord[]>("/api/user/teams");
+  const { data } = await axiosInstance.get<ReadTeamRecord[]>(
+    "/api/user/teams/"
+  );
   return data;
 };

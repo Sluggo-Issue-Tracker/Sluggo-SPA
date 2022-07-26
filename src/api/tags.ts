@@ -31,14 +31,14 @@ export const getTag = async (
   teamId: number
 ): Promise<TagRecord> => {
   const { data } = await axiosInstance.get<TagRecord>(
-    `/api/teams/${teamId}/tags/${id}]`
+    `/api/teams/${teamId}/tags/${id}/`
   );
   return data;
 };
 
 export const listTags = async (teamId: number): Promise<TagRecord[]> => {
   const { data } = await axiosInstance.get<TagRecord[]>(
-    `/api/teams/${teamId}/tags`
+    `/api/teams/${teamId}/tags/`
   );
   return data;
 };
@@ -47,5 +47,5 @@ export const deleteTag = async (
   record: TagRecord,
   teamId: number
 ): Promise<void> => {
-  await axiosInstance.delete<void>(`/api/teams/${teamId}/tags/${record.id}`);
+  await axiosInstance.delete<void>(`/api/teams/${teamId}/tags/${record.id}/`);
 };

@@ -13,8 +13,6 @@ export const createTeam = async ({
 };
 
 export const getTeam = async (teamId: number): Promise<ReadTeamRecord> => {
-  console.log("getting team!");
-  console.log(SLUGGO_API_URL);
   const { data } = await axiosInstance.get<ReadTeamRecord>(
     `/api/teams/${teamId}/`
   );

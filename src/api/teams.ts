@@ -1,6 +1,5 @@
 import { NewTeamRecord, ReadTeamRecord } from "@/api/types";
 import { axiosInstance } from "@/api/base";
-import { SLUGGO_API_URL } from "../../constants";
 
 export const createTeam = async ({
   name

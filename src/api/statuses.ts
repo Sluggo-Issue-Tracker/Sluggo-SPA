@@ -33,7 +33,7 @@ export const getStatus = async (
   teamId: number
 ): Promise<StatusRecordOutput> => {
   const { data } = await axiosInstance.get<StatusRecordOutput>(
-    `/api/teams/${teamId}/statuses/${id}]`
+    `/api/teams/${teamId}/statuses/${id}/`
   );
   return data;
 };
@@ -42,7 +42,7 @@ export const listStatuses = async (
   teamId: number
 ): Promise<StatusRecordOutput[]> => {
   const { data } = await axiosInstance.get<StatusRecordOutput[]>(
-    `/api/teams/${teamId}/statuses`
+    `/api/teams/${teamId}/statuses/`
   );
   return data;
 };
@@ -52,6 +52,6 @@ export const deleteStatus = async (
   teamId: number
 ): Promise<void> => {
   await axiosInstance.delete<void>(
-    `/api/teams/${teamId}/statuses/${record.id}`
+    `/api/teams/${teamId}/statuses/${record.id}/`
   );
 };

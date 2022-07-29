@@ -6,5 +6,5 @@ RUN yarn && yarn build
 
 # stage 2 -- configure nginx
 FROM nginx
-COPY --from=build-step /app/dist /etc/nginx/html/
-
+COPY --from=build-step /app/dist /usr/share/nginx/html
+CMD ["nginx", "-g", "daemon off;"]

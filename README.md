@@ -28,9 +28,9 @@ Then run:
 yarn run serve
 ```
 
-You may access the SPA instance from http://127.0.0.1:8080 in your browser.
+You may access the SPA instance from http://localhost:8080 in your browser.
 
-Be sure to use this address, using localhost:8080 will result in CORS errors.
+Be sure to use this address, using 127.0.0.1:8080 will result in errors.
 
 Ideally, this will be privately configurable later.
 

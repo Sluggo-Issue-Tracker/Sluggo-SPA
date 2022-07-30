@@ -1,13 +1,9 @@
 import { createDirectStore } from "direct-vuex";
-import {
-  LoginDetails,
-  ReadTeamRecord,
-  SignupDetails,
-  UserRecord
-} from "@/api/types";
-import { getTeam, getUser, login, signup } from "@/api";
-import { logoutUser } from "@/api/auth";
+import { ReadTeamRecord, UserRecord } from "@/api/types";
+import { getTeam, getUser } from "@/api";
 import { RootStoreState } from "@/store/types";
+import axios from "axios";
+import { LOGIN_REDIRECT } from "../../constants";
 
 export const createSluggoStore = () => {
   const {
@@ -33,21 +29,6 @@ export const createSluggoStore = () => {
       }
     },
     actions: {
-      doSignup: async (ctxRaw, details: SignupDetails) => {
-        const context = rootActionContext(ctxRaw);
-        const { user } = await signup(details);
-        context.commit.setUser(user);
-      },
-      doLogin: async (ctxRaw, details: LoginDetails) => {
-        const context = rootActionContext(ctxRaw);
-        const { user } = await login(details);
-        context.commit.setUser(user);
-      },
-      doLogout: async ctxRaw => {
-        const context = rootActionContext(ctxRaw);
-        await logoutUser();
-        context.commit.setUser(undefined);
-      },
       doSetTeam: async (ctxRaw, teamRecord: ReadTeamRecord) => {
         const context = rootActionContext(ctxRaw);
 
@@ -62,8 +43,16 @@ export const createSluggoStore = () => {
       },
       doFetchAuthUser: async (ctxRaw): Promise<void> => {
         const context = rootActionContext(ctxRaw);
-        const data = await getUser();
-        context.commit.setUser(data);
+        try {
+          const data = await getUser();
+          context.commit.setUser(data);
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            if (error.response?.status === 401) {
+              window.location.replace(LOGIN_REDIRECT);
+            }
+          }
+        }
       },
       doSetError: async (ctxRaw, errorMessage?: any) => {
         const context = rootActionContext(ctxRaw);

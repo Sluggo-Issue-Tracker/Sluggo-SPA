@@ -20,17 +20,19 @@ yarn
 ### Run the Application
 When setting up the project, be sure to do the following:
 * Run the SluggoAPI server (available from 
-https://github.com/Sluggo-Issue-Tracker/Sluggo-API) at 127.0.0.1:8000 (should be
-default port configuration).
+https://github.com/Sluggo-Issue-Tracker/Sluggo-API)
+* Set an environment variable `VUE_ROOT` for the API to point to the SPA
+address (for devel, do `http://localhost:8080`). This is required to allow
+server-sided auth to run correctly.
 
 Then run:
 ```
 yarn run serve
 ```
 
-You may access the SPA instance from http://127.0.0.1:8080 in your browser.
+You may access the SPA instance from http://localhost:8080 in your browser.
 
-Be sure to use this address, using localhost:8080 will result in CORS errors.
+Be sure to use this address, using 127.0.0.1:8080 will result in errors.
 
 Ideally, this will be privately configurable later.
 

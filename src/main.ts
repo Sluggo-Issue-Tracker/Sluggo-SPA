@@ -74,12 +74,6 @@ app
   .mount("#app");
 
 app.config.errorHandler = async error => {
-  // @ts-ignore
-  if (error.response?.status === 401) {
-    await router.replace("/login");
-    return;
-  }
   store.dispatch.doSetError(error);
   await router.replace("/error");
 };
-

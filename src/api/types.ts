@@ -1,30 +1,5 @@
 import { DateTime } from "luxon";
 
-export interface LoginResponse {
-  access_token: string;
-  refresh_token: string;
-  user: {
-    pk: number;
-    username: string;
-    email: string;
-    first_name: string;
-    last_name: string;
-  };
-}
-
-// MARK: Interfaces
-export interface LoginDetails {
-  username: string;
-  password: string;
-}
-
-export interface SignupDetails {
-  username: string;
-  email: string;
-  password: string;
-  secondaryPassword: string;
-}
-
 export interface UserRecord {
   pk: number;
   email: string;

@@ -22,6 +22,7 @@ import { defineComponent, ref } from "vue";
 import ProfileEmblem from "@/components/ProfileEmblem";
 import store from "@/store";
 import router from "@/router";
+import { LOGOUT_REDIRECT } from "../../../../constants";
 
 export default defineComponent({
   name: "NavbarDropdown",
@@ -41,8 +42,7 @@ export default defineComponent({
     };
 
     const handleLogout = async () => {
-      await store.dispatch.doLogout();
-      await router.push("/login");
+      window.location.replace(LOGOUT_REDIRECT);
     };
 
     return {

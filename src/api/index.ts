@@ -1,4 +1,4 @@
-import { signup, login, getUser } from "./auth";
+import { getUser } from "./auth";
 
 import { listMembers } from "./members";
 
@@ -17,8 +17,6 @@ import {
 } from "./tickets";
 
 export {
-  signup,
-  login,
   getUser,
   listMembers,
   createTag,

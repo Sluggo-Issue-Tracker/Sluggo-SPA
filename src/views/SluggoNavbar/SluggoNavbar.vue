@@ -1,70 +1,38 @@
 <template>
   <div>
-    <nav
-      class="navbar navbarContainer"
-      role="navigation"
-      aria-label="main navigation"
-    >
-      <!-- Left side of the navbar -->
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <!-- Sluggo logo and title -->
       <div class="navbar-brand">
-        <a class="navbar-item navbarTitle" :onclick="handleBrandClicked">
-          <IconSluggo :height="50" :width="50" />
+        <a class="navbar-item">
+          <IconSluggo width="50" height="50" />
           <span class="title">Sluggo</span>
         </a>
-
-        <a
-          role="button"
-          class="navbar-burger"
-          aria-label="menu"
-          aria-expanded="false"
-          data-target="sluggo-menu"
-          :onclick="handleBurgerClicked"
-        >
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
       </div>
-      <div
-        id="sluggo-menu"
-        :class="{ 'navbar-menu': true, 'is-active': isNavMenuOpen }"
-      >
-        <div class="searchBarContainer">
-          <Search />
+
+      <!-- Sluggo menu -->
+      <div class="navbar-menu">
+        <div class="navbar-start">
+          <a class="navbar-item">
+            Home
+          </a>
+          <a class="navbar-item">
+            Teams
+          </a>
         </div>
-        <div class="navbar-item hasDividerLeft">
-          <button class="button is-info" @click="modalClass = 'is-active'">
-            Create Ticket
-          </button>
-        </div>
-        <div class="navbar-item hasDividerLeft">
-          <i class="bx bx-bell bellContainer" />
-        </div>
-        <div class="navbar-item simpleLevel hasDividerLeft">
+      </div>
+
+      <!-- profile stuff -->
+      <div class="navbar-end">
+        <div class="navbar-item">
           <NavbarDropdown :username="authUser?.username ?? ''" />
         </div>
       </div>
     </nav>
-    <!-- Side bar menu -->
-    <div class="navigationContainer">
-      <div :class="{ sidebarMenu: true, menuHidden: !isSidebarOpen }">
-        <Sidebar />
-      </div>
-      <div class="viewContainer">
+    <section class="section">
+      <div class="container">
         <router-view />
       </div>
-    </div>
-    <div class="section">
-      <div class="modal" :class="modalClass">
-        <div class="modal-background"></div>
-        <div class="modal-content">
-          <TicketModal
-            @close="modalClass = ''"
-            v-if="modalClass == 'is-active'"
-          />
-        </div>
-      </div>
-    </div>
+    </section>
   </div>
 </template>
 <script lang="ts">
@@ -80,10 +48,10 @@ const sluggoNavbarComponent = defineComponent({
   name: "SluggoNavbar",
   components: {
     IconSluggo,
-    TicketModal,
-    NavbarDropdown,
-    Search,
-    Sidebar
+    // TicketModal,
+    NavbarDropdown
+    // Search,
+    // Sidebar
   },
   setup: () => {
     const authUser = ref<UserRecord>(store.getters.authUser);

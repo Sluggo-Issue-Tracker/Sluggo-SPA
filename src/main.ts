@@ -10,18 +10,10 @@ import { bulmaConfig } from "@oruga-ui/theme-bulma";
 import "@oruga-ui/oruga-next/dist/oruga.css";
 import "@/assets/common.scss";
 import { LOGIN_REDIRECT } from "constants";
+import { wrapExceptions } from "./methods";
 
 (async () => {
   const app = createApp(App);
-
-  try {
-    const user = await getUser();
-    app.provide(userKey, user);
-  } catch (error) {
-    console.log("redirecting to login!");
-    window.location.replace(LOGIN_REDIRECT);
-    return;
-  }
 
   app
     .use(store.original)

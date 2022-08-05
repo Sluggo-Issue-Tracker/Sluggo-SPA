@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { InjectionKey } from "vue";
+import { InjectionKey, Ref } from "vue";
 
 export interface UserRecord {
   pk: number;
@@ -102,4 +102,4 @@ export interface PaginatedList<T> {
   results: Array<T>;
 }
 
-export const userKey: InjectionKey<UserRecord> = Symbol();
+export const userKey: InjectionKey<Ref<UserRecord>> = Symbol();

@@ -14,49 +14,26 @@ export const createSluggoStore = () => {
     moduleGetterContext
   } = createDirectStore({
     state: {
-      token: undefined,
-      error: ""
+      error: undefined,
+      authUser: undefined
     } as RootStoreState,
     mutations: {
-      setTeam(state, newTeam?: ReadTeamRecord) {
-        state.team = newTeam;
-      },
       setUser(state, newUser?: UserRecord) {
         state.authUser = newUser;
       },
-      setError(state, newError?: string) {
+      setError(state, newError?: any) {
         state.error = newError;
       }
     },
     actions: {
-      doSetTeam: async (ctxRaw, teamRecord: ReadTeamRecord) => {
-        const context = rootActionContext(ctxRaw);
-
-        context.commit.setTeam(teamRecord);
-      },
-      doFetchAndSetTeam: async (ctxRaw, teamId: number) => {
-        const context = rootActionContext(ctxRaw);
-        const data = await getTeam(teamId);
-
-        await context.dispatch.doSetTeam(data);
-        return data;
-      },
       doFetchAuthUser: async (ctxRaw): Promise<void> => {
         const context = rootActionContext(ctxRaw);
-        try {
-          const data = await getUser();
-          context.commit.setUser(data);
-        } catch (error) {
-          if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401) {
-              window.location.replace(LOGIN_REDIRECT);
-            }
-          }
-        }
+        const data = await getUser();
+        context.commit.setUser(data);
       },
       doSetError: async (ctxRaw, errorMessage?: any) => {
         const context = rootActionContext(ctxRaw);
-        context.commit.setError(errorMessage);
+        context.commit.setError(errorMessage ?? null);
       }
     },
     modules: {},

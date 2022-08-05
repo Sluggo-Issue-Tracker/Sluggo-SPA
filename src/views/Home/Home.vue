@@ -1,68 +1,127 @@
 <template>
-  <div class="mainHomeContainer">
-    <div class="centerView">
-      <section class="homepageMessage">
-        <h1>Hey, {{ $store.getters.authUser.username }}</h1>
-        <p>
-          It's date. Here's you're overview:
-        </p>
-        <p>
-          Thanks for using Sluggo! Every day we're working towards new features
-          so stay tuned for new releases!
-        </p>
-      </section>
-      <section class="ticketsSection">
-        <Card>
-          <h3>Assigned to You</h3>
-          <TicketTable :query-state="usersAssignedState" />
-        </Card>
-        <Card>
-          <h3>Pinned Tickets</h3>
-          <TicketTable :query-state="usersPinnedState" />
-        </Card>
-      </section>
-    </div>
-    <div class="sideView">
-      <TicketInput />
-      <Card>
-        <h3>Recent Updates</h3>
-      </Card>
+  <div class="container">
+    <div class="columns">
+      <div class="column">
+        <div class="block">
+          <div class="box">
+            <label class="title is-5">Hello, User</label>
+            <p>It's date. Thank you for using sluggo</p>
+          </div>
+        </div>
+        <div
+          v-if="!loading && usersTeamsData && usersTeamsData.length === 0"
+          class="block"
+        >
+          <div class="box">
+            Sluggo is an invite-only issue tracker, designed for use by teams.
+            If you're seeing this message, that means you're not currently a
+            member of any team. To become one, contact your administrator. Team
+            invites will show up on this home screen, as well as the teams page.
+          </div>
+        </div>
+        <div v-if="!loading && usersTeamsData && usersTeamsData.length > 0">
+          <div class="block" v-if="assignedTicketsData">
+            <TicketCards :tickets="assignedTicketsData" />
+          </div>
+          <div class="block" v-if="usersTeamsData">
+            <TeamCards :teams="usersTeamsData" />
+          </div>
+        </div>
+      </div>
+      <div class="column is-one-fifth">
+        <div class="block">
+          <label class="title is-5">Recently Viewed</label>
+          <p>Your recently viewed pages will show up here.</p>
+        </div>
+        <div class="block">
+          <label class="title is-5">Invitations</label>
+          <p>Invitations to teams will show up here.</p>
+        </div>
+        <div class="block">
+          <label class="title is-5">Pinned Tickets</label>
+          <p>Your pinned tickets will show up here.</p>
+        </div>
+        <div class="block">
+          <label class="title is-5">Your Tags</label>
+          <div class="tags box">
+            <span class="tag">wine</span>
+            <span class="tag">robot</span>
+            <span class="tag">code</span>
+            <span class="tag">wine</span>
+            <span class="tag">robot</span>
+            <span class="tag">code</span>
+            <span class="tag">wine</span>
+            <span class="tag">robot</span>
+            <span class="tag">code</span>
+            <span class="tag">wine</span>
+            <span class="tag">robot</span>
+            <span class="tag">code</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "vue";
-import Card from "@/components/Card";
-import TicketTable from "./components/TicketTable.vue";
-import TicketInput from "./components/TicketInput.vue";
+import { computed, defineComponent, onMounted } from "vue";
 import { apiExecutor } from "@/methods";
-import { getUsersPinnedTickets, getUsersAssignedTickets } from "@/api";
+import {
+  getUsersPinnedTickets,
+  getUsersAssignedTickets,
+  getUsersTeams
+} from "@/api";
+import TeamCards from "./components/TeamCards.vue";
+import TicketCards from "./components/TicketCards.vue";
 
 export default defineComponent({
   name: "Home",
   components: {
-    Card,
-    TicketTable,
-    TicketInput
+    TeamCards,
+    TicketCards
   },
   setup: () => {
     const [queryUsersPinned, usersPinnedState] = apiExecutor(
       getUsersPinnedTickets
     );
 
-    const [queryUsersAssigned, usersAssignedState] = apiExecutor(
-      getUsersAssignedTickets
+    const [
+      queryUsersAssigned,
+      {
+        data: assignedTicketsData,
+        loading: assignedTicketsLoading,
+        error: assignedTicketsError
+      }
+    ] = apiExecutor(getUsersAssignedTickets);
+
+    const [
+      queryUsersTeams,
+      {
+        data: usersTeamsData,
+        loading: usersTeamsLoading,
+        error: usersTeamsError
+      }
+    ] = apiExecutor(getUsersTeams);
+
+    const loading = computed(
+      () => assignedTicketsLoading.value || usersTeamsLoading.value
+    );
+    const error = computed(
+      () => assignedTicketsError.value || usersTeamsError.value
     );
 
     onMounted(() => {
       queryUsersPinned();
       queryUsersAssigned();
+      queryUsersTeams();
     });
 
     return {
       usersPinnedState,
-      usersAssignedState
+      assignedTicketsData,
+      usersTeamsData,
+      loading,
+      error
     };
   }
 });

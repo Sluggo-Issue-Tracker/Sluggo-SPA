@@ -1,7 +1,23 @@
 <template>
-  <router-view />
+  <Navbar />
+  <section class="section has-background-light full-height">
+    <router-view />
+  </section>
 </template>
 
-<script lang="ts"></script>
+<script lang="ts">
+import { defineComponent } from "vue";
+import Navbar from "./components/Navbar";
 
-<style></style>
+export default defineComponent({
+  components: {
+    Navbar
+  }
+});
+</script>
+
+<style scoped>
+.full-height {
+  height: 100vh;
+}
+</style>

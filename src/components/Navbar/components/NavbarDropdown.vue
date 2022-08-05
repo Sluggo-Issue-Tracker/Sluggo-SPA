@@ -19,9 +19,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import ProfileEmblem from "@/components/ProfileEmblem";
-import store from "@/store";
-import router from "@/router";
+import ProfileEmblem from "../../ProfileEmblem";
 import { LOGOUT_REDIRECT } from "../../../../constants";
 
 export default defineComponent({
@@ -54,4 +52,13 @@ export default defineComponent({
 });
 </script>
 
-<style scoped src="../styles.module.scss" lang="scss"></style>
+<style scoped>
+.emblemContainer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  min-width: 185px;
+}
+</style>

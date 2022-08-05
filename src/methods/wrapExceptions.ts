@@ -22,7 +22,7 @@ export const wrapExceptions = async <T = unknown>(
 export interface QueryState<T, E> {
   data: Ref<UnwrapRef<T> | undefined>;
   loading: Ref<boolean>;
-  error?: Ref<E | undefined>;
+  error: Ref<E | undefined>;
 }
 
 type ExecutorResponse<T extends unknown, E> = [

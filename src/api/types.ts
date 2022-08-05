@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { InjectionKey } from "vue";
 
 export interface UserRecord {
   pk: number;
@@ -52,6 +53,7 @@ export interface ReadTicketRecord {
   object_uuid: string;
   assigned_user?: MemberRecord;
   status?: StatusRecordOutput;
+  team: ReadTeamRecord;
   title: string;
   description?: string;
   created: string;
@@ -99,3 +101,5 @@ export interface PaginatedList<T> {
   previous: string | null;
   results: Array<T>;
 }
+
+export const userKey: InjectionKey<UserRecord> = Symbol();

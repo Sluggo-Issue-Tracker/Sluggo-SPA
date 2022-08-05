@@ -24,37 +24,27 @@
       <!-- profile stuff -->
       <div class="navbar-end">
         <div class="navbar-item">
-          <NavbarDropdown :username="authUser?.username ?? ''" />
+          <NavbarDropdown :username="authUser.username ?? ''" />
         </div>
       </div>
     </nav>
-    <section class="section">
-      <div class="container">
-        <router-view />
-      </div>
-    </section>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import store from "@/store";
-import TicketModal from "@/components/TicketModal/TicketModal.vue";
 import IconSluggo from "@/assets/IconSluggo";
 import NavbarDropdown from "./components/NavbarDropdown.vue";
-import Search from "@/components/Search";
-import { UserRecord } from "@/api/types";
-import Sidebar from "@/views/SluggoNavbar/components/Sidebar.vue";
+import { userKey } from "@/api/types";
+import { injectStrict } from "@/methods/injectStrict";
+
 const sluggoNavbarComponent = defineComponent({
   name: "SluggoNavbar",
   components: {
     IconSluggo,
-    // TicketModal,
     NavbarDropdown
-    // Search,
-    // Sidebar
   },
   setup: () => {
-    const authUser = ref<UserRecord>(store.getters.authUser);
+    const authUser = injectStrict(userKey);
     const isNavMenuOpen = ref<boolean>(false);
     const isSidebarOpen = ref<boolean>(false);
     const modalClass = ref("");
@@ -76,4 +66,4 @@ const sluggoNavbarComponent = defineComponent({
 });
 export default sluggoNavbarComponent;
 </script>
-<style scoped src="./styles.module.scss" lang="scss"></style>
+<style scoped></style>

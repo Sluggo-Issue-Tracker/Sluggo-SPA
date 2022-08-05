@@ -1,63 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import Home from "@/views/Home/Home.vue";
-import Help from "@/views/Help.vue";
-import NewTeam from "@/views/NewTeam.vue";
-import Error from "@/views/Error";
-import UserProvidedNavbar from "@/views/SluggoNavbar";
-import UserProvidedRouter from "@/components/UserProvidedRouter.vue";
-import TeamsTickets from "@/views/TeamsTickets";
-import TeamsMembers from "@/views/TeamsMembers";
-import TeamsAdmin from "@/views/TeamsAdmin";
+import Home from "@/views/Home";
 
 const routes: Array<RouteRecordRaw> = [
-  {
-    path: "/",
-    name: "Navbar",
-    component: UserProvidedNavbar,
-    children: [
-      {
-        path: "",
-        name: "Home",
-        component: Home
-      },
-      {
-        path: "teams/:id/tickets",
-        name: "TeamsTickets",
-        component: TeamsTickets
-      },
-      {
-        path: "teams/:id/members",
-        name: "TeamsMembers",
-        component: TeamsMembers
-      },
-      {
-        path: "teams/:id/admin",
-        name: "TeamsAdmin",
-        component: TeamsAdmin
-      }
-    ]
-  },
-  {
-    path: "/user",
-    name: "User",
-    component: UserProvidedRouter,
-    children: []
-  },
-  {
-    path: "/help",
-    name: "Help",
-    component: Help
-  },
-  {
-    path: "/new_team/",
-    name: "NewTeam",
-    component: NewTeam
-  },
-  {
-    path: "/error",
-    name: "Error",
-    component: Error
-  }
+  { path: "/", name: "Home", component: Home }
 ];
 
 const router = createRouter({

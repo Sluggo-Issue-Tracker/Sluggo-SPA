@@ -1,6 +1,13 @@
 <template>
   <div class="container">
-    <div class="columns">
+    <o-loading :active="loading">
+      <o-icon
+        pack="bx"
+        icon="bx-loader-alt bx-spin"
+        style="font-size: 80px;"
+      ></o-icon>
+    </o-loading>
+    <div v-if="!loading" class="columns">
       <div class="column">
         <div class="block">
           <div class="box">

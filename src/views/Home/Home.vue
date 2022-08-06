@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, inject } from "vue";
+import { computed, defineComponent, onMounted } from "vue";
 import { apiExecutor } from "@/methods";
 import {
   getUsersPinnedTickets,
@@ -77,6 +77,7 @@ import TeamCards from "./components/TeamCards.vue";
 import TicketCards from "./components/TicketCards.vue";
 import { DateTime } from "luxon";
 import { userKey } from "@/api/types";
+import { injectStrict } from "@/methods/injectStrict";
 
 export default defineComponent({
   name: "Home",
@@ -86,7 +87,7 @@ export default defineComponent({
     UsersInvites
   },
   setup: () => {
-    const user = inject(userKey);
+    const user = injectStrict(userKey);
     const date = computed(() => {
       const dt = DateTime.now();
       return dt.toLocaleString(DateTime.DATE_HUGE);

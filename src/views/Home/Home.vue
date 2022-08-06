@@ -4,8 +4,8 @@
       <div class="column">
         <div class="block">
           <div class="box">
-            <label class="title is-5">Hello, User</label>
-            <p>It's date. Thank you for using sluggo</p>
+            <label class="title is-5">Hello, {{ user.username }}</label>
+            <p>It's {{ date }}. Thank you for using sluggo.</p>
           </div>
         </div>
 
@@ -75,6 +75,9 @@ import {
 import UsersInvites from "./components/UsersInvites.vue";
 import TeamCards from "./components/TeamCards.vue";
 import TicketCards from "./components/TicketCards.vue";
+import { DateTime } from "luxon";
+import { userKey } from "@/api/types";
+import { injectStrict } from "@/methods/injectStrict";
 
 export default defineComponent({
   name: "Home",
@@ -84,6 +87,12 @@ export default defineComponent({
     UsersInvites
   },
   setup: () => {
+    const user = injectStrict(userKey);
+    const date = computed(() => {
+      const dt = DateTime.now();
+      return dt.toLocaleString(DateTime.DATE_HUGE);
+    });
+
     const [
       queryUsersPinned,
       {
@@ -125,6 +134,8 @@ export default defineComponent({
     });
 
     return {
+      user,
+      date,
       usersPinnedData,
       usersPinnedLoading,
       usersPinnedError,

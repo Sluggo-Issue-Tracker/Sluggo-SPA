@@ -3,28 +3,48 @@
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <!-- Sluggo logo and title -->
       <div class="navbar-brand">
-        <a class="navbar-item">
+        <router-link class="navbar-item" to="/">
           <IconSluggo width="50" height="50" />
           <span class="title">Sluggo</span>
+        </router-link>
+
+        <a
+          role="button"
+          :onclick="handleBurgerClicked"
+          class="navbar-burger"
+          aria-label="menu"
+          aria-expanded="true"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
         </a>
       </div>
 
       <!-- Sluggo menu -->
-      <div class="navbar-menu">
+      <div :class="{ 'navbar-menu': true, 'is-active': isNavMenuOpen }">
         <div class="navbar-start">
-          <a class="navbar-item">
+          <router-link
+            class="navbar-item"
+            to="/"
+            :onclick="handleBurgerClicked"
+          >
             Home
-          </a>
-          <a class="navbar-item">
+          </router-link>
+          <router-link
+            class="navbar-item"
+            to="/teams"
+            :onclick="handleBurgerClicked"
+          >
             Teams
-          </a>
+          </router-link>
         </div>
-      </div>
 
-      <!-- profile stuff -->
-      <div class="navbar-end">
-        <div class="navbar-item">
-          <NavbarDropdown :username="authUser.username ?? ''" />
+        <!-- profile stuff -->
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <NavbarDropdown :username="authUser.username ?? ''" />
+          </div>
         </div>
       </div>
     </nav>
@@ -36,6 +56,7 @@ import IconSluggo from "@/assets/IconSluggo";
 import NavbarDropdown from "./components/NavbarDropdown.vue";
 import { userKey } from "@/api/types";
 import { injectStrict } from "@/methods/injectStrict";
+import reactiveWindow from "@/methods/reactiveWindow";
 
 const sluggoNavbarComponent = defineComponent({
   name: "SluggoNavbar",
@@ -46,21 +67,21 @@ const sluggoNavbarComponent = defineComponent({
   setup: () => {
     const authUser = injectStrict(userKey);
     const isNavMenuOpen = ref<boolean>(false);
-    const isSidebarOpen = ref<boolean>(false);
+    const { width } = reactiveWindow();
     const modalClass = ref("");
-    const handleBurgerClicked = () => {
+    const handleBurgerClicked = (event: any) => {
+      event.preventDefault(); // prevent propagation
+      if (width.value >= 1024) {
+        // ignore toggle when the window is big
+        return;
+      }
       isNavMenuOpen.value = !isNavMenuOpen.value;
-    };
-    const handleBrandClicked = () => {
-      isSidebarOpen.value = !isSidebarOpen.value;
     };
     return {
       authUser,
       modalClass,
       isNavMenuOpen,
-      isSidebarOpen,
-      handleBurgerClicked,
-      handleBrandClicked
+      handleBurgerClicked
     };
   }
 });

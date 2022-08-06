@@ -54,23 +54,10 @@
           <UsersInvites />
         </div>
 
-        <!-- tags -->
+        <!-- tags-->
         <div class="block">
-          <label class="title is-5">Your Tags</label>
-          <div class="tags box">
-            <span class="tag">wine</span>
-            <span class="tag">robot</span>
-            <span class="tag">code</span>
-            <span class="tag">wine</span>
-            <span class="tag">robot</span>
-            <span class="tag">code</span>
-            <span class="tag">wine</span>
-            <span class="tag">robot</span>
-            <span class="tag">code</span>
-            <span class="tag">wine</span>
-            <span class="tag">robot</span>
-            <span class="tag">code</span>
-          </div>
+          <span class="title is-5">Your Tags</span>
+          <p>Your tags will show up here.</p>
         </div>
       </div>
     </div>

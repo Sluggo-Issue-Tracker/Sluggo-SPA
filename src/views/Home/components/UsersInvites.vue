@@ -1,7 +1,7 @@
 <template>
-  <label class="title is-5">Invitations</label>
+  <span class="title is-5">Invitations</span>
   <p v-if="loading">Loading...</p>
-  <div v-else-if="!loading && data" class="has-max-height">
+  <div v-else-if="!loading && data">
     <p v-if="data.length === 0">Invitations to teams will show up here.</p>
     <p v-else v-for="invite in data" :key="invite.id" class="box">
       <span class="title is-6"> {{ invite.team.name }} </span>
@@ -34,8 +34,4 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.has-max-height {
-  max-height: 300px;
-}
-</style>
+<style scoped></style>

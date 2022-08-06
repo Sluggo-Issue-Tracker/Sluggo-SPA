@@ -1,10 +1,10 @@
 <template>
   <div
-    :class="{ dropdown: true, 'is-right': true, 'is-active': isOpen }"
+    :class="{ dropdown: true, 'is-right': isRight, 'is-active': isOpen }"
     data-testid="dropdown-container"
   >
     <div class="dropdown-trigger emblemContainer" :onclick="handleToggle">
-      <ProfileEmblem :name="username" />
+      <ProfileEmblem :name="username ?? ''" />
       <span data-testid="username-span">{{ username }}</span>
     </div>
     <div :v-if="isOpen" class="dropdown-menu">
@@ -18,9 +18,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import ProfileEmblem from "../../ProfileEmblem";
 import { LOGOUT_REDIRECT } from "../../../../constants";
+import reactiveWindow from "../../../methods/reactiveWindow";
 
 export default defineComponent({
   name: "NavbarDropdown",
@@ -34,6 +35,8 @@ export default defineComponent({
   },
   setup: () => {
     const isOpen = ref<boolean>(false);
+    const { width } = reactiveWindow();
+    const isRight = computed(() => width.value >= 1024);
 
     const handleToggle = () => {
       isOpen.value = !isOpen.value;
@@ -46,6 +49,7 @@ export default defineComponent({
     return {
       handleToggle,
       handleLogout,
+      isRight,
       isOpen
     };
   }
@@ -59,6 +63,5 @@ export default defineComponent({
   align-items: center;
   gap: 1rem;
   cursor: pointer;
-  min-width: 185px;
 }
 </style>

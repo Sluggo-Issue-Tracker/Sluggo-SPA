@@ -1,13 +1,15 @@
 <template>
-  <span class="title is-5">Invitations</span>
-  <p v-if="loading">Loading...</p>
-  <div v-else-if="!loading && data">
-    <p v-if="data.length === 0">Invitations to teams will show up here.</p>
-    <p v-else v-for="invite in data" :key="invite.id" class="box">
-      <span class="title is-6"> {{ invite.team.name }} </span>
-    </p>
+  <p class="title is-5">Invitations</p>
+  <div class="block">
+    <p v-if="loading">Loading...</p>
+    <div v-else-if="!loading && data">
+      <p v-if="data.length === 0">Invitations to teams will show up here.</p>
+      <p v-else v-for="invite in data" :key="invite.id" class="box">
+        <span class="title is-6"> {{ invite.team.name }} </span>
+      </p>
+    </div>
+    <p v-else-if="error">Error! {{ error.message }}</p>
   </div>
-  <p v-else-if="error">Error! {{ error.message }}</p>
 </template>
 
 <script lang="ts">

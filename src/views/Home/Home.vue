@@ -45,7 +45,7 @@
       <!-- sidebar (recently viewed, invitations, pinned tickets) -->
       <div class="column is-one-fifth">
         <div class="block">
-          <label class="title is-5">Recently Viewed</label>
+          <p class="title is-5">Recently Viewed</p>
           <p>Your recently viewed pages will show up here.</p>
         </div>
 
@@ -56,7 +56,7 @@
 
         <!-- tags-->
         <div class="block">
-          <span class="title is-5">Your Tags</span>
+          <p class="title is-5">Your Tags</p>
           <p>Your tags will show up here.</p>
         </div>
       </div>

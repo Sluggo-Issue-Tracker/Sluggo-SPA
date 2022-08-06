@@ -1,30 +1,8 @@
 <template>
-  <div class="level">
-    <div class="level-left">
-      <div class="level-item">
-        <label class="title is-4">
-          {{ title }}
-        </label>
-      </div>
-    </div>
-    <div class="level-right">
-      <div class="level-item">
-        <o-pagination
-          v-if="list.length > pageSize"
-          v-model:current="page"
-          :total="list.length"
-          :perPage="pageSize"
-          size="small"
-          :simple="true"
-          order="right"
-          iconPrev="bxs-chevron-left"
-          iconNext="bxs-chevron-right"
-          iconPack="bx"
-        />
-      </div>
-    </div>
-  </div>
-  <div v-if="list">
+  <p class="title is-4">
+    {{ title }}
+  </p>
+  <div v-if="list" class="block">
     <div v-if="list && list.length > 0">
       <div class="tile is-ancestor">
         <div
@@ -48,6 +26,19 @@
     <p v-else>
       {{ missingMessage }}
     </p>
+  </div>
+  <div class="block">
+    <o-pagination
+      v-if="list.length > pageSize"
+      v-model:current="page"
+      :total="list.length"
+      :perPage="pageSize"
+      size="small"
+      order="centered"
+      iconPrev="bxs-chevron-left"
+      iconNext="bxs-chevron-right"
+      iconPack="bx"
+    />
   </div>
 </template>
 

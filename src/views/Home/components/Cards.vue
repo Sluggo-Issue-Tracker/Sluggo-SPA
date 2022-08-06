@@ -19,7 +19,9 @@
           class="tile is-parent is-vertical"
           :key="i"
         >
-          <slot name="card" :item="item"></slot>
+          <article class="tile is-child">
+            <slot name="card" :item="item"></slot>
+          </article>
         </div>
       </div>
     </div>

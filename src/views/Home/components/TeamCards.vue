@@ -5,17 +5,15 @@
     missing-message="Your teams will show up here."
   >
     <template #card="{item: {name, id}}">
-      <article class="tile is-child">
-        <router-link
-          :to="`/teams/${id}/`"
-          class="box is-tile ticket-card is-clickable"
-          :style="{ borderLeft: `5px solid` }"
-        >
-          <label class="title is-6">
-            {{ name }}
-          </label>
-        </router-link>
-      </article>
+      <router-link
+        :to="`/teams/${id}/`"
+        class="box  ticket-card is-clickable"
+        :style="{ borderLeft: `5px solid` }"
+      >
+        <label class="title is-6">
+          {{ name }}
+        </label>
+      </router-link>
     </template>
   </Cards>
 </template>

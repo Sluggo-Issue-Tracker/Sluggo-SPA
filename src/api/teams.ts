@@ -31,3 +31,16 @@ export const getUsersInvites = async (): Promise<ReadInviteRecord[]> => {
   );
   return data;
 };
+
+export const acceptInvite = async (
+  inviteId: number
+): Promise<ReadInviteRecord> => {
+  const { data } = await axiosInstance.put<ReadInviteRecord>(
+    `/api/user/invites/${inviteId}/`,
+    {}
+  );
+  return data;
+};
+
+export const rejectInvite = async (inviteId: number): Promise<void> =>
+  await axiosInstance.delete(`/api/user/invites/${inviteId}/`);

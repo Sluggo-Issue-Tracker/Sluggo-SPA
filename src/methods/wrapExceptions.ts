@@ -15,7 +15,8 @@ export const wrapExceptions = async <T = unknown>(
     const response = await request(...args);
     return [response, null];
   } catch (e) {
-    return [null, e];
+    const error = e instanceof Error ? e : null;
+    return [null, error];
   }
 };
 
@@ -44,8 +45,11 @@ export const apiExecutor = <T = unknown>(
       data.value = await request(...args);
       loading.value = false;
     } catch (caughtError) {
-      loading.value = false;
-      error.value = caughtError;
+      // i dislike javascript
+      if (caughtError instanceof Error) {
+        loading.value = false;
+        error.value = caughtError;
+      }
     }
   };
 

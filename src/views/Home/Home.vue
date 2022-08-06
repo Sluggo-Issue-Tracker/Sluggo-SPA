@@ -4,8 +4,8 @@
       <div class="column">
         <div class="block">
           <div class="box">
-            <label class="title is-5">Hello, User</label>
-            <p>It's date. Thank you for using sluggo</p>
+            <label class="title is-5">Hello, {{ user.username }}</label>
+            <p>It's {{ date }}. Thank you for using sluggo.</p>
           </div>
         </div>
 
@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted } from "vue";
+import { computed, defineComponent, onMounted, inject } from "vue";
 import { apiExecutor } from "@/methods";
 import {
   getUsersPinnedTickets,
@@ -75,6 +75,8 @@ import {
 import UsersInvites from "./components/UsersInvites.vue";
 import TeamCards from "./components/TeamCards.vue";
 import TicketCards from "./components/TicketCards.vue";
+import { DateTime } from "luxon";
+import { userKey } from "@/api/types";
 
 export default defineComponent({
   name: "Home",
@@ -84,6 +86,12 @@ export default defineComponent({
     UsersInvites
   },
   setup: () => {
+    const user = inject(userKey);
+    const date = computed(() => {
+      const dt = DateTime.now();
+      return dt.toLocaleString(DateTime.DATE_HUGE);
+    });
+
     const [
       queryUsersPinned,
       {
@@ -125,6 +133,8 @@ export default defineComponent({
     });
 
     return {
+      user,
+      date,
       usersPinnedData,
       usersPinnedLoading,
       usersPinnedError,

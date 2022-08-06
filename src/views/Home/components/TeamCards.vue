@@ -1,7 +1,6 @@
 <template>
   <Cards
     :list="teams"
-    itemKey="name"
     title="Your Teams"
     missing-message="Your teams will show up here."
   >

@@ -1,7 +1,6 @@
 <template>
   <Cards
     :list="tickets"
-    itemKey="title"
     :title="title"
     missing-message="Your assigned tickets will show up here."
   >

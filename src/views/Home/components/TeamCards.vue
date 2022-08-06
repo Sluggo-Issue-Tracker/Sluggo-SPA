@@ -5,10 +5,18 @@
     title="Your Teams"
     missing-message="Your teams will show up here."
   >
-    <template #header="{item: {name}}">
-      {{ name }}
+    <template #card="{item: {name}}">
+      <article class="tile is-child">
+        <div
+          class="box is-tile ticket-card is-clickable"
+          :style="{ borderLeft: `5px solid` }"
+        >
+          <label class="title is-6">
+            {{ name }}
+          </label>
+        </div>
+      </article>
     </template>
-    <template #body> </template>
   </Cards>
 </template>
 

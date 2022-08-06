@@ -5,11 +5,22 @@
     :title="title"
     missing-message="Your assigned tickets will show up here."
   >
-    <template #header="{item: {team, ticket_number}}">
-      {{ `${team.name} - ${ticket_number}` }}
-    </template>
-    <template #body="{item: {title}}">
-      {{ title }}
+    <template #card="{item: {ticket_number, title, status, team}}">
+      <article class="tile is-child">
+        <div
+          class="box is-tile ticket-card is-clickable"
+          :style="{
+            borderLeft: `5px solid ${status?.color ?? 'hsl(0, 0%, 21%)'}`
+          }"
+        >
+          <label class="title is-6">
+            {{ team.name }}-{{ ticket_number }}
+          </label>
+          <p>
+            {{ title }}
+          </p>
+        </div>
+      </article>
     </template>
   </Cards>
 </template>

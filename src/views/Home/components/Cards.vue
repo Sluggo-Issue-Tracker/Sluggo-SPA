@@ -32,16 +32,7 @@
           class="tile is-parent is-vertical"
           :key="item[itemKey]"
         >
-          <article class="tile is-child">
-            <div class="box is-tile ticket-card">
-              <label class="title is-6">
-                <slot name="header" :item="item"></slot>
-              </label>
-              <p>
-                <slot name="body" :item="item"></slot>
-              </p>
-            </div>
-          </article>
+          <slot name="card" :item="item"></slot>
         </div>
       </div>
     </div>
@@ -54,7 +45,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, PropType, toRefs } from "vue";
 
-const pageSize = 3;
+const pageSize = 4;
 
 export default defineComponent({
   props: {
@@ -94,4 +85,8 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.ticket-card {
+  border-left: 5px solid red;
+}
+</style>

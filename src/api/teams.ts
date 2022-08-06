@@ -1,4 +1,4 @@
-import { NewTeamRecord, ReadTeamRecord } from "@/api/types";
+import { NewTeamRecord, ReadTeamRecord, ReadInviteRecord } from "@/api/types";
 import { axiosInstance } from "@/api/base";
 
 export const createTeam = async ({
@@ -21,6 +21,13 @@ export const getTeam = async (teamId: number): Promise<ReadTeamRecord> => {
 export const getUsersTeams = async (): Promise<ReadTeamRecord[]> => {
   const { data } = await axiosInstance.get<ReadTeamRecord[]>(
     "/api/user/teams/"
+  );
+  return data;
+};
+
+export const getUsersInvites = async (): Promise<ReadInviteRecord[]> => {
+  const { data } = await axiosInstance.get<ReadInviteRecord[]>(
+    "/api/user/invites/"
   );
   return data;
 };

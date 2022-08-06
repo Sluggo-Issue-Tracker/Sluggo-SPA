@@ -102,4 +102,9 @@ export interface PaginatedList<T> {
   results: Array<T>;
 }
 
+export interface ReadInviteRecord {
+  id: number;
+  team: ReadTeamRecord;
+}
+
 export const userKey: InjectionKey<Ref<UserRecord>> = Symbol();

@@ -2,7 +2,7 @@
   <Cards
     :list="tickets"
     itemKey="title"
-    title="Tickets Assigned to You"
+    :title="title"
     missing-message="Your assigned tickets will show up here."
   >
     <template #header="{item: {team, ticket_number}}">
@@ -27,7 +27,8 @@ export default defineComponent({
     tickets: {
       type: Object as PropType<ReadTicketRecord[]>,
       required: true
-    }
+    },
+    title: { type: String, required: true }
   }
 });
 </script>

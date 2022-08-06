@@ -2,16 +2,19 @@
   <div class="level">
     <div class="level-left">
       <div class="level-item">
-        <label class="title is-4">{{ title }}</label>
+        <label class="title is-4">
+          {{ title }}
+        </label>
       </div>
     </div>
-    <div v-if="list" class="level-right">
+    <div class="level-right">
       <div class="level-item">
         <o-pagination
           v-if="list.length > pageSize"
           v-model:current="page"
           :total="list.length"
           :perPage="pageSize"
+          size="small"
           :simple="true"
           order="right"
           iconPrev="bxs-chevron-left"
@@ -34,7 +37,7 @@
               <label class="title is-6">
                 <slot name="header" :item="item"></slot>
               </label>
-              <p class="overflow-ellipsis">
+              <p>
                 <slot name="body" :item="item"></slot>
               </p>
             </div>
@@ -91,10 +94,4 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.overflow-ellipsis {
-  text-overflow: ellipsis;
-  height: 40px;
-  overflow: hidden;
-}
-</style>
+<style scoped></style>

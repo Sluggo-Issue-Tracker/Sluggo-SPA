@@ -8,6 +8,8 @@
             <p>It's date. Thank you for using sluggo</p>
           </div>
         </div>
+
+        <!-- case where user has no teams -->
         <div
           v-if="!loading && usersTeamsData && usersTeamsData.length === 0"
           class="block"
@@ -19,28 +21,40 @@
             invites will show up on this home screen, as well as the teams page.
           </div>
         </div>
+
+        <!-- user has teams -->
         <div v-if="!loading && usersTeamsData && usersTeamsData.length > 0">
+          <div class="block" v-if="usersPinnedData">
+            <TicketCards
+              title="Your Pinned Tickets"
+              :tickets="usersPinnedData"
+            />
+          </div>
           <div class="block" v-if="assignedTicketsData">
-            <TicketCards :tickets="assignedTicketsData" />
+            <TicketCards
+              title="Tickets Assigned to You"
+              :tickets="assignedTicketsData"
+            />
           </div>
           <div class="block" v-if="usersTeamsData">
             <TeamCards :teams="usersTeamsData" />
           </div>
         </div>
       </div>
+
+      <!-- sidebar (recently viewed, invitations, pinned tickets) -->
       <div class="column is-one-fifth">
         <div class="block">
           <label class="title is-5">Recently Viewed</label>
           <p>Your recently viewed pages will show up here.</p>
         </div>
+
+        <!-- invitations -->
         <div class="block">
-          <label class="title is-5">Invitations</label>
-          <p>Invitations to teams will show up here.</p>
+          <UsersInvites />
         </div>
-        <div class="block">
-          <label class="title is-5">Pinned Tickets</label>
-          <p>Your pinned tickets will show up here.</p>
-        </div>
+
+        <!-- tags -->
         <div class="block">
           <label class="title is-5">Your Tags</label>
           <div class="tags box">
@@ -71,6 +85,7 @@ import {
   getUsersAssignedTickets,
   getUsersTeams
 } from "@/api";
+import UsersInvites from "./components/UsersInvites.vue";
 import TeamCards from "./components/TeamCards.vue";
 import TicketCards from "./components/TicketCards.vue";
 
@@ -78,12 +93,18 @@ export default defineComponent({
   name: "Home",
   components: {
     TeamCards,
-    TicketCards
+    TicketCards,
+    UsersInvites
   },
   setup: () => {
-    const [queryUsersPinned, usersPinnedState] = apiExecutor(
-      getUsersPinnedTickets
-    );
+    const [
+      queryUsersPinned,
+      {
+        data: usersPinnedData,
+        loading: usersPinnedLoading,
+        error: usersPinnedError
+      }
+    ] = apiExecutor(getUsersPinnedTickets);
 
     const [
       queryUsersAssigned,
@@ -117,7 +138,9 @@ export default defineComponent({
     });
 
     return {
-      usersPinnedState,
+      usersPinnedData,
+      usersPinnedLoading,
+      usersPinnedError,
       assignedTicketsData,
       usersTeamsData,
       loading,
@@ -127,4 +150,8 @@ export default defineComponent({
 });
 </script>
 
-<style src="./styles.module.scss" lang="scss" />
+<style scoped lang="scss">
+.has-top-border {
+  border-top: 1px solid hsl(0, 0%, 21%);
+}
+</style>

@@ -1,25 +1,37 @@
 <template>
   <div v-if="authUser">
-    <slot />
+    <slot></slot>
   </div>
-  <div v-if="!authUser" data-testid="user-loading-container">
+  <div v-if="!authUser">
     Loading...
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
-import store from "@/store";
-import { UserRecord } from "@/api/types";
+import { defineComponent, inject, onMounted, provide, ref } from "vue";
+import { getUser } from "@/api";
+import { UserRecord, userKey } from "@/api/types";
+import { LOGIN_REDIRECT } from "../../constants";
+import axios from "axios";
+import { wrapExceptions } from "@/methods";
 
 export default defineComponent({
-  name: "UserProvider",
   setup: () => {
-    const authUser = ref<UserRecord | undefined>(store.state.authUser);
+    const authUser = ref<undefined | UserRecord>();
+    provide(userKey, authUser);
     onMounted(async () => {
-      await store.dispatch.doFetchAuthUser();
-      authUser.value = store.getters.authUser;
+      const [user, error] = await wrapExceptions(getUser);
+      if (error || !user) {
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 401) {
+            window.location.replace(LOGIN_REDIRECT);
+          }
+        }
+        return;
+      }
+      authUser.value = user;
     });
+
     return {
       authUser
     };

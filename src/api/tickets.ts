@@ -74,7 +74,9 @@ export const deleteTicket = async (
   record: ReadTicketRecord,
   teamId: number
 ): Promise<void> => {
-  await axiosInstance.delete<void>(`/api/teams/${teamId}/tickets/${record.id}`);
+  await axiosInstance.delete<void>(
+    `/api/teams/${teamId}/tickets/${record.id}/`
+  );
 };
 
 export const getUsersAssignedTickets = async (): Promise<ReadTicketRecord[]> => {
